@@ -1,0 +1,147 @@
+##
+# Set the port on which the REST server listens
+serverPort: 8881
+
+##
+# Set the the root of the URL used to access rest data
+urlRoot: /maddash
+
+##
+# Set the directory where the database will be stored
+database: /var/lib/maddash/
+
+##
+# Set the number of jobs that can run in parallel. Default is 50.
+#jobThreadPoolSize: 50
+
+##
+# Set number of jobs that can be in queue at one time. Default is 250.
+#jobBatchSize: 250
+
+###
+# Disable the job scheduler if you only want to run the REST server
+#disableScheduler: 0
+
+groups:
+    owampHosts :
+        - "albu-owamp.es.net"
+        - "bois-owamp.es.net"
+        - "bost-owamp.es.net"
+        - "chic-owamp.es.net"
+        - "clev-owamp.es.net"
+        - "elpa-owamp.es.net"
+        - "hous-owamp.es.net"
+        - "kans-owamp.es.net"
+        - "newy-owamp.es.net"
+        - "pnwg-owamp.es.net" 
+        - "ameslab-owamp.es.net"
+        - "eqx-ash-owamp.es.net"
+        - "eqx-chi-owamp.es.net"
+        - "eqx-sj-owamp.es.net"
+        - "ga-owamp.es.net"
+        - "lasv-owamp.es.net"
+        - "lbl-owamp.es.net"
+        - "llnl-owamp.es.net" 
+        - "nersc-owamp.es.net"
+        - "ornl-owamp.es.net"
+        - "paix-pa-owamp.es.net"
+        - "pppl-owamp.es.net"
+        - "sdsc-owamp.es.net" 
+        - "slac-owamp.es.net" 
+        - "snll-owamp.es.net"
+        - "doe-owamp.es.net"
+        - "forr-owamp.es.net"
+        - "inl-owamp.es.net"
+        - "lvk-owamp.es.net"
+        - "nrel-owamp.es.net"
+        - "orau-owamp.es.net"
+        - "osti-owamp.es.net"
+        - "pantex-owamp.es.net"
+        - "snla-owamp.es.net"
+        - "srs-owamp.es.net"
+        - "anl-owamp.es.net" 
+        - "aofa-owamp.es.net"
+        - "atla-owamp.es.net" 
+        - "bnl-owamp.es.net" 
+        - "denv-owamp.es.net"
+        - "fnal-owamp.es.net"
+        - "nash-owamp.es.net"
+        - "star-owamp.es.net"
+        - "sunn-owamp.es.net"
+        - "wash-owamp.es.net"
+    
+    esnetDiceTesters :
+        - "chic-owamp.es.net"
+        - "newy-owamp.es.net"
+        - "sunn-owamp.es.net"
+        - "pnwg-owamp.es.net"
+        - "wash-owamp.es.net"
+    
+    geantDiceTesters :
+        - "fe1-vlan71.srv3.par.fr.geant2.net"
+        - "ge1-vlan71.mp1.lon.uk.geant2.net "
+        - "ge1-vlan71.mp1.mad.es.geant2.net"
+        - "ge1-vlan71.mp1.vie.at.geant2.net "
+        - "fe1-vlan71.srv3.gen.ch.geant2.net"
+        
+checks:
+    owampLossCheck :
+        name: "OWAMP Loss"
+        description: "Loss from %row to %col (according to %row MA)"
+        type: "net.es.maddash.checks.PSNagiosCheck"
+        params:
+            maUrl: 
+                default: "http://%row:8085/perfSONAR_PS/services/pSB"
+            metaDataKeyLookup: "https://stats.es.net/perfsonar/serviceTest/cgi-bin/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=108000&bucket_width=0.0001"
+            graphUrl: "https://stats.es.net/perfsonar/serviceTest/cgi-bin/delayGraph.cgi?url=%maUrl&key=%maKey&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dst&src=%src&type=TCP&length=14400"
+            command: "/Users/alake/Programming/Perl/perfSONAR/perfSONAR-PS/trunk/perfSONAR_PS-Nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -s %row -d %col"
+        checkInterval: 600
+        retryInterval: 300
+        retryAttempts: 3
+        timeout: 60
+    owampLossReverseCheck :
+        name: "OWAMP Loss Reverse"
+        description: "Loss from %col to %row (according to %row MA)"
+        type: "net.es.maddash.checks.RandomCheck"
+        params:
+            command: "check_owamp.pl -s %col -d %row"
+        checkInterval: 600
+        retryInterval: 300
+        retryAttempts: 3
+        timeout: 60
+
+grids:
+    - name: "ESnet OWAMP"
+      rows: "owampHosts"
+      columns: "owampHosts"
+      checks: 
+        - "owampLossCheck"
+      rowOrder: "alphabetical"
+      colOrder: "alphabetical"
+      excludeSelf: 1
+      columnAlgorithm: "afterSelf" 
+    - name: "ESnet-GEANT OWAMP"
+      rows: "esnetDiceTesters"
+      columns: "geantDiceTesters"
+      checks: 
+        - "owampLossCheck"
+      rowOrder: "alphabetical"
+      colOrder: "alphabetical"
+      excludeSelf: 1
+      columnAlgorithm: "all" 
+
+web:
+    title: "ESnet perfSONAR Dashboard"
+    dashboards:
+        - name: "OWAMP"
+          grids:
+            - name: "ESnet OWAMP"
+              cellWidth: 20
+              cellHeight: 14
+            - name: "ESnet-GEANT OWAMP"
+        - name: "ESnet"
+          grids:
+            - name: "ESnet OWAMP"
+              cellWidth: 20
+              cellHeight: 14
+    default: "OWAMP"

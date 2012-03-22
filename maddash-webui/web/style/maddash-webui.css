@@ -1,0 +1,162 @@
+.maddashTitle {
+	background-color: #0066CC;
+	padding: 20px 20px 20px 5px;
+	font-size: 24px;
+	color: #FFFFFF;
+	font-weight: bolder;
+}
+
+a.maddashTitleLink:link {
+	color: #FFFFFF;
+	font-weight: bolder;
+	text-decoration:none;
+}
+
+a.maddashTitleLink:visited {
+	color: #FFFFFF;
+	font-weight: bolder;
+	text-decoration:none;
+}
+
+a.maddashTitleLink:hover {
+	color: #FFFFFF;
+	font-weight: bolder;
+	text-decoration:none;
+}
+
+a.maddashTitleLink:active {
+	color: #FFFFFF;
+	font-weight: bolder;
+	text-decoration:none;
+}
+
+.maddashCheckNav {
+	background-color: #FFFFFF;
+	padding: 5px 5px 5px 5px;
+	font-size:13px;
+	color:#000000;
+}
+
+.maddashCheckTitle {
+	font-size: 24px;
+	font-weight: bold;
+	color:#000000;
+}
+
+.maddashCheckTitleDiv {
+	margin: 10px 10px 10px 5px;
+}
+
+.maddashQuickStatus{
+	background-color: #FFFFFF;
+	font-size:14px;
+	margin:10px 0px 10px 5px;
+}
+
+.maddashFieldLabel{
+	font-weight:bold;
+	margin: 0px 0px 0px 0px;
+}
+
+td.maddashFieldLabel {
+	text-align: left;
+	vertical-align: top;
+	padding: 5px 5px 5px 5px;
+	
+	
+}
+
+.maddashFieldValue {
+	
+}
+.maddashQuickStatusCol{
+	font-weight:bold;
+	margin: 0px 0px 0px 10px;
+}
+
+.maddashStatusOK {
+	color:green;
+	font-weight:bolder;
+}
+
+.maddashStatusCritical {
+	color:red;
+	font-weight:bolder;
+}
+
+.maddashStatusWarning {
+	color:yellow;
+	font-weight:bolder;
+}
+
+.maddashStatusUnknown {
+	color:orange;
+	font-weight:bolder;
+}
+
+.maddashGraphFrame {
+	width:100%; 
+	height:100%;
+	margin: 0px 0px 0px 0px;
+	overflow: hidden;
+	border: none;
+	background:#FFF;
+	border-style:none;
+            	
+}
+
+.maddashgridPane {
+	margin: 5px 5px 5px 5px;
+}
+
+.maddashgridTopContainer {
+	margin: 15px 5px 5px 5px;
+}
+
+.maddashgridTitleDiv {
+	width: 100%;
+	text-align: left;
+}
+
+.maddashgridTitle {
+	width: 100%;
+	font-size: 24px;
+	font-weight: bold;
+	text-align:center;
+	margin-top: 5px;
+	
+}
+
+.maddashCheckSubTitle {
+	font-size: 18px;
+	font-weight: normal;
+	font: italic;
+	color:#000000;
+}
+
+.maddashCheckDetailsTable {
+	
+}
+
+.historyItem {
+	margin: 20px 10px 10px 10px;
+	width: 600px;
+	text-align: left;
+}
+
+.maddashHistSlider {
+	width: 300px;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#maddashHistory {
+	width: 750px;
+}
+
+.maddashPageNum {
+	width: 300px;
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+}
