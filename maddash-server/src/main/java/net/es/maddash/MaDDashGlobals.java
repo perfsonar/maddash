@@ -45,6 +45,7 @@ public class MaDDashGlobals {
     private int serverPort;
     private int jobBatchSize;
     private int threadPoolSize;
+    private long dbDataMaxAge;
     private String urlRoot;
     private Map<String, Class> checkTypeClassMap;
     private HashMap<Integer, Boolean> scheduledChecks; 
@@ -61,6 +62,8 @@ public class MaDDashGlobals {
     final private String PROP_JOB_BATCH_SIZE = "jobBatchSize";
     final private String PROP_JOB_THREAD_POOL_SIZE = "jobThreadPoolSize";
     final private String PROP_DISABLE_SCHEDULER = "disableScheduler";
+    final private String PROP_DB_CLEAN_SCHED = "dbCleanSchedule";
+    final private String PROP_DB_DATA_MAX_AGE = "dbDataMaxAge";
     final private String PROP_WEB = "web";
     final private String PROP_WEB_TITLE = "title";
     final private String PROP_WEB_DASHBOARDS = "dashboards";
@@ -76,11 +79,12 @@ public class MaDDashGlobals {
     final static private String DEFAULT_WEB_TITLE = "MaDDash";
     final static private String DEFAULT_URL_ROOT = "/maddash";
     final static private String DEFAULT_DB = "data/dashboard.db";
+    final static private long DEFAULT_DB_DATA_MAX_AGE = 86400*180;//every 180 days
     final static private int DEFAULT_JOB_BATCH_SIZE = 250;
     final static private int DEFAULT_THREAD_POOL_SIZE = 50;
     final static private boolean DEFAULT_DISABLE_SCHEDULER = false;
     final static private String CHECK_SCHEDULE = "0 * * * * ?";
-    final static private String CLEAN_DB_SCHEDULE = "0 0 * * * ?";//every hour
+    final static private String CLEAN_DB_SCHEDULE = "0 0,12 * * * ?";//every 12 hours
     
     /**
      * Sets the configuration file to use
@@ -140,6 +144,18 @@ public class MaDDashGlobals {
             this.threadPoolSize = (Integer) config.get(PROP_JOB_THREAD_POOL_SIZE);
         }
         log.debug("threadPoolSize is " + this.threadPoolSize);
+        
+        String dbCleanSched = CLEAN_DB_SCHEDULE;
+        if(config.containsKey(PROP_DB_CLEAN_SCHED) && config.get(PROP_DB_CLEAN_SCHED) != null){
+            dbCleanSched = (String) config.get(PROP_DB_CLEAN_SCHED);
+        }
+        log.debug("dbCleanSched is " + dbCleanSched);
+        
+        this.dbDataMaxAge = DEFAULT_DB_DATA_MAX_AGE;
+        if(config.containsKey(PROP_DB_DATA_MAX_AGE) && config.get(PROP_DB_DATA_MAX_AGE) != null){
+            this.dbDataMaxAge = (Integer) config.get(PROP_DB_DATA_MAX_AGE);
+        }
+        log.debug("dbDataMaxAge is " + this.dbDataMaxAge);
         
         boolean disableScheduler = DEFAULT_DISABLE_SCHEDULER;
         if(config.containsKey(PROP_DISABLE_SCHEDULER) && config.get(PROP_DISABLE_SCHEDULER) != null){
@@ -203,9 +219,11 @@ public class MaDDashGlobals {
             CronTrigger checkCronTrigger = new CronTrigger("CheckTrigger", "CHECKS", CHECK_SCHEDULE);
             JobDetail checkJobDetail = new JobDetail("CheckScheduler", "CHECKS", CheckSchedulerJob.class);
             this.scheduler.scheduleJob(checkJobDetail, checkCronTrigger);
-            CronTrigger cleanCronTrigger = new CronTrigger("CleanTrigger", "CLEAN", CLEAN_DB_SCHEDULE);
-            JobDetail cleanJobDetail = new JobDetail("CleanScheduler", "CLEAN", CleanDBJob.class);
-            this.scheduler.scheduleJob(cleanJobDetail, cleanCronTrigger);
+            if(this.dbDataMaxAge >= 0L){
+                CronTrigger cleanCronTrigger = new CronTrigger("CleanTrigger", "CLEAN", dbCleanSched);
+                JobDetail cleanJobDetail = new JobDetail("CleanScheduler", "CLEAN", CleanDBJob.class);
+                this.scheduler.scheduleJob(cleanJobDetail, cleanCronTrigger);
+            }
             this.scheduledChecks = new HashMap<Integer,Boolean>();
         }
     }
@@ -253,8 +271,8 @@ public class MaDDashGlobals {
                     "checkTemplateId INTEGER NOT NULL, gridName VARCHAR(500) NOT NULL, " +
                     "rowName VARCHAR(500) NOT NULL, colName VARCHAR(500) NOT NULL, checkName " +
                     "VARCHAR(500) NOT NULL, rowOrder INT NOT NULL, colOrder INT NOT " +
-                    "NULL, description VARCHAR(2000) NOT NULL, prevCheckTime INTEGER " +
-                    "NOT NULL, nextCheckTime INTEGER NOT NULL, checkStatus INTEGER " +
+                    "NULL, description VARCHAR(2000) NOT NULL, prevCheckTime BIGINT " +
+                    "NOT NULL, nextCheckTime BIGINT NOT NULL, checkStatus INTEGER " +
                     "NOT NULL, prevResultCode INTEGER NOT NULL, statusMessage VARCHAR(2000) NOT NULL, " +
                     "resultCount INTEGER NOT NULL, active INTEGER NOT NULL)").execute();
                 log.debug("Created table checks");
@@ -279,7 +297,7 @@ public class MaDDashGlobals {
             }
             try{
                 conn.prepareStatement("CREATE TABLE results (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
-                    "checkId INTEGER NOT NULL, checkTime INTEGER NOT NULL, returnCode " +
+                    "checkId INTEGER NOT NULL, checkTime BIGINT NOT NULL, returnCode " +
                     "INTEGER NOT NULL, returnMessage VARCHAR(2000) NOT NULL, returnParams VARCHAR(2000), " +
                     "resultCount INTEGER NOT NULL, checkStatus INTEGER NOT NULL)").execute();
             }catch(SQLException e){
@@ -381,5 +399,12 @@ public class MaDDashGlobals {
      */
     public int getJobBatchSize() {
         return this.jobBatchSize;
+    }
+
+    /**
+     * @return the dbDataMaxAge
+     */
+    public long getDbDataMaxAge() {
+        return this.dbDataMaxAge;
     }
 }
