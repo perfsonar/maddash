@@ -5,26 +5,32 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 
 import net.es.maddash.MaDDashGlobals;
+import net.es.maddash.NetLogger;
 import net.es.maddash.checks.Check;
 import net.es.maddash.checks.CheckConstants;
 import net.es.maddash.checks.CheckResult;
 import net.sf.json.JSONObject;
 
+import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 public class RunCheckJob implements Job{
-
+    private Logger log = Logger.getLogger(CheckSchedulerJob.class);
+    private Logger netlogger = Logger.getLogger("netlogger");
+    
     public void execute(JobExecutionContext context) throws JobExecutionException {
         //load jobdatamap
         MaDDashGlobals globals =  null;
         try{
             globals = MaDDashGlobals.getInstance();
         }catch(Exception e){
+            log.error("Error loading global: " + e.getMessage());
             e.printStackTrace();
         }
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
@@ -46,37 +52,49 @@ public class RunCheckJob implements Job{
             checkToRun = (Check)checkClass.newInstance();
         } catch (Exception e) {
             this.deactivateCheck(checkId, globals);
-            //TODO: Print that the check is invalid
+            log.error("Error loading check: " + e.getMessage());
             e.printStackTrace();
             return;
         }
         
         //run check
+        HashMap<String,String> netLogFields = new HashMap<String,String>();
+        netLogFields.put("grid", gridName);
+        netLogFields.put("row", rowName);
+        netLogFields.put("col", colName);
+        NetLogger netLog = NetLogger.getTlogger();
         CheckResult result = null;
         try{
-            System.out.println("Running check " + gridName + "." + rowName + "." + colName);
+            netlogger.info(netLog.start("maddash.RunCheckJob.execute.runCheck", null, null, netLogFields));
             result = checkToRun.check(gridName, rowName, colName, paramJson, timeout);
-            System.out.println("Result code is " + result.getResultCode());
-            System.out.println("Result msg is " + result.getMessage());
-            System.out.println();
+            netLogFields.put("resultCode", result.getResultCode()+"");
+            netLogFields.put("resultMsg", result.getMessage());
+            netlogger.info(netLog.end("maddash.RunCheckJob.execute.runCheck", null, null, netLogFields));
+            log.debug("Result code is " + result.getResultCode());
+            log.debug("Result msg is " + result.getMessage());
         }catch(Exception e){
             result = new CheckResult(CheckConstants.RESULT_UNKNOWN, e.getMessage(), null);
+            netlogger.error(netLog.end("maddash.RunCheckJob.execute.runCheck", e.getMessage(), null, netLogFields));
+            log.error("Error running check: " + e.getMessage());
             e.printStackTrace();
         }
         
         Connection conn = null;
         try {
+            netlogger.debug(netLog.start("maddash.RunCheckJob.execute.updateDatabase"));
             synchronized(globals){
                 conn = globals.getDataSource().getConnection();
                 this.updateDatabase(result, dataMap, conn);
                 conn.close();
             }
+            netlogger.debug(netLog.end("maddash.RunCheckJob.execute.updateDatabase"));
         } catch (Exception e) {
             if(conn != null){
                 try {
                     conn.close();
                 } catch (SQLException e1) {}
             }
+            netlogger.debug(netLog.error("maddash.RunCheckJob.execute.updateDatabase", e.getMessage()));
             e.printStackTrace();
         }
         
@@ -152,7 +170,7 @@ public class RunCheckJob implements Job{
         updateCheckStmt.setInt(6, newResultCount);
         updateCheckStmt.setInt(7, checkId);
         updateCheckStmt.executeUpdate();
-        System.out.println("Next run of " + gridName + "." + rowName + "." + colName  + " is " + new Date(nextTime*1000));
+        log.debug("Next run of " + gridName + "." + rowName + "." + colName  + " is " + new Date(nextTime*1000));
     }
     
     private void deactivateCheck(int checkId, MaDDashGlobals globals) {

@@ -5,8 +5,14 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.es.maddash.NetLogger;
+
+import org.apache.log4j.Logger;
+
 
 public class NagiosCheck implements Check{
+    private Logger log = Logger.getLogger(NagiosCheck.class);
+    private Logger netlogger = Logger.getLogger("netlogger");
     
     final static public String PARAM_COMMAND = "command";
     
@@ -20,11 +26,13 @@ public class NagiosCheck implements Check{
         command = command.replaceAll("%row", rowName);
         command = command.replaceAll("%col", colName);
         
+        NetLogger netLog = NetLogger.getTlogger();
         CheckResult result = null;
         Runtime runtime = Runtime.getRuntime();
         Process process = null;
         try {
-            System.out.println("Executing command " + command);
+            netlogger.debug(netLog.start("maddash.NagiosCheck.runCommand"));
+            log.debug("Executing command " + command);
             process = runtime.exec(command);
             WatchDog watchdog = new WatchDog(process);
             watchdog.start();
@@ -49,7 +57,10 @@ public class NagiosCheck implements Check{
                 }
                 result = new CheckResult(resultCode, outputLine, returnParams);
             }
+            netlogger.debug(netLog.end("maddash.NagiosCheck.runCommand"));
         } catch (Exception e) {
+            netlogger.debug(netLog.error("maddash.NagiosCheck.runCommand", e.getMessage()));
+            log.error("Error running nagios check: " + e.getMessage());
             result = new CheckResult(CheckConstants.RESULT_UNKNOWN, 
                     "Exception executing command: " + e.getMessage(), null);
             e.printStackTrace();

@@ -10,16 +10,32 @@
   <groupId>net.es.maddash</groupId>
   <artifactId>maddash-server</artifactId>
   <version>0.1</version>
-  <name>maddash</name>
+  <name>maddash-server</name>
   <url>http://maven.apache.org</url>
+  
+  <repositories>
+      <repository>
+          <id>maddash-repo</id>
+          <name>MaDDash Maven Repository</name>
+          <layout>default</layout>
+          <url>file:///${basedir}/../common-libs/repo</url>
+      </repository>
+  </repositories>
+   
+  <!-- puts all code & libraries in one jar -->
+  <pluginRepositories>
+      <pluginRepository>
+          <id>onejar-maven-plugin.googlecode.com</id>
+          <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+      </pluginRepository>
+  </pluginRepositories>
     
   <dependencies>
-    
-    <!-- common-libs-->
+    <!-- netlogger -->
     <dependency>
-        <groupId>net.es.maddash</groupId>
-        <artifactId>common-libs</artifactId>
-        <version>0.1</version>
+        <artifactId>netlogger</artifactId>
+        <groupId>gov.lbl</groupId>
+        <version>4.1.2</version>
     </dependency>
     
     <!-- command-line parsing -->
@@ -43,13 +59,6 @@
         <version>0.9.1</version>
     </dependency>
 
-    <!-- sqlite jdbc -->
-    <dependency>
-        <groupId>org.xerial</groupId>
-        <artifactId>sqlite-jdbc</artifactId>
-        <version>3.7.2</version>
-    </dependency>
-    
     <!-- Derby database -->
     <dependency>
         <groupId>org.apache.derby</groupId>
@@ -110,8 +119,6 @@
         <version>1.1</version>
     </dependency>
   </dependencies>
-  
-  
   
   <build>  
         <plugins>

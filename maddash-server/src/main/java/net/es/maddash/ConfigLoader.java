@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import net.es.maddash.checks.Check;
 import net.es.maddash.checks.CheckConstants;
 import net.sf.json.JSONObject;
@@ -18,6 +20,8 @@ import net.sf.json.JSONObject;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class ConfigLoader {
+    static final Logger log = Logger.getLogger(ConfigLoader.class);
+    
     //properties
     static final public String PROP_GROUPS = "groups";
     
@@ -83,7 +87,6 @@ public class ConfigLoader {
                 if(check.containsKey(PROP_CHECKS_PARAMS) && check.get(PROP_CHECKS_PARAMS) != null){
                     jsonParamString = JSONObject.fromObject(check.get(PROP_CHECKS_PARAMS)).toString();
                 }
-                System.out.println("JSON PARAMS: " + jsonParamString);
                 selTemplateStmt.setString(2, jsonParamString);
                 insertTemplateStmt.setString(2, jsonParamString);
 
@@ -125,7 +128,6 @@ public class ConfigLoader {
             PreparedStatement updateCheckStmt = conn.prepareStatement("UPDATE checks SET description=?, rowOrder=?, colOrder=?, active=1 WHERE id=?");
             PreparedStatement insertCheckStmt = conn.prepareStatement("INSERT INTO checks VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, " + CheckConstants.RESULT_NOTRUN  + "," + CheckConstants.RESULT_NOTRUN  + ", 'Check has not run', 0, 1)");
             for(Map gridMap : gridList){
-                System.out.println("Grid Name: " + gridMap.get("name"));
                 String rowOrder = (String) gridMap.get(PROP_GRIDS_ROW_ORDER);
                 String colOrder = (String) gridMap.get(PROP_GRIDS_COL_ORDER);
                 
@@ -193,18 +195,19 @@ public class ConfigLoader {
                         for(String checkName : (List<String>)gridMap.get(PROP_GRIDS_CHECKS)){
                             String checkNiceName = (String)checkMap.get(checkName).get(PROP_CHECKS_NAME);
                             String checkDescrName = (String)checkMap.get(checkName).get(PROP_CHECKS_DESCRIPTION);
-                            System.out.println("    Check Name: " + checkName);
                             checkRequiredProp(templateIdMap, checkName);
                             selCheckStmt.setString(4, checkNiceName);
                             selCheckStmt.setInt(5, templateIdMap.get(checkName));
                             ResultSet selResult = selCheckStmt.executeQuery();
                             if(selResult.next()){
+                                log.debug("Updated check " + checkName);
                                 updateCheckStmt.setString(1, formatCheckDescription(checkDescrName, row, col));
                                 updateCheckStmt.setInt(2, ri);
                                 updateCheckStmt.setInt(3, colOrderMap.get(col));
                                 updateCheckStmt.setInt(4, selResult.getInt(1));
                                 updateCheckStmt.executeUpdate();
                             }else{
+                                log.debug("Added check " + checkName);
                                 insertCheckStmt.setInt(1, templateIdMap.get(checkName));
                                 insertCheckStmt.setString(2, (String)gridMap.get("name"));
                                 insertCheckStmt.setString(3, row);

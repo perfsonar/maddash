@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +43,7 @@ public class MaDDashGlobals {
     private Map<String, Class> checkTypeClassMap;
     private HashMap<Integer, Boolean> scheduledChecks; 
     
-    //web related paramters
+    //web related parameters
     private String webTitle;
     private JSONArray dashboards;
     private String defaultDashboard;
@@ -100,27 +99,32 @@ public class MaDDashGlobals {
         if(config.containsKey(PROP_SERVER_PORT) && config.get(PROP_SERVER_PORT) != null){
             this.serverPort = (Integer) config.get(PROP_SERVER_PORT);
         }
+        log.debug("Server port is " + this.serverPort);
         
         //set url root
         this.urlRoot = DEFAULT_URL_ROOT;
         if(config.containsKey(PROP_URL_ROOT) && config.get(PROP_URL_ROOT) != null){
             this.urlRoot = (String) config.get(PROP_URL_ROOT);
         }
+        log.debug("urlRoot is " + this.serverPort);
         
         this.jobBatchSize = DEFAULT_JOB_BATCH_SIZE;
         if(config.containsKey(PROP_JOB_BATCH_SIZE) && config.get(PROP_JOB_BATCH_SIZE) != null){
             this.jobBatchSize = (Integer) config.get(PROP_JOB_BATCH_SIZE);
         }
+        log.debug("jobBatchSize is " + this.jobBatchSize);
         
         this.threadPoolSize = DEFAULT_THREAD_POOL_SIZE;
         if(config.containsKey(PROP_JOB_THREAD_POOL_SIZE) && config.get(PROP_JOB_THREAD_POOL_SIZE) != null){
             this.threadPoolSize = (Integer) config.get(PROP_JOB_THREAD_POOL_SIZE);
         }
+        log.debug("threadPoolSize is " + this.threadPoolSize);
         
         boolean disableScheduler = DEFAULT_DISABLE_SCHEDULER;
         if(config.containsKey(PROP_DISABLE_SCHEDULER) && config.get(PROP_DISABLE_SCHEDULER) != null){
             disableScheduler = (((Integer) config.get(PROP_DISABLE_SCHEDULER)) != 0 ? true : false);
         }
+        log.debug("disableScheduler is " + disableScheduler);
         
         //set web parameters
         Map webConfig = null;
@@ -132,10 +136,14 @@ public class MaDDashGlobals {
         if(webConfig.containsKey(PROP_WEB_TITLE) && webConfig.get(PROP_WEB_TITLE) != null){
             this.webTitle = (String) webConfig.get(PROP_WEB_TITLE);
         }
+        log.debug("webTitle is " + this.webTitle);
+        
         this.defaultDashboard = null;
         if(webConfig.containsKey(PROP_WEB_DEFAULT) && webConfig.get(PROP_WEB_DEFAULT) != null){
             this.defaultDashboard = (String) webConfig.get(PROP_WEB_DEFAULT);
         }
+        log.debug("defaultDashboard is " + this.defaultDashboard);
+        
         HashMap<String,List<Map>> dashMap = new HashMap<String,List<Map>>();
         ArrayList<String> dashList = new ArrayList<String>();
         if(webConfig.containsKey(PROP_WEB_DASHBOARDS) && webConfig.get(PROP_WEB_DASHBOARDS) != null){
@@ -146,13 +154,13 @@ public class MaDDashGlobals {
                 if(!dashboard.containsKey(PROP_WEB_DASHBOARDS_GRIDS) || dashboard.get(PROP_WEB_DASHBOARDS_GRIDS) == null){
                     throw new RuntimeException("Dashboard does not contain a " + PROP_WEB_DASHBOARDS_GRIDS +  " property under ");
                 }
+                log.debug("Added dashboard " + (String)dashboard.get(PROP_WEB_DASHBOARDS_NAME));
                 dashList.add((String)dashboard.get(PROP_WEB_DASHBOARDS_NAME));
                 dashMap.put((String)dashboard.get(PROP_WEB_DASHBOARDS_NAME), (List<Map>)dashboard.get(PROP_WEB_DASHBOARDS_GRIDS));
             }
             Collections.sort(dashList);
             this.dashboards = new JSONArray();
             for(String name : dashList){
-                System.out.println("name=" + name);
                 JSONObject tmp = new JSONObject();
                 tmp.put("name", name);
                 tmp.put("grids", dashMap.get(name));
@@ -191,10 +199,14 @@ public class MaDDashGlobals {
     
     synchronized private void initDatabase(String dbname) throws PropertyVetoException, SQLException{
         if(dataSource == null){
+            
             System.setProperty("derby.system.home", dbname);
             dataSource = new ComboPooledDataSource();
             dataSource.setDriverClass(JDBC_DRIVER);
             dataSource.setJdbcUrl(JDBC_URL);
+            log.debug("Set database to " + dbname);
+            log.debug("JDBC_DRIVER is " + JDBC_DRIVER);
+            log.debug("JDBC_URL is " + JDBC_URL);
             
             Connection conn = this.dataSource.getConnection();
             try{
@@ -206,9 +218,10 @@ public class MaDDashGlobals {
                     "NOT NULL, nextCheckTime INTEGER NOT NULL, checkStatus INTEGER " +
                     "NOT NULL, prevResultCode INTEGER NOT NULL, statusMessage VARCHAR(2000) NOT NULL, " +
                     "resultCount INTEGER NOT NULL, active INTEGER NOT NULL)").execute();
+                log.debug("Created table checks");
             }catch(SQLException e){
                 if("X0Y32".equals(e.getSQLState())){
-                    System.out.println("Using existing checks table");
+                    log.debug("Table checks exists");
                 }else{
                     throw e;
                 }
@@ -220,7 +233,7 @@ public class MaDDashGlobals {
                     "timeout INTEGER NOT NULL)").execute();
             }catch(SQLException e){
                 if("X0Y32".equals(e.getSQLState())){
-                    System.out.println("Using existing checkTemplates table");
+                    log.debug("Table checkTemplates exists");
                 }else{
                     throw e;
                 }
@@ -232,7 +245,7 @@ public class MaDDashGlobals {
                     "resultCount INTEGER NOT NULL, checkStatus INTEGER NOT NULL)").execute();
             }catch(SQLException e){
                 if("X0Y32".equals(e.getSQLState())){
-                    System.out.println("Using existing results table");
+                    log.debug("Table results exists");
                 }else{
                     throw e;
                 }

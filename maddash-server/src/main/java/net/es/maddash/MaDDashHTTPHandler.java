@@ -19,13 +19,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.es.maddash.checks.CheckConstants;
+import net.es.maddash.checks.NagiosCheck;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.log4j.Logger;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.handler.AbstractHandler;
 
 public class MaDDashHTTPHandler extends AbstractHandler{
+    private Logger log = Logger.getLogger(NagiosCheck.class);
+    private Logger netlogger = Logger.getLogger("netlogger");
     
     private String rootPath;
     final private int DEFAULT_RESULT_LIMIT = 10;
@@ -81,7 +85,9 @@ public class MaDDashHTTPHandler extends AbstractHandler{
     private void getCheckResult(String[] resourcePath,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
         try {
+            netlogger.info(netLog.start("maddash.http.getCheckResult"));
             String gridName = this.decodeUriPart(resourcePath[1]);
             String rowName = this.decodeUriPart(resourcePath[2]);
             String colName = this.decodeUriPart(resourcePath[3]);
@@ -130,7 +136,6 @@ public class MaDDashHTTPHandler extends AbstractHandler{
                 JSONObject paramObject = null;
                 if(checkDetails.getString(11) != null && 
                         !checkDetails.getString(11).equals(CheckConstants.EMPTY_PARAMS)){
-                    System.out.println("params" + checkDetails.getString(11));
                     paramObject = JSONObject.fromObject(checkDetails.getString(11));
                 }
                 checkJson.put("params", paramObject);
@@ -178,7 +183,7 @@ public class MaDDashHTTPHandler extends AbstractHandler{
             if(pageStr != null){
                 page = Integer.parseInt(pageStr);
             }
-            System.out.println(historySql);
+            log.debug(historySql);
             
             //get page count
             ResultSet pageCountResults = conn.prepareStatement(pageCountSql).executeQuery();
@@ -212,12 +217,15 @@ public class MaDDashHTTPHandler extends AbstractHandler{
             //output result
             checkJson.put("history", historyJson);
             this.outputJSON(response, checkJson);
+            netlogger.info(netLog.end("maddash.http.getCheckResult"));
         }catch(Exception e){
             if(conn != null){
                 try {
                     conn.close();
                 } catch (SQLException e1) {}
             }
+            netlogger.error(netLog.end("maddash.http.getCheckResult"));
+            log.error("Error handling request: " + e.getMessage());
             this.reportError(response, e.getMessage());
             e.printStackTrace();
         }
@@ -238,7 +246,9 @@ public class MaDDashHTTPHandler extends AbstractHandler{
     private void getGrid(String[] resourcePath, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
         try {
+            netlogger.info(netLog.start("maddash.http.getGrid"));
             String gridName = this.decodeUriPart(resourcePath[1]);
             JSONObject json = new JSONObject();
             ArrayList<JSONObject> rowList = new ArrayList<JSONObject>();
@@ -328,12 +338,15 @@ public class MaDDashHTTPHandler extends AbstractHandler{
             json.put("grid", jsonGrid);
             
             this.outputJSON(response, json);
+            netlogger.info(netLog.end("maddash.http.getGrid"));
         } catch (Exception e) {
             if(conn != null){
                 try {
                     conn.close();
                 } catch (SQLException e1) {}
             }
+            netlogger.error(netLog.error("maddash.http.getGrid", e.getMessage()));
+            log.error("Error handling request: " + e.getMessage());
             e.printStackTrace();
             this.reportError(response, e.getMessage());
         }
@@ -342,7 +355,9 @@ public class MaDDashHTTPHandler extends AbstractHandler{
     private void getGridList(String[] resourcePath, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
         try {
+            netlogger.info(netLog.start("maddash.http.getGridList"));
             JSONObject json = new JSONObject();
             JSONArray jsonGridList = new JSONArray();
             conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
@@ -361,20 +376,26 @@ public class MaDDashHTTPHandler extends AbstractHandler{
             json.put("dashboards", MaDDashGlobals.getInstance().getDashboards());
             json.put("grids", jsonGridList);
             this.outputJSON(response, json);
+            netlogger.info(netLog.end("maddash.http.getGridList"));
         } catch (Exception e) {
             if(conn != null){
                 try {
                     conn.close();
                 } catch (SQLException e1) {}
             }
+            netlogger.error(netLog.error("maddash.http.getGridList", e.getMessage()));
+            log.error("Error handling request: " + e.getMessage());
             this.reportError(response, e.getMessage());
         }
     }
 
     private void outputJSON(HttpServletResponse response, JSONObject json) throws IOException {
+        NetLogger netLog = NetLogger.getTlogger();
+        netlogger.debug(netLog.start("maddash.http.outputJSON"));
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("text/plain");
         response.getWriter().write(json+"");
+        netlogger.debug(netLog.end("maddash.http.outputJSON"));
     }
 
     private String normalizeURIPart(String uriPart) {
@@ -392,16 +413,22 @@ public class MaDDashHTTPHandler extends AbstractHandler{
     }
     
     private void reportError(HttpServletResponse response, String message) throws IOException {
+        NetLogger netLog = NetLogger.getTlogger();
+        netlogger.debug(netLog.start("maddash.http.reportError"));
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         response.getWriter().write("<h1>500 Internal Server Error</h1>");
         response.getWriter().write("<h2>" + message + "</h2");
+        netlogger.debug(netLog.start("maddash.http.reportError"));
     }
 
     private void reportNotFound(HttpServletResponse response) throws IOException {
+        NetLogger netLog = NetLogger.getTlogger();
+        netlogger.debug(netLog.start("maddash.http.reportNotFound"));
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         response.getWriter().write("<h1>404 Not Found</h1>");
+        netlogger.debug(netLog.end("maddash.http.reportNotFound"));
     }
     
     /**

@@ -8,7 +8,9 @@ import java.util.Date;
 import java.util.UUID;
 
 import net.es.maddash.MaDDashGlobals;
+import net.es.maddash.NetLogger;
 
+import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -17,12 +19,16 @@ import org.quartz.JobExecutionException;
 import org.quartz.SimpleTrigger;
 
 public class CheckSchedulerJob implements Job{
-    
+    Logger log = Logger.getLogger(CheckSchedulerJob.class);
+    Logger netlogger = Logger.getLogger("netlogger");
     
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        NetLogger netLog = NetLogger.getTlogger();
+        
         //query database
         Connection conn = null;
         try{
+            netlogger.info(netLog.start("maddash.CheckSchedulerJob.execute"));
             MaDDashGlobals globals = MaDDashGlobals.getInstance();
             conn = globals.getDataSource().getConnection();
             PreparedStatement selStmt = conn.prepareStatement("SELECT c.id, c.gridName, " +
@@ -65,13 +71,16 @@ public class CheckSchedulerJob implements Job{
                 }
             }
             conn.close();
-            System.out.println("Scheduled " + jobCount + " new jobs");
+            netlogger.info(netLog.end("maddash.CheckSchedulerJob.execute"));
+            log.debug("Scheduled " + jobCount + " new jobs");
         }catch(Exception e){
             if(conn != null){
                 try{
                     conn.close();
                 }catch(SQLException e2){}
             }
+            netlogger.info(netLog.error("maddash.CheckSchedulerJob.execute", e.getMessage()));
+            log.error("Error scheduling job " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         }
