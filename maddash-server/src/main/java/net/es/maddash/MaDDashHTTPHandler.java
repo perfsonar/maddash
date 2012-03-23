@@ -233,14 +233,88 @@ public class MaDDashHTTPHandler extends AbstractHandler{
     }
 
     private void getGridCol(String[] resourcePath, HttpServletRequest request,
-            HttpServletResponse response) {
-        // TODO Auto-generated method stub
-        
+            HttpServletResponse response)  throws IOException{
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        try {
+            netlogger.info(netLog.start("maddash.http.getGridCol"));
+            String gridName = this.decodeUriPart(resourcePath[1]);
+            String rowName = this.decodeUriPart(resourcePath[2]);
+            String colName = this.decodeUriPart(resourcePath[3]);
+            JSONObject json = new JSONObject();
+            JSONArray jsonCheckList = new JSONArray();
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT checkName FROM checks " +
+                    "WHERE gridName=? AND rowName=? AND colName=? AND active=1");
+            stmt.setString(1, gridName);
+            stmt.setString(2, rowName);
+            stmt.setString(3, colName);
+            ResultSet checks = stmt.executeQuery();
+            while(checks.next()){
+                JSONObject checkJson = new JSONObject();
+                checkJson.put("name", checks.getString(1));
+                checkJson.put("uri", rootPath + "/" +  
+                        this.normalizeURIPart(gridName) + "/" +
+                        this.normalizeURIPart(rowName) + "/" +
+                        this.normalizeURIPart(colName) + "/" +
+                        this.normalizeURIPart(checks.getString(1)));
+                jsonCheckList.add(checkJson);
+            }
+            conn.close();
+            json.put("checks", jsonCheckList);
+            this.outputJSON(response, json);
+            netlogger.info(netLog.end("maddash.http.getGridCol"));
+        } catch (Exception e) {
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.error("maddash.http.getGridCol", e.getMessage()));
+            log.error("Error handling request: " + e.getMessage());
+            this.reportError(response, e.getMessage());
+        }
     }
 
     private void getGridRow(String[] resourcePath, HttpServletRequest request,
-            HttpServletResponse response) {
-        
+            HttpServletResponse response) throws IOException{
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        try {
+            netlogger.info(netLog.start("maddash.http.getGridRow"));
+            String gridName = this.decodeUriPart(resourcePath[1]);
+            String rowName = this.decodeUriPart(resourcePath[2]);
+            JSONObject json = new JSONObject();
+            JSONArray jsonColList = new JSONArray();
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            PreparedStatement stmt = conn.prepareStatement("SELECT colName FROM checks " +
+                    "WHERE gridName=? AND rowName=? AND active=1");
+            stmt.setString(1, gridName);
+            stmt.setString(2, rowName);
+            ResultSet cols = stmt.executeQuery();
+            while(cols.next()){
+                JSONObject colJson = new JSONObject();
+                colJson.put("name", cols.getString(1));
+                colJson.put("uri", rootPath + "/" +  
+                        this.normalizeURIPart(gridName) + "/" +
+                        this.normalizeURIPart(rowName) + "/" +
+                        this.normalizeURIPart(cols.getString(1)));
+                jsonColList.add(colJson);
+            }
+            conn.close();
+            json.put("columns", jsonColList);
+            this.outputJSON(response, json);
+            netlogger.info(netLog.end("maddash.http.getGridRow"));
+        } catch (Exception e) {
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.error("maddash.http.getGridRow", e.getMessage()));
+            log.error("Error handling request: " + e.getMessage());
+            this.reportError(response, e.getMessage());
+        }
     }
 
     private void getGrid(String[] resourcePath, HttpServletRequest request,
