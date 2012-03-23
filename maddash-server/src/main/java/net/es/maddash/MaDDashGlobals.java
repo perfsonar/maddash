@@ -29,6 +29,12 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+/**
+ * Singleton with global parameters. Initializes scheduler, database and various other settings 
+ * 
+ * @author Andy Lake <andy@es.net>
+ *
+ */
 public class MaDDashGlobals {
     static private Logger log = Logger.getLogger(MaDDashGlobals.class);
     static private MaDDashGlobals instance = null;
@@ -76,11 +82,26 @@ public class MaDDashGlobals {
     final static private String CHECK_SCHEDULE = "0 * * * * ?";
     final static private String CLEAN_DB_SCHEDULE = "0 0 * * * ?";//every hour
     
-    public static void init(String tmpConfigFile){
-        configFile = tmpConfigFile;
+    /**
+     * Sets the configuration file to use
+     * 
+     * @param newConfigFile the configuration file to use on initialization
+     */
+    public static void init(String newConfigFile){
+        configFile = newConfigFile;
     }
     
-    public MaDDashGlobals() throws PropertyVetoException, SchedulerException, ParseException, FileNotFoundException, ClassNotFoundException, SQLException{
+    /**
+     * Loads configuration file, database and sets global variables.
+     * 
+     * @throws PropertyVetoException
+     * @throws SchedulerException
+     * @throws ParseException
+     * @throws FileNotFoundException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    private MaDDashGlobals() throws PropertyVetoException, SchedulerException, ParseException, FileNotFoundException, ClassNotFoundException, SQLException{
         //check config file
         if(configFile == null){
             throw new RuntimeException("No config file set.");
@@ -189,6 +210,17 @@ public class MaDDashGlobals {
         }
     }
     
+    /**
+     * Returns shared instance of this class
+     * 
+     * @return shared instance of this class
+     * @throws PropertyVetoException
+     * @throws SchedulerException
+     * @throws ParseException
+     * @throws FileNotFoundException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     synchronized static public MaDDashGlobals getInstance() throws PropertyVetoException, SchedulerException, ParseException, FileNotFoundException, ClassNotFoundException, SQLException{
         if(instance == null){
             instance = new MaDDashGlobals();
@@ -197,6 +229,13 @@ public class MaDDashGlobals {
         return instance;
     }
     
+    /**
+     * Connects to derby database and creates it if it does not exist. 
+     * Also creates tables if they do not exist.
+     * @param dbname the directory where the database files will be stored
+     * @throws PropertyVetoException
+     * @throws SQLException
+     */
     synchronized private void initDatabase(String dbname) throws PropertyVetoException, SQLException{
         if(dataSource == null){
             
@@ -255,6 +294,14 @@ public class MaDDashGlobals {
         }
     }
     
+    /**
+     * Updates map of checks that are currently being scheduled. Should be 
+     * called with schedule set to true when job is initially scheduled and 
+     * false when job completes. Prevent job from being scheduled twice.
+     * 
+     * @param checkId the id of the check to add/remove to map
+     * @param schedule if true will be added to the map, false it will be removed
+     */
     synchronized public void updateScheduledChecks(Integer checkId, Boolean schedule){
         if(schedule){
             this.scheduledChecks.put(checkId, schedule);
@@ -263,62 +310,76 @@ public class MaDDashGlobals {
         }
     }
     
+    /**
+     * Returns true if check is already scheduled, false otherwise
+     * @param checkId the id of the check to verify
+     * @return
+     */
     public boolean isCheckScheduled(Integer checkId){
         return (this.scheduledChecks.containsKey(checkId) && this.scheduledChecks.get(checkId));
     }
     
+    /**
+     * Returns the database data source that should be used to obtain 
+     * database connections
+     * @return database data source
+     */
     public ComboPooledDataSource getDataSource(){
         return this.dataSource;
     }
-    
+    /**
+     * @return the port where the REST server runs
+     */
     public int getServerPort(){
         return this.serverPort;
     }
     
+    /**
+     * @return the root of the rest URL (e.g. /maddash)
+     */
     public String getUrlRoot(){
         return this.urlRoot;
     }
     
+    /**
+     * @return the quartz job scheduler
+     */
     public Scheduler getScheduler(){
         return this.scheduler;
     }
     
+    /**
+     * @return the check classes indexed by name
+     */
     public Map<String, Class> getCheckTypeClassMap(){
         return this.checkTypeClassMap;
     }
 
     /**
-     * @return the dashboards
+     * @return the JSON of the dashboards configured
      */
     public JSONArray getDashboards() {
         return this.dashboards;
     }
 
     /**
-     * @return the webTitle
+     * @return the title displayed at the top of the web page
      */
     public String getWebTitle() {
         return this.webTitle;
     }
 
     /**
-     * @return the defaultDashboard
+     * @return the default dashboard to be displayed by the web interfacce
      */
     public String getDefaultDashboard() {
         return this.defaultDashboard;
     }
 
     /**
-     * @return the jobBatchSize
+     * @return the maximum number of jobs to have in the job queue
      */
     public int getJobBatchSize() {
         return this.jobBatchSize;
-    }
-
-    /**
-     * @param jobBatchSize the jobBatchSize to set
-     */
-    public void setJobBatchSize(int jobBatchSize) {
-        this.jobBatchSize = jobBatchSize;
     }
 }

@@ -18,6 +18,18 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.SimpleTrigger;
 
+/**
+ * Queries database for checks that need to be run. It will only pull a 
+ * maximum number of rows as specified for the global jobBatchSize. This
+ * prevents the queue from infinitely growing. It also limits how many 
+ * jobs can be run every time this job runs. For example if jobBatchSize 
+ * is 250 and this is run every minute, then the most jobs it will run is 
+ * 250 per minute.If we did not have this limit you'd likely run into OutOfMemory
+ * errors over time if you have lots of jobs to run that are not very quickly.
+ * 
+ * @author Andy Lake <andy@es.net>
+ *
+ */
 public class CheckSchedulerJob implements Job{
     Logger log = Logger.getLogger(CheckSchedulerJob.class);
     Logger netlogger = Logger.getLogger("netlogger");

@@ -1,6 +1,7 @@
 package net.es.maddash;
 
 import java.io.IOException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -26,7 +27,12 @@ import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.handler.AbstractHandler;
-
+/**
+ * Jetty handler that implements REST interface
+ * 
+ * @author Andy Lake<andy@es.net>
+ *
+ */
 public class MaDDashHTTPHandler extends AbstractHandler{
     private Logger log = Logger.getLogger(NagiosCheck.class);
     private Logger netlogger = Logger.getLogger("netlogger");
@@ -34,12 +40,14 @@ public class MaDDashHTTPHandler extends AbstractHandler{
     private String rootPath;
     final private int DEFAULT_RESULT_LIMIT = 10;
     
-    
     public MaDDashHTTPHandler(String rootPath){
         super();
         this.rootPath = rootPath;
     }
     
+    /**
+     * Inherited from AbstractHandler. Called when a request comes in to the web server
+     */
     public void handle(String target, HttpServletRequest request,
             HttpServletResponse response, int dispatch) throws IOException,
             ServletException {
@@ -57,7 +65,15 @@ public class MaDDashHTTPHandler extends AbstractHandler{
         }
         
     }
-
+    
+    /**
+     * Determines with set of REST data needs to be returned
+     * 
+     * @param target the path to the data
+     * @param request the HTTP request
+     * @param response the HTTP response object used to store results
+     * @throws IOException
+     */
     private void getResource(String target, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         if(!target.startsWith(rootPath)){
@@ -67,7 +83,7 @@ public class MaDDashHTTPHandler extends AbstractHandler{
         
         String[] resourcePath = target.replaceFirst("/", "").split("/");
         if(resourcePath.length == 1){
-            this.getGridList(resourcePath, request, response);
+            this.getDashboards(resourcePath, request, response);
         }else if(resourcePath.length == 2){
             this.getGrid(resourcePath, request, response);
         }else if(resourcePath.length == 3){
@@ -81,7 +97,14 @@ public class MaDDashHTTPHandler extends AbstractHandler{
             return;
         }
     }
-
+    /**
+     * Returns data for an individual check
+     * 
+     * @param resourcePath the path to the check
+     * @param request the HTTP request
+     * @param response the HTTP response object used to store results
+     * @throws IOException
+     */
     private void getCheckResult(String[] resourcePath,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         Connection conn = null;
@@ -231,7 +254,15 @@ public class MaDDashHTTPHandler extends AbstractHandler{
         }
         
     }
-
+    
+    /**
+     * Returns a list of checks in a given column
+     * 
+     * @param resourcePath the path to the column
+     * @param request the HTTP request
+     * @param response the HTTP response object used to store results
+     * @throws IOException
+     */
     private void getGridCol(String[] resourcePath, HttpServletRequest request,
             HttpServletResponse response)  throws IOException{
         Connection conn = null;
@@ -275,7 +306,14 @@ public class MaDDashHTTPHandler extends AbstractHandler{
             this.reportError(response, e.getMessage());
         }
     }
-
+    
+    /**
+     * Returns all the columns for a given row in the grid
+     * @param resourcePath the path to the row
+     * @param request the HTTP request
+     * @param response the HTTP response object used to store results
+     * @throws IOException
+     */
     private void getGridRow(String[] resourcePath, HttpServletRequest request,
             HttpServletResponse response) throws IOException{
         Connection conn = null;
@@ -316,7 +354,15 @@ public class MaDDashHTTPHandler extends AbstractHandler{
             this.reportError(response, e.getMessage());
         }
     }
-
+    
+    /**
+     * Returns the full grid specified.
+     * 
+     * @param resourcePath the path to the grid
+     * @param request the HTTP request
+     * @param response the HTTP response object used to store results
+     * @throws IOException
+     */
     private void getGrid(String[] resourcePath, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         Connection conn = null;
@@ -425,8 +471,16 @@ public class MaDDashHTTPHandler extends AbstractHandler{
             this.reportError(response, e.getMessage());
         }
     }
-
-    private void getGridList(String[] resourcePath, HttpServletRequest request,
+    
+    /**
+     * Returns a list of dashboards and the grids that each contains
+     * 
+     * @param resourcePath the path to the dahsboard/grid list
+     * @param request the HTTP request
+     * @param response the HTTP response object used to store results
+     * @throws IOException
+     */
+    private void getDashboards(String[] resourcePath, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         Connection conn = null;
         NetLogger netLog = NetLogger.getTlogger();
@@ -462,7 +516,14 @@ public class MaDDashHTTPHandler extends AbstractHandler{
             this.reportError(response, e.getMessage());
         }
     }
-
+    
+    /**
+     * Writes JSON to given response object
+     * 
+     * @param response the response where the json should be written
+     * @param json the JSON to write
+     * @throws IOException
+     */
     private void outputJSON(HttpServletResponse response, JSONObject json) throws IOException {
         NetLogger netLog = NetLogger.getTlogger();
         netlogger.debug(netLog.start("maddash.http.outputJSON"));
@@ -471,14 +532,26 @@ public class MaDDashHTTPHandler extends AbstractHandler{
         response.getWriter().write(json+"");
         netlogger.debug(netLog.end("maddash.http.outputJSON"));
     }
-
+    
+    /**
+     * Encode given string for use in a URI
+     * 
+     * @param uriPart the string to encode
+     * @return the encoded string
+     */
     private String normalizeURIPart(String uriPart) {
         try {
             uriPart = URLEncoder.encode(uriPart, "UTF-8");
         } catch (UnsupportedEncodingException e) {}
         return uriPart;
     }
-
+    
+    /**
+     * Decodes given string that was extracted from a URI
+     * 
+     * @param uriPart the string to decode
+     * @return the decoded string
+     */
     private String decodeUriPart(String uriPart) {
         try {
             uriPart = URLDecoder.decode(uriPart, "UTF-8");
@@ -486,6 +559,13 @@ public class MaDDashHTTPHandler extends AbstractHandler{
         return uriPart;
     }
     
+    /**
+     * Writes a HTTP 500 error to the given response object that has the given message
+     * 
+     * @param response the response object where data will be written
+     * @param message the message to return with the error
+     * @throws IOException
+     */
     private void reportError(HttpServletResponse response, String message) throws IOException {
         NetLogger netLog = NetLogger.getTlogger();
         netlogger.debug(netLog.start("maddash.http.reportError"));
@@ -495,7 +575,12 @@ public class MaDDashHTTPHandler extends AbstractHandler{
         response.getWriter().write("<h2>" + message + "</h2");
         netlogger.debug(netLog.start("maddash.http.reportError"));
     }
-
+    
+    /**
+     * Writes a HTTP 404 error to the given response object
+     * @param response the response object where data will be written
+     * @throws IOException
+     */
     private void reportNotFound(HttpServletResponse response) throws IOException {
         NetLogger netLog = NetLogger.getTlogger();
         netlogger.debug(netLog.start("maddash.http.reportNotFound"));
@@ -506,7 +591,8 @@ public class MaDDashHTTPHandler extends AbstractHandler{
     }
     
     /**
-     * @return the settPath
+     * Sets the root path of the rest data URIs (e.g. /maddash)
+     * @param rootPath the root path of the rest data URIs (e.g. /maddash)
      */
     public void setRootPath(String rootPath) {
         if(rootPath != null && !rootPath.startsWith("/")){
@@ -516,7 +602,7 @@ public class MaDDashHTTPHandler extends AbstractHandler{
     }
     
     /**
-     * @return the rootPath
+     * @return the root path of the rest data URIs (e.g. /maddash)
      */
     public String getRootPath() {
         return this.rootPath;

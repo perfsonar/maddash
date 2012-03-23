@@ -1,10 +1,5 @@
 package net.es.maddash.checks;
 
-/**
- * 
- * DELETE THIS MOST LIKELY OR CHANGE IT. FOUND BETTER WAY TO GET KEY
- * 
- */
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -17,6 +12,32 @@ import org.apache.log4j.Logger;
 import net.es.maddash.NetLogger;
 import net.sf.json.JSONObject;
 
+/**
+ * Subclass of nagios check that not only runs a Nagios command but also runs 
+ * a metaDataKeyRequest to get keys to the data and adds a URL to a graph in 
+ * the return parameters.Specific input parameters include:
+ *      maUrl->default: a template for the MA url
+ *      maUrl->%rowName: a url for a specific row
+ *      metaDataKeyLookup: URL template to cgi script where key info can be retrieved (usually called metaKeyReq.cgi)
+ *      graphUrl: Template for URL to graph data. In addition to %maUrl, %row and %col the special variables returned during key lookup can also be used:
+ *              %maKeyF: The forward direction (src->dst) key for the measurement archive
+ *              %maKeyR: The reverse direction (dst->src) key for the measurement archive
+ *              %srcName: The source hostname
+ *              %srcIP:The source IP address
+ *              %dstName: The destination hostname
+ *              %dstIP: The destination IP address
+ *              %eventType: The eventType of teh data
+ * All parameters support the special event type variables as well:
+ *      %event.delayBuckets: http://ggf.org/ns/nmwg/characteristic/delay/summary/20110317
+ *      %event.delay: http://ggf.org/ns/nmwg/characteristic/delay/summary/20070921");
+ *      %event.bandwidth: http://ggf.org/ns/nmwg/characteristics/bandwidth/achievable/2.0");
+ *      %event.iperf: http://ggf.org/ns/nmwg/tools/iperf/2.0");
+ *      %event.utilization: http://ggf.org/ns/nmwg/characteristic/utilization/2.0");
+ *
+ *
+ * @author Andy Lake<andy@es.net>
+ *
+ */
 public class PSNagiosCheck extends NagiosCheck implements Check {
     private Logger log = Logger.getLogger(NagiosCheck.class);
     private Logger netlogger = Logger.getLogger("netlogger");

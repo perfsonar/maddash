@@ -19,6 +19,13 @@ import net.sf.json.JSONObject;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+/**
+ * Loads YAML configuration file into scheduler database. 
+ * It will add new checks and disable checks that have been removed.
+ * 
+ * @author Andy Lake <andy@es.net>
+ *
+ */
 public class ConfigLoader {
     static final Logger log = Logger.getLogger(ConfigLoader.class);
     
@@ -51,6 +58,14 @@ public class ConfigLoader {
     static final public String ORDER_ALPHA = "alphabetical";
     static final public String ORDER_GROUP = "group";
     
+    /**
+     * Loads YAML properties into scheduler database
+     * 
+     * @param config Properties loaded from YAML file as a Map
+     * @param dataSource the dataSource to use to access the database
+     * @return a map of check Classes indexed by the class name
+     * @throws ClassNotFoundException
+     */
     static public Map<String,Class> load(Map config, ComboPooledDataSource dataSource) throws ClassNotFoundException {
         checkRequiredProp(config, PROP_CHECKS);
         checkRequiredProp(config, PROP_GROUPS);
@@ -243,7 +258,7 @@ public class ConfigLoader {
         return description;
     }
 
-private static Class loadClass(String className) throws ClassNotFoundException {
+   private static Class loadClass(String className) throws ClassNotFoundException {
        ClassLoader classLoader = ConfigLoader.class.getClassLoader();
        Class checkClass = classLoader.loadClass(className);
        for(Class iface : checkClass.getInterfaces()){
@@ -254,9 +269,9 @@ private static Class loadClass(String className) throws ClassNotFoundException {
        throw new RuntimeException("Class " + className + " does not implement Check interface");
     }
 
-static private void checkRequiredProp(Map config, String propName){
-       if(!config.containsKey(propName) || config.get(propName) == null){
-           throw new RuntimeException("The property '" + propName + "' is not defined");
-       }
-   }
+    static private void checkRequiredProp(Map config, String propName){
+        if(!config.containsKey(propName) || config.get(propName) == null){
+            throw new RuntimeException("The property '" + propName + "' is not defined");
+        }
+    }
 }

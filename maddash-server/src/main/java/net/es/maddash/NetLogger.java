@@ -5,7 +5,12 @@ import gov.lbl.netlogger.LogMessage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
+/**
+ * Utility class for generating NetLogger output. 
+ * Based on similar class from OSCARS.
+ * 
+ * @author Andy Lake<alake@es.net>
+ */
 public class NetLogger {
     private String moduleName = null;
     HashMap<String, String> fieldMap;
@@ -28,9 +33,6 @@ public class NetLogger {
         return (LOG.get());
     }
 
-    /**
-     * null constructor for use by the ThreadLocal initialValue method
-     */
     public NetLogger() {
         this.fieldMap = new HashMap<String, String>();
         this.fieldMap.put(GUID_KW, UUID.randomUUID().toString());

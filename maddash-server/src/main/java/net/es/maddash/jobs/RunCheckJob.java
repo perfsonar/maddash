@@ -20,6 +20,12 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+/**
+ * Job that runs a specified check and adds the results to the database
+ * 
+ * @author Andy Lake<andy@es.net>
+ *
+ */
 public class RunCheckJob implements Job{
     private Logger log = Logger.getLogger(CheckSchedulerJob.class);
     private Logger netlogger = Logger.getLogger("netlogger");

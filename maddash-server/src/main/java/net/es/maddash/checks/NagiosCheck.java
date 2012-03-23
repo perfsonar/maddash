@@ -9,7 +9,14 @@ import net.es.maddash.NetLogger;
 
 import org.apache.log4j.Logger;
 
-
+/**
+ * Check implementation that runs a nagios command.It has one check specific parameter
+ * named <i>command</i>. This is the nagios command to execute on the system. It loads the message
+ * and statistics returned by the Nagios check in the result 
+ * 
+ * @author Andy Lake <andy@es.net>
+ *
+ */
 public class NagiosCheck implements Check{
     private Logger log = Logger.getLogger(NagiosCheck.class);
     private Logger netlogger = Logger.getLogger("netlogger");

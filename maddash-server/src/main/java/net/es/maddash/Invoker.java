@@ -8,6 +8,12 @@ import joptsimple.OptionSet;
 import org.apache.log4j.Logger;
 import org.mortbay.jetty.Server;
 
+/**
+ * Main class that starts scheduler and REST server
+ * 
+ * @author Andy Lake <andy@es.net>
+ * 
+ */
 public class Invoker {
 
     public static void main(String[] args){
