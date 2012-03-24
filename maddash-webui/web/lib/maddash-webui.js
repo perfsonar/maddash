@@ -1,5 +1,22 @@
+/**
+ * File: maddash-webui.js
+ * Description: This file contains classes that represent widgets used in the web interface
+ * of the MaDDash Web-UI. Most of the widgets require the dojo toolkit. The dojo
+ * requirement and layout specific nature of these classes distinguishes them from
+ * those found in maddash.js file.
+ *
+ * Authors: Andy Lake <andy@es.net>
+ */
 require(["dojo/date/locale","dijit/MenuBar","dijit/PopupMenuBarItem","dijit/MenuSeparator","dijit/DropDownMenu","dijit/MenuItem","dijit/TitlePane","dijit/form/Slider","dojo/_base/connect"]);
 
+/**
+ * Function: maddashCreateSpan
+ * Description: Utility function for creating a span with text
+ *   Parameters:
+ *       className: The name of the css class to assign the span
+ *       text: The text to include in the span
+ *   Returns: Span element with given class and containing given text
+ */
 function maddashCreateSpan(className, text){
 	var span = document.createElement("span");
 	span.className = className;
@@ -7,7 +24,14 @@ function maddashCreateSpan(className, text){
 	return span;
 }
 
-
+/**
+ * Function: maddashCreateStatusSpan
+ * Description: Utility function for creating a span indicating the check status.
+ *   Parameters:
+ *      status: integer representation of status
+ *   Returns: A span with string representation of status 
+ *       belonging to preset CSS class based on status
+ */
 function maddashCreateStatusSpan(status){
 	if(status == 0){
 		return maddashCreateSpan("maddashStatusOK", "OK");
@@ -20,6 +44,13 @@ function maddashCreateStatusSpan(status){
 	return maddashCreateSpan("maddashStatusUnknown", "UNKNOWN");	
 }
 
+/**
+ * Function: _maddashSetParent
+ * Description: Utility function for setting the parent element of a widget
+ *   Parameters:
+ *      parent: a string or object representing a container element
+ *   Returns: The parent element as an object
+ */
 function _maddashSetParent(parent){
 	if(typeof(parent) == "string"){
 		return document.getElementById(parent);
@@ -28,6 +59,14 @@ function _maddashSetParent(parent){
 	return parent;
 }
 
+/**
+ * Class: MadDashTitleSpan
+ * Description: Widget that displays the title of the site
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ *      link: the url to the homepage of the dashboard
+ *
+ */
 var MadDashTitleSpan = function(parent, link){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -50,6 +89,15 @@ var MadDashTitleSpan = function(parent, link){
 	}
 }
 
+/**
+ * Class: MadDashNavMenu
+ * Description: Widget that generates a pull-down menu to naviagte through dashboards and grids
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ *      link: name of script that will load dashboards. Will be appended 
+ *            with "dashboard=" and "grrid=" get parameters
+ *
+ */
 var MadDashNavMenu = function(parent, link){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -97,7 +145,12 @@ var MadDashNavMenu = function(parent, link){
 		menuBar.startup();
 	}
 }
-
+/**
+ * Class: MaDDashCheckTitle
+ * Description: Widget that displays the title of a individual check
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ */
 var MaDDashCheckTitle = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -112,34 +165,12 @@ var MaDDashCheckTitle = function(parent){
 	}
 }
 
-//Note: not used
-var MaDDashCheckNav = function(parent, homeLink, gridLink){
-	var instance = this;
-	this.parent = _maddashSetParent(parent);
-	this.homeLink = homeLink;
-	this.gridLink = gridLink;
-	
-	this.render = function(data){
-		this.parent.innerHTML = "";
-		if(data == null){
-			console.log("data is null");
-			return;
-		}
-		this.parent.appendChild(this._createLink("Home", this.homeLink));
-		this.parent.appendChild(document.createTextNode(" > "));
-		this.parent.appendChild(this._createLink(data.gridName, this.gridLink));
-		this.parent.appendChild(document.createTextNode(" > "));
-		this.parent.appendChild(document.createTextNode(data.rowName + " to " + data.colName + " (" + data.checkName + ")"));
-	}
-	
-	this._createLink = function(label, href){
-		var anchor = document.createElement("a");
-		anchor.href = href;
-		anchor.appendChild(document.createTextNode(label));
-		return anchor;
-	}
-}
-
+/**
+ * Class: MaDDashQuickStatus
+ * Description: Widget that displays the status, previous, and next check times.
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ */
 var MaDDashQuickStatus = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -170,6 +201,12 @@ var MaDDashQuickStatus = function(parent){
 	}
 }
 
+/**
+ * Class: MaDDashCheckSummary
+ * Description: Widget that displays the table with check status and infor about the last result
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ */
 var MaDDashCheckSummary = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -198,6 +235,12 @@ var MaDDashCheckSummary = function(parent){
 	}
 }
 
+/**
+ * Class: MaDDashCheckStatistics
+ * Description: Widget that displays statistics returned by previous check
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ */
 var MaDDashCheckStatistics = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -233,6 +276,12 @@ var MaDDashCheckStatistics = function(parent){
 	}
 }
 
+/**
+ * Class: MaDDashGraphPane
+ * Description: Widget that contains iframe with a graph on an external site
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ */
 var MaDDashGraphPane = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -259,6 +308,14 @@ var MaDDashGraphPane = function(parent){
 	}
 }
 
+/**
+ * Class: MaDDashDashboardPane
+ * Description: Widget that contains one or more MaDDashGrid widgets
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ *      type: "grid" or "dashboard". A dashboard is just multiple grids.
+ *      name: the name of the dashboard or grid to load
+ */
 var MaDDashDashboardPane = function(parent, type, name){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -340,6 +397,13 @@ var MaDDashDashboardPane = function(parent, type, name){
 	}
 }
 
+
+/**
+ * Class: MaDDashCheckDetails
+ * Description: Widget that contains configuration information about a check
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ */
 var MaDDashCheckDetails = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -404,6 +468,12 @@ var MaDDashCheckDetails = function(parent){
 	}
 }
 
+/**
+ * Class: MadDashHistory
+ * Description: Widget that contains history information of a check
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ */
 var MadDashHistory = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
@@ -485,6 +555,13 @@ var MadDashHistory = function(parent){
 	}
 }
 
+/**
+ * Class: MadDashCheckList
+ * Description: Widget that contains list of checks. For exampl, used by MadDashHistory
+ *  to display list of check results over time
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ */
 var MadDashCheckList = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);

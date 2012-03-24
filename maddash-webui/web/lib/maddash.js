@@ -1,3 +1,22 @@
+/**
+ * File: maddash.js
+ * Description: This file contains bases classes for MaDDash framework.
+ *
+ * Authors: Andy Lake <andy@es.net>
+ */
+
+
+/**
+ * Class: MaDDashDataSource
+ * Description: Connects MadDash widgets to backen data. Created
+ *   with a URI that specifies the location of some REST data. You then
+ *   call the "connect" function which is given a Javascript object. That 
+ *   Javascript MUST implement a render function. When MaDDashDataSource.render()
+ *   is called it will asynchronously retrieve the data and call each connected objects
+ *   render(data, uri) function.
+ * Parameters:
+ *   url: the URL to the rest data that will be rendered by connected objects
+ */
 var MaDDashDataSource = function(url){
 	var instance = this;
 	this.xhr = null;
@@ -50,6 +69,13 @@ var MaDDashDataSource = function(url){
 	
 }
 
+/**
+ * Class: MaDDashGrid
+ * Description: Widget that displays grid of checks. Uses
+ *   protovis to draw the grid.
+ * Parameters:
+ *      parent: a string or object representing a container element
+ */
 var MaDDashGrid = function(parent){
 	var instance = this;
 	this.vis = new pv.Panel();
@@ -279,6 +305,10 @@ var MaDDashGrid = function(parent){
 	}
 }
 
+/**
+ * Class: HistoryBar
+ * Description: NOT YET IMPLEMENTED, PLEASE IGNORE
+ */
 var HistoryBar = function(src, dst, timeRange, barParts){
 	var instance = this;
 	this.vis = new pv.Panel();
