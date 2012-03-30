@@ -137,25 +137,24 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
             }
             netlogger.debug(netLog.end("maddash.PSNagiosCheck.getMdKey", null, mdKeyLookupUrl, netLogParams));
             log.debug("Response: " + response);
-           
+            
+            //load response into check result
+            JSONObject responseJSON = JSONObject.fromObject(response);
+            //make sure not to replace longer vars with shorter (i.e. dst and dstIP)
+            vars.put("%maKeyF", ""+responseJSON.get("maKey"));
+            vars.put("%maKeyR",""+responseJSON.get("maKeyR"));
+            vars.put("%srcName", ""+responseJSON.get("src"));
+            vars.put("%srcIP", ""+responseJSON.get("srcIP"));
+            vars.put("%dstName", ""+responseJSON.get("dst"));
+            vars.put("%dstIP", ""+responseJSON.get("dstIP"));
+            vars.put("%eventType", ""+responseJSON.get("eventType"));
+            graphUrl = this.replaceVars(graphUrl, vars);
+            nagiosResult.getStats().put("graphUrl", graphUrl);
         }catch(Exception e){
             netlogger.debug(netLog.error("maddash.PSNagiosCheck.getMdKey", null, mdKeyLookupUrl, netLogParams));
             log.error("Error getting metadata key: " + e.getMessage());
             e.printStackTrace();
         }
-        
-        
-        JSONObject responseJSON = JSONObject.fromObject(response);
-        //make sure not to replace longer vars with shorter (i.e. dst and dstIP)
-        vars.put("%maKeyF", ""+responseJSON.get("maKey"));
-        vars.put("%maKeyR",""+responseJSON.get("maKeyR"));
-        vars.put("%srcName", ""+responseJSON.get("src"));
-        vars.put("%srcIP", ""+responseJSON.get("srcIP"));
-        vars.put("%dstName", ""+responseJSON.get("dst"));
-        vars.put("%dstIP", ""+responseJSON.get("dstIP"));
-        vars.put("%eventType", ""+responseJSON.get("eventType"));
-        graphUrl = this.replaceVars(graphUrl, vars);
-        nagiosResult.getStats().put("graphUrl", graphUrl);
         
         return nagiosResult;
     }
