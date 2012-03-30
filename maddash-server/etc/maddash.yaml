@@ -8,7 +8,7 @@ urlRoot: /maddash
 
 ##
 # Set the directory where the database will be stored
-database: /Users/alake/Programming/Java/maddash/maddash-server/data
+database: /var/lib/maddash/
 
 ##
 # Set the number of jobs that can run in parallel. Default is 50.
@@ -16,20 +16,11 @@ database: /Users/alake/Programming/Java/maddash/maddash-server/data
 
 ##
 # Set number of jobs that can be in queue at one time. Default is 250.
-#jobBatchSize: 1
+#jobBatchSize: 250
 
-##
+###
 # Disable the job scheduler if you only want to run the REST server
-disableScheduler: 1
-
-##
-# Schedule defining how often db should be cleaned. Takes cron format
-# Default is "0 0,12 * * * ?" (at midnight and noon)
-#dbCleanSchedule: "0 * * * * ?" 
-
-##
-# Maximum age (in seconds) to keep data around
-#dbDataMaxAge: 3600
+#disableScheduler: 0
 
 groups:
     owampHosts :
@@ -125,7 +116,6 @@ grids:
       columns: "owampHosts"
       checks: 
         - "owampLossCheck"
-#        - "owampLossReverseCheck"
       rowOrder: "alphabetical"
       colOrder: "alphabetical"
       excludeSelf: 1
@@ -135,7 +125,6 @@ grids:
       columns: "geantDiceTesters"
       checks: 
         - "owampLossCheck"
-#        - "owampLossReverseCheck"
       rowOrder: "alphabetical"
       colOrder: "alphabetical"
       excludeSelf: 1
@@ -147,12 +136,12 @@ web:
         - name: "OWAMP"
           grids:
             - name: "ESnet OWAMP"
-              cellWidth: 14
+              cellWidth: 20
               cellHeight: 14
             - name: "ESnet-GEANT OWAMP"
         - name: "ESnet"
           grids:
             - name: "ESnet OWAMP"
-              cellWidth: 14
+              cellWidth: 20
               cellHeight: 14
     default: "OWAMP"
