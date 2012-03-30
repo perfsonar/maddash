@@ -1,7 +1,7 @@
 %define package_name maddash-server 
 %define mvn_project_list common-libs,%{package_name}
 %define install_base /opt/maddash/%{package_name}
-%define config_base /etc/maddash
+%define config_base /etc/maddash/%{package_name}
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
@@ -18,7 +18,7 @@ Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  java-1.6.0-openjdk
 BuildRequires:  java-1.6.0-openjdk-devel
-BuildRequires:  perl
+BuildRequires:  sed 
 BuildArch:      noarch
 Requires:       java-1.6.0-openjdk
 Requires:       chkconfig
@@ -51,6 +51,7 @@ mvn -DskipTests --projects %{mvn_project_list} install
 #Create directory structure for build root
 mkdir -p %{buildroot}/%{install_base}/target
 mkdir -p %{buildroot}/%{install_base}/bin
+mkdir -p %{buildroot}/%{config_base}
 mkdir -p %{buildroot}/etc/init.d
 
 #Copy jar files and scripts
@@ -59,10 +60,10 @@ install -m 755 %{package_name}/bin/* %{buildroot}/%{install_base}/bin/
 install -m 755 %{package_name}/scripts/%{package_name} %{buildroot}/etc/init.d/%{package_name}
 
 # Copy default config file
-cp %{package_name}/etc/maddash.yaml %{buildroot}/%{config_base}/%{package_name}/maddash.yaml
+cp %{package_name}/etc/maddash.yaml %{buildroot}/%{config_base}/maddash.yaml
 
 #Update log locations
-sed -e s,%{package_name}.log,%{log_dir}/%{package_name}.log, -e s,%{package_name}.netlogger.log,%{log_dir}/%{package_name}.netlogger.log, < %{buildroot}/%{install_base}/etc/log4j.properties > %{config_base}/%{package_name}/log4j.properties
+sed -e s,%{package_name}.log,%{log_dir}/%{package_name}.log, -e s,%{package_name}.netlogger.log,%{log_dir}/%{package_name}.netlogger.log, < %{package_name}/etc/log4j.properties > %{buildroot}/%{config_base}/log4j.properties
 
 %post
 #Create directory for PID files
@@ -78,9 +79,9 @@ mkdir -p %{data_dir}
 chown maddash:maddash %{data_dir}
 
 #Create symbolic links to latest version of jar files
-ln -s %{install_base}/target/%{package_name}-%{version}-%{relnum}.one-jar.jar %{install_base}/target/%{package_name}.one-jar.jar
+ln -s %{install_base}/target/%{package_name}-%{version}.one-jar.jar %{install_base}/target/%{package_name}.one-jar.jar
 chown maddash:maddash %{install_base}/target/%{package_name}.one-jar.jar
-ln -s %{install_base}/target/%{package_name}-%{version}-%{relnum}.jar %{install_base}/target/%{package_name}.jar
+ln -s %{install_base}/target/%{package_name}-%{version}.jar %{install_base}/target/%{package_name}.jar
 chown maddash:maddash %{install_base}/target/%{package_name}.jar
 
 #Configure service to start when machine boots
@@ -88,7 +89,7 @@ chown maddash:maddash %{install_base}/target/%{package_name}.jar
 
 %files
 %defattr(-,maddash,maddash,-)
-%config %{config_home}/%{package_name}/*
+%config %{config_base}/*
 %{install_base}/target/*
 %{install_base}/bin/*
 /etc/init.d/%{package_name}
