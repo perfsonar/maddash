@@ -82,6 +82,8 @@ public class MaDDashGlobals {
     final static private long DEFAULT_DB_DATA_MAX_AGE = 86400*180;//every 180 days
     final static private int DEFAULT_JOB_BATCH_SIZE = 250;
     final static private int DEFAULT_THREAD_POOL_SIZE = 50;
+    final static private int C3P0_IDLE_TEST_PERIOD = 600;
+    final static private String C3P0_TEST_QUERY = "SELECT id FROM checkTemplates FETCH NEXT 1 ROWS ONLY";
     final static private boolean DEFAULT_DISABLE_SCHEDULER = false;
     final static private String CHECK_SCHEDULE = "0 * * * * ?";
     final static private String CLEAN_DB_SCHEDULE = "0 0,12 * * * ?";//every 12 hours
@@ -111,14 +113,7 @@ public class MaDDashGlobals {
             throw new RuntimeException("No config file set.");
         }
         Map config = (Map) Yaml.load(new File(configFile));
-        
-        //init database
-        String dbFile = DEFAULT_DB;
-        if(config.containsKey(PROP_DATABASE) && config.get(PROP_DATABASE) != null){
-            dbFile = (String) config.get(PROP_DATABASE);
-        }
-        this.initDatabase(dbFile);
-        
+
         //set server port
         this.serverPort = DEFAULT_PORT;
         if(config.containsKey(PROP_SERVER_PORT) && config.get(PROP_SERVER_PORT) != null){
@@ -162,6 +157,13 @@ public class MaDDashGlobals {
             disableScheduler = (((Integer) config.get(PROP_DISABLE_SCHEDULER)) != 0 ? true : false);
         }
         log.debug("disableScheduler is " + disableScheduler);
+        
+        //init database
+        String dbFile = DEFAULT_DB;
+        if(config.containsKey(PROP_DATABASE) && config.get(PROP_DATABASE) != null){
+            dbFile = (String) config.get(PROP_DATABASE);
+        }
+        this.initDatabase(dbFile);
         
         //set web parameters
         Map webConfig = null;
@@ -259,6 +261,14 @@ public class MaDDashGlobals {
             
             System.setProperty("derby.system.home", dbname);
             dataSource = new ComboPooledDataSource();
+            //Set c3p0 properties
+            //allow one connection for each thread 
+            dataSource.setMaxPoolSize(this.threadPoolSize);
+            //sets how often to set for stale connections
+            dataSource.setIdleConnectionTestPeriod(C3P0_IDLE_TEST_PERIOD);
+            //set query used to test stale connection
+            dataSource.setPreferredTestQuery(C3P0_TEST_QUERY);
+            
             dataSource.setDriverClass(JDBC_DRIVER);
             dataSource.setJdbcUrl(JDBC_URL);
             log.debug("Set database to " + dbname);
