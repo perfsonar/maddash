@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+# Init file for MaDDash 
+#
+# chkconfig: 2345 65 20
+# description: MaDDash scheduler and REST server
+#
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+#Service specific variables
+SHORT_NAME=maddash-server
+LONG_NAME="MaDDash"
+
+#OSCARS variables
+HOME_PREFIX=/etc/maddash/${SHORT_NAME}
+DIST_PREFIX=/opt/maddash/${SHORT_NAME}
+BINDIR=${DIST_PREFIX}/bin
+CONFDIR=${HOME_PREFIX}
+RUNDIR=/var/run/${SHORT_NAME}
+LOGDIR=/var/log/maddash
+LOCK_FILE=/var/lock/subsys/${SHORT_NAME}
+USER=maddash
+GROUP=maddash
+STOP_TIMEOUT=20
+RESTART_DELAY=10
+PIDFILE=${RUNDIR}/${SHORT_NAME}.pid
+JARFILE=${DIST_PREFIX}/target/${SHORT_NAME}.one-jar.jar
+MADDASH_CMD="${BINDIR}/startServer.sh ${PIDFILE} ${JARFILE} -c ${CONFDIR}/maddash.yaml -l ${CONFDIR}/log4j.properties > ${LOGDIR}/${SHORT_NAME}.out 2>&1 &"
+
+#functions
+start(){
+    echo -n $"Starting ${SHORT_NAME}: "
+    daemon --pidfile=${PIDFILE} --user=${USER} $MADDASH_CMD
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && touch ${LOCK_FILE}
+    return $RETVAL
+}
+
+stop(){
+    echo -n $"Stopping ${SHORT_NAME}: "
+	killproc -p ${PIDFILE} -d ${STOP_TIMEOUT} java
+	RETVAL=$?
+	echo
+	[ $RETVAL = 0 ] && rm -f ${LOCK_FILE} ${PIDFILE}
+}
+
+#handle arguments
+ERROR=0
+ARGV="$@"
+if [ -z "$ARGV" ] ; then 
+    ARGS="help"
+fi
+
+for ARG in $@ $ARGS
+do
+    case $ARG in
+    start)
+        start
+	;;
+    stop)
+	    stop
+	;;
+    restart)
+    	stop
+    	sleep $RESTART_DELAY
+    	start
+	;;
+	status)
+	    status -p ${PIDFILE} ${SHORT_NAME}
+	;;
+    *)
+	echo "usage: $0 (start|stop|restart|help)"
+	cat <<EOF
+
+start      - start ${LONG_NAME}
+stop       - stop ${LONG_NAME}
+restart    - restart ${LONG_NAME} if running by sending a SIGHUP or start if 
+             not running
+status     - status of ${LONG_NAME}
+help       - this screen
+
+EOF
+	ERROR=2
+    ;;
+
+    esac
+
+done
+
+exit $ERROR
