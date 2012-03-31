@@ -49,6 +49,7 @@ public class MaDDashGlobals {
     private String urlRoot;
     private Map<String, Class> checkTypeClassMap;
     private HashMap<Integer, Boolean> scheduledChecks; 
+    private CheckSchedulerJob checkShedJob;
     
     //web related parameters
     private String webTitle;
@@ -85,7 +86,6 @@ public class MaDDashGlobals {
     final static private int C3P0_IDLE_TEST_PERIOD = 600;
     final static private String C3P0_TEST_QUERY = "SELECT id FROM checkTemplates OFFSET 0 FETCH NEXT 1 ROWS ONLY";
     final static private boolean DEFAULT_DISABLE_SCHEDULER = false;
-    final static private String CHECK_SCHEDULE = "0 * * * * ?";
     final static private String CLEAN_DB_SCHEDULE = "0 0,12 * * * ?";//every 12 hours
     
     /**
@@ -218,14 +218,15 @@ public class MaDDashGlobals {
             SchedulerFactory schedFactory = new StdSchedulerFactory(props);
             this.scheduler = schedFactory.getScheduler();
             this.scheduler.start();
-            CronTrigger checkCronTrigger = new CronTrigger("CheckTrigger", "CHECKS", CHECK_SCHEDULE);
-            JobDetail checkJobDetail = new JobDetail("CheckScheduler", "CHECKS", CheckSchedulerJob.class);
-            this.scheduler.scheduleJob(checkJobDetail, checkCronTrigger);
             if(this.dbDataMaxAge >= 0L){
                 CronTrigger cleanCronTrigger = new CronTrigger("CleanTrigger", "CLEAN", dbCleanSched);
                 JobDetail cleanJobDetail = new JobDetail("CleanScheduler", "CLEAN", CleanDBJob.class);
                 this.scheduler.scheduleJob(cleanJobDetail, cleanCronTrigger);
             }
+            //job that checks for new jobs is in own thread
+            this.checkShedJob = new CheckSchedulerJob("MaDDashCheckSchedulerJob");
+            this.checkShedJob.start();
+            
             this.scheduledChecks = new HashMap<Integer,Boolean>();
         }
     }
@@ -258,7 +259,6 @@ public class MaDDashGlobals {
      */
     synchronized private void initDatabase(String dbname) throws PropertyVetoException, SQLException{
         if(dataSource == null){
-            
             System.setProperty("derby.system.home", dbname);
             dataSource = new ComboPooledDataSource();
             //Set c3p0 properties
@@ -268,57 +268,70 @@ public class MaDDashGlobals {
             dataSource.setIdleConnectionTestPeriod(C3P0_IDLE_TEST_PERIOD);
             //set query used to test stale connection
             dataSource.setPreferredTestQuery(C3P0_TEST_QUERY);
+            //set class that sets thread isolation level
+            dataSource.setConnectionCustomizerClassName(MaDDashConnectionCustomizer.class.getName());
             
             dataSource.setDriverClass(JDBC_DRIVER);
             dataSource.setJdbcUrl(JDBC_URL);
             log.debug("Set database to " + dbname);
             log.debug("JDBC_DRIVER is " + JDBC_DRIVER);
             log.debug("JDBC_URL is " + JDBC_URL);
-            
             Connection conn = this.dataSource.getConnection();
-            try{
-                conn.prepareStatement("CREATE TABLE checks (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
+            
+            //Create tables
+            this.execSQLCreate("CREATE TABLE checks (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
                     "checkTemplateId INTEGER NOT NULL, gridName VARCHAR(500) NOT NULL, " +
                     "rowName VARCHAR(500) NOT NULL, colName VARCHAR(500) NOT NULL, checkName " +
                     "VARCHAR(500) NOT NULL, rowOrder INT NOT NULL, colOrder INT NOT " +
                     "NULL, description VARCHAR(2000) NOT NULL, prevCheckTime BIGINT " +
                     "NOT NULL, nextCheckTime BIGINT NOT NULL, checkStatus INTEGER " +
                     "NOT NULL, prevResultCode INTEGER NOT NULL, statusMessage VARCHAR(2000) NOT NULL, " +
-                    "resultCount INTEGER NOT NULL, active INTEGER NOT NULL)").execute();
-                log.debug("Created table checks");
-            }catch(SQLException e){
-                if("X0Y32".equals(e.getSQLState())){
-                    log.debug("Table checks exists");
-                }else{
-                    throw e;
-                }
-            }
-            try{
-                conn.prepareStatement("CREATE TABLE checkTemplates (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
+                    "resultCount INTEGER NOT NULL, active INTEGER NOT NULL)", conn);
+          this.execSQLCreate("CREATE TABLE checkTemplates (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
                     " checkType VARCHAR(500) NOT NULL, checkParams VARCHAR(2000), checkInterval INTEGER NOT NULL, " +
                     "retryInterval INTEGER NOT NULL, retryAttempts INTEGER NOT NULL, " +
-                    "timeout INTEGER NOT NULL)").execute();
-            }catch(SQLException e){
-                if("X0Y32".equals(e.getSQLState())){
-                    log.debug("Table checkTemplates exists");
-                }else{
-                    throw e;
-                }
-            }
-            try{
-                conn.prepareStatement("CREATE TABLE results (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                    "timeout INTEGER NOT NULL)", conn);
+          this.execSQLCreate("CREATE TABLE results (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                     "checkId INTEGER NOT NULL, checkTime BIGINT NOT NULL, returnCode " +
                     "INTEGER NOT NULL, returnMessage VARCHAR(2000) NOT NULL, returnParams VARCHAR(2000), " +
-                    "resultCount INTEGER NOT NULL, checkStatus INTEGER NOT NULL)").execute();
-            }catch(SQLException e){
-                if("X0Y32".equals(e.getSQLState())){
-                    log.debug("Table results exists");
-                }else{
-                    throw e;
-                }
-            }
+                    "resultCount INTEGER NOT NULL, checkStatus INTEGER NOT NULL)", conn);
+            //Create indexes - always rebuilds indexes which can help performance.
+            //    checks indexes
+            this.execSQLCreate("DROP INDEX checksTemplateId", conn);
+            this.execSQLCreate("CREATE INDEX checksTemplateId ON checks(checkTemplateId)", conn);
+            this.execSQLCreate("DROP INDEX checksGridName", conn);
+            this.execSQLCreate("CREATE INDEX checksGridName ON checks(gridName)", conn);
+            this.execSQLCreate("DROP INDEX checksRowName", conn);
+            this.execSQLCreate("CREATE INDEX checksRowName ON checks(rowName)", conn);
+            this.execSQLCreate("DROP INDEX checksColName", conn);
+            this.execSQLCreate("CREATE INDEX checksColName ON checks(colName)", conn);
+            this.execSQLCreate("DROP INDEX checksCheckName", conn);
+            this.execSQLCreate("CREATE INDEX checksCheckName ON checks(checkName)", conn);
+            this.execSQLCreate("DROP INDEX checksActive", conn);
+            this.execSQLCreate("CREATE INDEX checksActive ON checks(active)", conn);
+            //    results indexes
+            this.execSQLCreate("DROP INDEX resultsCheckId", conn);
+            this.execSQLCreate("CREATE INDEX resultsCheckId ON results(checkId)", conn);
+            this.execSQLCreate("DROP INDEX resultsCheckTime", conn);
+            //DESC supposedly helps with MAX
+            this.execSQLCreate("CREATE INDEX resultsCheckTime ON results(checkTime DESC)", conn);
+            
             conn.close();
             
+        }
+    }
+    
+    private void execSQLCreate(String sql, Connection conn) throws SQLException{
+        try{
+            conn.prepareStatement(sql).execute();
+        }catch(SQLException e){
+            if("X0Y32".equals(e.getSQLState())){
+                log.debug("Cannot create table because it already exists: " + e.getMessage());
+            }else if("42X65".equals(e.getSQLState())){
+                log.debug("Cannot drop index because it does not exist: " + e.getMessage());
+            }else{
+                throw e;
+            }
         }
     }
     

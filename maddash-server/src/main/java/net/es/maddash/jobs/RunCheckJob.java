@@ -90,11 +90,9 @@ public class RunCheckJob implements Job{
         Connection conn = null;
         try {
             netlogger.debug(netLog.start("maddash.RunCheckJob.execute.updateDatabase"));
-            synchronized(globals){
-                conn = globals.getDataSource().getConnection();
-                this.updateDatabase(result, dataMap, conn);
-                conn.close();
-            }
+            conn = globals.getDataSource().getConnection();
+            this.updateDatabase(result, dataMap, conn);
+            conn.close();   
             netlogger.debug(netLog.end("maddash.RunCheckJob.execute.updateDatabase"));
         } catch (Exception e) {
             if(conn != null){
@@ -112,6 +110,7 @@ public class RunCheckJob implements Job{
     }
 
     public void updateDatabase(CheckResult result, JobDataMap dataMap, Connection conn) throws SQLException{
+        NetLogger netLog = NetLogger.getTlogger();
         int checkId = dataMap.getInt("checkId");
         String gridName = dataMap.getString("gridName");
         String rowName = dataMap.getString("rowName");
@@ -125,11 +124,13 @@ public class RunCheckJob implements Job{
         int lastResultCount = 0;
         int lastCheckStatus = result.getResultCode();
         
+        netlogger.debug(netLog.start("maddash.RunCheckJob.execute.updateDatabase.select"));
         PreparedStatement selStmt = conn.prepareStatement("SELECT returnCode, resultCount, checkStatus FROM results WHERE checkId=? AND " +
                 "checkTime=(SELECT MAX(checkTime) FROM results WHERE checkId=?)");
         selStmt.setInt(1, checkId);
         selStmt.setInt(2, checkId);
         ResultSet lastCheck = selStmt.executeQuery();
+        netlogger.debug(netLog.end("maddash.RunCheckJob.execute.updateDatabase.select"));
         
         if(lastCheck.next()){
             lastReturnCode = lastCheck.getInt(1);
@@ -160,6 +161,7 @@ public class RunCheckJob implements Job{
             statsString = tmpJson.toString();
         }
         
+        netlogger.debug(netLog.start("maddash.RunCheckJob.execute.updateDatabase.insert"));
         PreparedStatement insertResStmt = conn.prepareStatement("INSERT INTO results VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?)");
         insertResStmt.setInt(1, checkId);
         insertResStmt.setLong(2, time);
@@ -169,7 +171,9 @@ public class RunCheckJob implements Job{
         insertResStmt.setInt(6, newResultCount);
         insertResStmt.setInt(7, finalStatus);
         insertResStmt.executeUpdate();
+        netlogger.debug(netLog.end("maddash.RunCheckJob.execute.updateDatabase.insert"));
         
+        netlogger.debug(netLog.start("maddash.RunCheckJob.execute.updateDatabase.update"));
         PreparedStatement updateCheckStmt = conn.prepareStatement("UPDATE checks SET prevCheckTime=?, nextCheckTime=?, checkStatus=?, prevResultCode=?, statusMessage=?, resultCount=? WHERE id=?");
         updateCheckStmt.setLong(1, time);
         updateCheckStmt.setLong(2, nextTime);
@@ -179,19 +183,18 @@ public class RunCheckJob implements Job{
         updateCheckStmt.setInt(6, newResultCount);
         updateCheckStmt.setInt(7, checkId);
         updateCheckStmt.executeUpdate();
+        netlogger.debug(netLog.end("maddash.RunCheckJob.execute.updateDatabase.update"));
         log.debug("Next run of " + gridName + "." + rowName + "." + colName  + " is " + new Date(nextTime*1000));
     }
     
     private void deactivateCheck(int checkId, MaDDashGlobals globals) {
         Connection conn = null;
         try {
-            synchronized(globals){
-                conn = globals.getDataSource().getConnection();
-                PreparedStatement updateCheckStmt = conn.prepareStatement("UPDATE checks SET active=0 WHERE id=?");
-                updateCheckStmt.setInt(1, checkId);
-                updateCheckStmt.executeUpdate();
-                conn.close();
-            }
+            conn = globals.getDataSource().getConnection();
+            PreparedStatement updateCheckStmt = conn.prepareStatement("UPDATE checks SET active=0 WHERE id=?");
+            updateCheckStmt.setInt(1, checkId);
+            updateCheckStmt.executeUpdate();
+            conn.close();
         } catch (Exception e) {
             if(conn != null){
                 try {
