@@ -31,6 +31,8 @@ public class RunCheckJob implements Job{
     private Logger netlogger = Logger.getLogger("netlogger");
     
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        NetLogger netLog = NetLogger.getTlogger();
+        netlogger.debug(netLog.start("maddash.RunCheckJob.execute"));
         //load jobdatamap
         MaDDashGlobals globals =  null;
         try{
@@ -68,7 +70,7 @@ public class RunCheckJob implements Job{
         netLogFields.put("grid", gridName);
         netLogFields.put("row", rowName);
         netLogFields.put("col", colName);
-        NetLogger netLog = NetLogger.getTlogger();
+        
         CheckResult result = null;
         try{
             netlogger.info(netLog.start("maddash.RunCheckJob.execute.runCheck", null, null, netLogFields));
@@ -106,6 +108,7 @@ public class RunCheckJob implements Job{
         
         //unschedule check
         globals.updateScheduledChecks(checkId, false);
+        netlogger.debug(netLog.end("maddash.RunCheckJob.execute"));
     }
 
     public void updateDatabase(CheckResult result, JobDataMap dataMap, Connection conn) throws SQLException{

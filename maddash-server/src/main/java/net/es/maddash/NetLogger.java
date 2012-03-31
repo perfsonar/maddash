@@ -12,7 +12,6 @@ import java.util.UUID;
  * @author Andy Lake<alake@es.net>
  */
 public class NetLogger {
-    private String moduleName = null;
     HashMap<String, String> fieldMap;
     
     static public final String GUID_KW = "guid";
@@ -305,7 +304,7 @@ public class NetLogger {
      *         logging library.
      */
     public LogMessage getMsg(String event, HashMap<String,String> entryFieldMap){
-        LogMessage logMsg = new LogMessage(this.moduleName + "." + event);
+        LogMessage logMsg = new LogMessage(event);
         
         /* Set fields used in all messages */
         for(String field : fieldMap.keySet()){
@@ -325,16 +324,6 @@ public class NetLogger {
         logMsg.setTimeStampNanos(System.nanoTime());
         
         return logMsg;
-    }
-    
-    /**
-     * Returns the ModuleName for this netLogger
-     * 
-     * @return a String with the moduleName, this will be null
-     *     if the netLogger object has not been initialized
-     */
-    public String getModuleName() {
-        return this.moduleName;
     }
     
     /**

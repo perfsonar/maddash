@@ -36,24 +36,27 @@ public class CheckSchedulerJob implements Job{
     
     public void execute(JobExecutionContext context) throws JobExecutionException {
         NetLogger netLog = NetLogger.getTlogger();
+        netlogger.info(netLog.start("maddash.CheckSchedulerJob.execute"));
+        int jobCount = 0;
         
         //query database
         Connection conn = null;
         try{
-            netlogger.info(netLog.start("maddash.CheckSchedulerJob.execute"));
-            MaDDashGlobals globals = MaDDashGlobals.getInstance();
-            conn = globals.getDataSource().getConnection();
-            PreparedStatement selStmt = conn.prepareStatement("SELECT c.id, c.gridName, " +
-                "c.rowName, c.colName, t.checkType, t.checkParams, t.checkInterval, " +
-                "t.retryInterval, t.retryAttempts, t.timeout FROM checkTemplates AS t, " +
-                "checks AS c WHERE c.active = 1 AND t.id = c.checkTemplateId AND " +
-                "c.nextCheckTime <= ? ORDER BY c.nextCheckTime ASC");
-            long time = System.currentTimeMillis()/1000;
-            selStmt.setLong(1, time);
-            selStmt.setMaxRows(globals.getJobBatchSize());
-            ResultSet checksToRun = selStmt.executeQuery();
-            int jobCount = 0;
             synchronized(CheckSchedulerJob.class){
+                MaDDashGlobals globals = MaDDashGlobals.getInstance();
+                conn = globals.getDataSource().getConnection();
+                long time = System.currentTimeMillis()/1000;
+                netlogger.debug(netLog.start("maddash.CheckSchedulerJob.execute.queryDb"));
+                PreparedStatement selStmt = conn.prepareStatement("SELECT c.id, c.gridName, " +
+                    "c.rowName, c.colName, t.checkType, t.checkParams, t.checkInterval, " +
+                    "t.retryInterval, t.retryAttempts, t.timeout FROM checkTemplates AS t, " +
+                    "checks AS c WHERE c.active = 1 AND t.id = c.checkTemplateId AND " +
+                    "c.nextCheckTime <= ? ORDER BY c.nextCheckTime ASC");
+                selStmt.setLong(1, time);
+                selStmt.setMaxRows(globals.getJobBatchSize());
+                ResultSet checksToRun = selStmt.executeQuery();
+                netlogger.debug(netLog.end("maddash.CheckSchedulerJob.execute.queryDb"));
+                
                 while(checksToRun.next()){
                     if(globals.isCheckScheduled(checksToRun.getInt(1))){
                         continue;
