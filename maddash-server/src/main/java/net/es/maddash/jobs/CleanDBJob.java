@@ -25,7 +25,7 @@ public class CleanDBJob implements Job{
             conn = globals.getDataSource().getConnection();
             long oldestAllowedTime = System.currentTimeMillis() - (globals.getDbDataMaxAge()*1000L);
             this.log.info("oldestAllowedTime=" + oldestAllowedTime);
-            if(true){return;}
+            
             //clean-up results
             PreparedStatement resultsStmt = conn.prepareStatement("DELETE FROM results WHERE checkTime < ?");
            // resultsStmt.setInt(1, oldestAllowedTime);
