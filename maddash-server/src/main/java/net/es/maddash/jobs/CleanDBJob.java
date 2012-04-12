@@ -23,16 +23,16 @@ public class CleanDBJob implements Job{
             netlogger.info(netLog.start("maddash.CleanDBJob.execute"));
             MaDDashGlobals globals = MaDDashGlobals.getInstance();
             conn = globals.getDataSource().getConnection();
-            long oldestAllowedTime = System.currentTimeMillis() - (globals.getDbDataMaxAge()*1000L);
+            long oldestAllowedTime = System.currentTimeMillis()/1000L - globals.getDbDataMaxAge();
             this.log.info("oldestAllowedTime=" + oldestAllowedTime);
             
             //clean-up results
             PreparedStatement resultsStmt = conn.prepareStatement("DELETE FROM results WHERE checkTime < ?");
-           // resultsStmt.setInt(1, oldestAllowedTime);
+            resultsStmt.setLong(1, oldestAllowedTime);
             resultsStmt.execute();
             
             PreparedStatement checkStmt = conn.prepareStatement("DELETE FROM checks WHERE active=0 AND nextCheckTime < ?");
-           // checkStmt.setInt(1, oldestAllowedTime);
+            checkStmt.setLong(1, oldestAllowedTime);
             checkStmt.execute();
             
             conn.close();
