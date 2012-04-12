@@ -81,7 +81,7 @@ public class MaDDashGlobals {
     final static private String DEFAULT_WEB_TITLE = "MaDDash";
     final static private String DEFAULT_URL_ROOT = "/maddash";
     final static private String DEFAULT_DB = "data/dashboard.db";
-    final static private long DEFAULT_DB_DATA_MAX_AGE = 86400*180;//every 180 days
+    final static private long DEFAULT_DB_DATA_MAX_AGE = 604800;//1 week
     final static private int DEFAULT_JOB_BATCH_SIZE = 250;
     final static private int DEFAULT_THREAD_POOL_SIZE = 50;
     final static private int C3P0_IDLE_TEST_PERIOD = 600;
