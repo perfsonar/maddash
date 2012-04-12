@@ -63,6 +63,7 @@ public class MaDDashGlobals {
     final private String PROP_JOB_BATCH_SIZE = "jobBatchSize";
     final private String PROP_JOB_THREAD_POOL_SIZE = "jobThreadPoolSize";
     final private String PROP_DISABLE_SCHEDULER = "disableScheduler";
+    final private String PROP_DISABLE_CHECKS = "disableChecks";
     final private String PROP_DB_CLEAN_SCHED = "dbCleanSchedule";
     final private String PROP_DB_DATA_MAX_AGE = "dbDataMaxAge";
     final private String PROP_WEB = "web";
@@ -86,6 +87,7 @@ public class MaDDashGlobals {
     final static private int C3P0_IDLE_TEST_PERIOD = 600;
     final static private String C3P0_TEST_QUERY = "SELECT id FROM checkTemplates";
     final static private boolean DEFAULT_DISABLE_SCHEDULER = false;
+    final static private boolean DEFAULT_DISABLE_CHECKS = false;
     final static private String CLEAN_DB_SCHEDULE = "0 0 0/12 * * ?";//every 12 hours
     
     /**
@@ -158,6 +160,12 @@ public class MaDDashGlobals {
         }
         log.debug("disableScheduler is " + disableScheduler);
         
+        boolean disableChecks = DEFAULT_DISABLE_CHECKS;
+        if(config.containsKey(PROP_DISABLE_CHECKS) && config.get(PROP_DISABLE_CHECKS) != null){
+            disableChecks = (((Integer) config.get(PROP_DISABLE_CHECKS)) != 0 ? true : false);
+        }
+        log.debug("disableChecks is " + disableChecks);
+        
         //init database
         String dbFile = DEFAULT_DB;
         if(config.containsKey(PROP_DATABASE) && config.get(PROP_DATABASE) != null){
@@ -223,10 +231,11 @@ public class MaDDashGlobals {
                 JobDetail cleanJobDetail = new JobDetail("CleanScheduler", "CLEAN", CleanDBJob.class);
                 this.scheduler.scheduleJob(cleanJobDetail, cleanCronTrigger);
             }
-            //job that checks for new jobs is in own thread
-            this.checkShedJob = new CheckSchedulerJob("MaDDashCheckSchedulerJob");
-            this.checkShedJob.start();
-            
+            if(!disableChecks){
+                //job that checks for new jobs is in own thread
+                this.checkShedJob = new CheckSchedulerJob("MaDDashCheckSchedulerJob");
+                this.checkShedJob.start();
+            }
             this.scheduledChecks = new HashMap<Integer,Boolean>();
         }
     }
