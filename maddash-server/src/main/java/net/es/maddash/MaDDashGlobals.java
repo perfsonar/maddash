@@ -84,7 +84,7 @@ public class MaDDashGlobals {
     final static private int DEFAULT_JOB_BATCH_SIZE = 250;
     final static private int DEFAULT_THREAD_POOL_SIZE = 50;
     final static private int C3P0_IDLE_TEST_PERIOD = 600;
-    final static private String C3P0_TEST_QUERY = "SELECT id FROM checkTemplates OFFSET 0 FETCH NEXT 1 ROWS ONLY";
+    final static private String C3P0_TEST_QUERY = "SELECT id FROM checkTemplates";
     final static private boolean DEFAULT_DISABLE_SCHEDULER = false;
     final static private String CLEAN_DB_SCHEDULE = "0 0 0/12 * * ?";//every 12 hours
     
