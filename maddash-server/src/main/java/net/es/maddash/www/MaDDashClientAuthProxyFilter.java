@@ -9,6 +9,7 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLEngine;
 
+import org.apache.log4j.Logger;
 import org.glassfish.grizzly.filterchain.BaseFilter;
 import org.glassfish.grizzly.filterchain.FilterChainContext;
 import org.glassfish.grizzly.filterchain.NextAction;
@@ -27,6 +28,7 @@ import static org.glassfish.grizzly.ssl.SSLUtils.*;
  *
  */
 public class MaDDashClientAuthProxyFilter extends BaseFilter{
+    Logger log = Logger.getLogger(MaDDashClientAuthProxyFilter.class);
     
     protected boolean proxyMode;
     
@@ -47,9 +49,9 @@ public class MaDDashClientAuthProxyFilter extends BaseFilter{
         if(HttpPacket.isHttp(ctx.getMessage())){
             HttpContent httpContent = (HttpContent) ctx.getMessage();
             
-            System.out.println("PEER ADDRESS=" + ctx.getConnection().getPeerAddress());
-            System.out.println("HTTP HEADERS:");
-            System.out.println(httpContent.getHttpHeader());
+            this.log.debug("PEER ADDRESS=" + ctx.getConnection().getPeerAddress());
+            this.log.debug("HTTP HEADERS:");
+            this.log.debug(httpContent.getHttpHeader());
 
             /**
              * Clear out SSL headers to prevent identity spoofing. If proxy mode is on
@@ -100,9 +102,6 @@ public class MaDDashClientAuthProxyFilter extends BaseFilter{
                 httpContent.getHttpHeader().addHeader(SSL_CLIENT_I_DN, x509Certs[0].getIssuerDN().getName());
             }
             httpContent.getHttpHeader().addHeader(SSL_CLIENT_VERIFY, "SUCCESS");
-            
-            System.out.println("MODIFIED HTTP HEADERS:");
-            System.out.println(httpContent.getHttpHeader());
         }
         return ctx.getInvokeAction();
     }
