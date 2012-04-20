@@ -51,6 +51,7 @@ cp -r %{package_name}/web/style %{buildroot}/%{install_base}/style
 %files
 %defattr(-,maddash,maddash,-)
 %config /etc/httpd/conf.d/apache-maddash.conf
+%config %{install_base}/web/etc/config.json
 %{install_base}/*
 
 %preun

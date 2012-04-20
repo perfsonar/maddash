@@ -9,6 +9,7 @@
  */
 require(["dojo/date/locale","dijit/MenuBar","dijit/PopupMenuBarItem","dijit/MenuSeparator","dijit/DropDownMenu","dijit/MenuItem","dijit/TitlePane","dijit/form/Slider","dojo/_base/connect"]);
 
+
 /**
  * Function: maddashCreateSpan
  * Description: Utility function for creating a span with text
@@ -59,6 +60,21 @@ function _maddashSetParent(parent){
 	return parent;
 }
 
+
+/**
+ * Class: MadDashConfig
+ * Description: Holds a JSON configuration
+ *
+ */
+var MadDashConfig = function(){
+	var instance = this;
+	this.data = null;
+	
+	this.render = function(data){
+		this.data = data;
+	}
+}
+
 /**
  * Class: MadDashTitleSpan
  * Description: Widget that displays the title of the site
@@ -95,13 +111,15 @@ var MadDashTitleSpan = function(parent, link){
  *  Parameters:
  *      parent: a string or object representing a container element
  *      link: name of script that will load dashboards. Will be appended 
- *            with "dashboard=" and "grrid=" get parameters
+ *            with "dashboard=" and "grid=" get parameters
+ *      gridSource: MaDDashDataSource that points to grids list URL(e.g. /maddash/grids)
  *
  */
-var MadDashNavMenu = function(parent, link){
+var MadDashNavMenu = function(parent, link, gridSource){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.link = link;
+	this.gridSource = gridSource;
 	
 	this._followLink = function(href){
 		window.location = href;	
@@ -126,13 +144,10 @@ var MadDashNavMenu = function(parent, link){
 		dashDropMenu.addChild(new dijit.MenuSeparator({}));
 		
 		var gridDropMenu = new dijit.DropDownMenu({});
-		for (i = 0; i < data.grids.length; i++) {
-			gridDropMenu.addChild(new dijit.MenuItem({
-				label: data.grids[i].name,
-				onClick: function(){window.location = instance.link + "?grid=" + encodeURIComponent(this.label);}
-				
-			}));
-		}
+		var mdGridDropMenu = new MadDashGridDropMenu(gridDropMenu, link);
+		this.gridSource.connect(mdGridDropMenu); 
+		this.gridSource.render();
+		
 		dashDropMenu.addChild(new dijit.PopupMenuItem({
 				label: "All Grids",
 				popup: gridDropMenu
@@ -145,6 +160,31 @@ var MadDashNavMenu = function(parent, link){
 		menuBar.startup();
 	}
 }
+
+/**
+ * Class: MadDashGridDropMenu
+ * Description: Drop-down menu item with all the grids
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ *      link: name of script that will load grids. Will be appended 
+ *            "grid=" get parameter
+ */
+var MadDashGridDropMenu = function(parent, link){
+	var instance = this;
+	this.parent = _maddashSetParent(parent);
+	this.link = link;
+	
+	this.render = function(data){
+		for (i = 0; i < data.grids.length; i++) {
+			this.parent.addChild(new dijit.MenuItem({
+				label: data.grids[i].name,
+				onClick: function(){window.location = instance.link + "?grid=" + encodeURIComponent(this.label);}	
+			}));
+		}
+		
+	}
+}
+
 /**
  * Class: MaDDashCheckTitle
  * Description: Widget that displays the title of a individual check
@@ -225,7 +265,7 @@ var MaDDashCheckSummary = function(parent){
 		this.parent.appendChild(maddashCreateStatusSpan(data.returnCode));
 		if(data.returnCode != data.status){
 			this.parent.appendChild(document.createTextNode("(seen " + 
-				data.resultCount + "/" + data.retryAttempts + 
+				data.returnCodeCount + "/" + data.retryAttempts + 
 				" times before state change)"));
 		}
 		this.parent.appendChild(document.createElement("br"));
@@ -315,13 +355,14 @@ var MaDDashGraphPane = function(parent){
  *      parent: a string or object representing a container element
  *      type: "grid" or "dashboard". A dashboard is just multiple grids.
  *      name: the name of the dashboard or grid to load
+ *      config: data object from MaDDashConfig that has grid style parameters
  */
-var MaDDashDashboardPane = function(parent, type, name){
+var MaDDashDashboardPane = function(parent, type, name, config){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
-	this.type = type;
-	this.name = name;
-	
+	this.type = (type == null ? "dashboard" : type);
+	this.name = ((name == null && this.type == "dashboard")? config.defaultDashboard : name);
+
 	this.render = function(data){
 
 		this.parent.innerHTML = "";
@@ -331,26 +372,19 @@ var MaDDashDashboardPane = function(parent, type, name){
 		}
 		
 		//set defaults
-		if(this.type == null){
-			this.type = "dashboard";
-		}
-		if(this.name == null && this.type == "dashboard"){
-			this.name = data.defaultDashboard;
-		}
 		if(this.name == null){
 			console.log("Unable to determine dashboard to render");
 			return;	
 		}
 		
 		//get the list of grids that need to be drawn
-		var gridNameList = new Array();
+		var gridList = new Array();
 		if(this.type == "dashboard"){
 			var dashFound = false;
 			for(var i = 0;i < data.dashboards.length && !dashFound;i++){
+			    console.log(data.dashboards[i].name);
 				if(data.dashboards[i].name == this.name){
-					for(var j=0;j<data.dashboards[i].grids.length;j++){
-						gridNameList[data.dashboards[i].grids[j].name] = data.dashboards[i].grids[j];
-					}
+					gridList = data.dashboards[i].grids;
 					dashFound = true;
 				}
 			}
@@ -358,41 +392,57 @@ var MaDDashDashboardPane = function(parent, type, name){
 				console.log("Dashboard " + this.name + " not found");
 			}
 		}else if(this.type == "grid"){
-			gridNameList[this.name] = 1;
+		    var gridFound = false;
+			for(var i = 0;i < data.grids.length && !gridFound;i++){
+			    if(data.grids[i].name == this.name){
+					gridList.push(data.grids[i]);
+					gridFound = true;
+				}
+			}
+			if(!gridFound){
+				console.log("Grid " + this.name + " not found");
+			}
 		}else{
 			console.log("Unable to render dashboard. Invalid type " + this.type);
 			return;
 		}
 		
 		//start loading grids
-		for(var i=0;i<data.grids.length;i++){
-			if (gridNameList[data.grids[i].name] != undefined) {
-				var div = document.createElement("div");
-				div.id = "maddashgrid_top" + i;
-				div.className = "maddashgridTopContainer";
-				var titleDiv = document.createElement("div");
-				titleDiv.id = "maddashgrid_title" + i;
-				titleDiv.className = "maddashgridTitleDiv";
-				titleDiv.appendChild(maddashCreateSpan("maddashgridTitle", data.grids[i].name));
-				div.appendChild(titleDiv);
-				var gridDiv = document.createElement("div");
-				gridDiv.id = "maddashgrid_grid" + i;
-				gridDiv.className = "maddashgridPane";;
-				div.appendChild(gridDiv);
-				this.parent.appendChild(div);
-				
-				var ds = new MaDDashDataSource(data.grids[i].uri);
-				var mdGrid = new MaDDashGrid(gridDiv.id);
-				ds.connect(mdGrid);
-				if(gridNameList[data.grids[i].name].cellWidth != undefined){
-					mdGrid.setCellWidth(gridNameList[data.grids[i].name].cellWidth);
-				}
-				if(gridNameList[data.grids[i].name].cellHeight != undefined){
-					mdGrid.setCellHeight(gridNameList[data.grids[i].name].cellHeight);
-				}
-				
-				ds.render();
-			}
+		for(var i=0;i<gridList.length;i++){
+            var div = document.createElement("div");
+            div.id = "maddashgrid_top" + i;
+            div.className = "maddashgridTopContainer";
+            var titleDiv = document.createElement("div");
+            titleDiv.id = "maddashgrid_title" + i;
+            titleDiv.className = "maddashgridTitleDiv";
+            titleDiv.appendChild(maddashCreateSpan("maddashgridTitle", gridList[i].name));
+            div.appendChild(titleDiv);
+            var gridDiv = document.createElement("div");
+            gridDiv.id = "maddashgrid_grid" + i;
+            gridDiv.className = "maddashgridPane";
+            div.appendChild(gridDiv);
+            this.parent.appendChild(div);
+            
+            var ds = new MaDDashDataSource(gridList[i].uri);
+            var mdGrid = new MaDDashGrid(gridDiv.id);
+            ds.connect(mdGrid);
+            
+            //load grid configs
+            if(config.grids != undefined && config.grids != null &&  
+                config.grids[gridList[i].name] != undefined  && config.grids[gridList[i].name] != null ){
+                
+                //set cell width
+                if(config.grids[gridList[i].name].cellWidth != undefined && config.grids[gridList[i].name].cellWidth != null){
+                    mdGrid.setCellWidth(config.grids[gridList[i].name].cellWidth);
+                }
+                
+                //set cell height
+                if(config.grids[gridList[i].name].cellHeight != undefined && config.grids[gridList[i].name].cellHeight != null){
+                    mdGrid.setCellHeight(config.grids[gridList[i].name].cellHeight);
+                }
+            }
+            
+            ds.render();
 		}
 	}
 }
@@ -585,7 +635,7 @@ var MadDashCheckList = function(parent){
 			historyItem.appendChild(maddashCreateSpan("maddashFieldLabel", "Check result: "));		
 			historyItem.appendChild(maddashCreateStatusSpan(data.history[i].returnCode));
 			if(data.history[i].returnCode != data.history[i].status){
-				historyItem.appendChild(document.createTextNode("(" + data.history[i].count + 
+				historyItem.appendChild(document.createTextNode("(" + data.history[i].returnCodeCount + 
 					"/" + data.retryAttempts + " times before state change)"));
 			}
 			historyItem.appendChild(document.createElement("br"));

@@ -79,6 +79,18 @@
         <version>6.1.16</version>
     </dependency>
     
+    <!-- Jersey -->
+    <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-server</artifactId>
+        <version>1.12</version>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-grizzly2-servlet</artifactId>
+        <version>1.12</version>
+    </dependency>
+    
     <!-- JSON -->
     <dependency>
         <groupId>net.sf.json-lib</groupId>

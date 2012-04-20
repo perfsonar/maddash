@@ -54,6 +54,7 @@ public class Invoker {
             netlogger.info(netLog.start("maddash.init"));
             MaDDashGlobals.init(configFile);
             globals = MaDDashGlobals.getInstance();
+            globals.getWebServer().start();
             netlogger.info(netLog.end("maddash.init"));
         } catch (Exception e) {
             netlogger.error(netLog.error("maddash.init", e.getMessage()));
@@ -62,16 +63,12 @@ public class Invoker {
             System.exit(1);
         }
         
-        //start jetty server
-        MaDDashHTTPHandler handler = new MaDDashHTTPHandler(globals.getUrlRoot());
-        Server server = new Server(globals.getServerPort());
-        server.setHandler(handler);
-        try {
-            log.info("MaDash server started");
-            server.start();
-            server.join();
-        } catch (Exception e) {
-            System.err.println("Error starting server: " + e.getMessage());
+        // Block forever
+        Object blockMe = new Object();
+        synchronized (blockMe) {
+            try {
+                blockMe.wait();
+            } catch (InterruptedException e) {}
         }
     }
 }

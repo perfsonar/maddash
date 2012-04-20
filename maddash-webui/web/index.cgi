@@ -46,10 +46,21 @@ print <<EOF;
 			require(["dijit/TitlePane","dijit/MenuBar","dijit/PopupMenuBarItem","dijit/MenuSeparator","dijit/DropDownMenu","dijit/MenuItem","dijit/layout/ContentPane","dojo/parser"]);
 			
 			function loadDashWidgets(){
-				var ds = new MaDDashDataSource("/maddash"); 
-				ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name));
-				ds.connect(new MadDashTitleSpan("maddashTitle", "index.cgi"));
-				ds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi"));
+			    var configDS = new MaDDashDataSource("etc/config.json", false);
+			    var config = new MadDashConfig();
+			    configDS.connect(config);
+			    configDS.render();
+			    var titlePane = new MadDashTitleSpan("maddashTitle", "index.cgi");
+			    titlePane.render(config.data);
+			    
+			    var gs = new MaDDashDataSource("/maddash/grids"); 
+				var ds = new MaDDashDataSource("/maddash/dashboards"); 
+				if($type == "grid"){
+				    gs.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data));
+				}else{
+				    ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data));
+				}
+				ds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", gs));
 				ds.render();
 			}
 		</script>

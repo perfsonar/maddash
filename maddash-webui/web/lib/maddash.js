@@ -17,12 +17,13 @@
  * Parameters:
  *   url: the URL to the rest data that will be rendered by connected objects
  */
-var MaDDashDataSource = function(url){
+var MaDDashDataSource = function(url, async){
 	var instance = this;
 	this.xhr = null;
 	this.url = url;
 	this.data = null;
 	this.callbacks = new Array();
+	this.async = (async == null ? true : async);
 	
 	this.setURL = function(url){
 		this.url = url;
@@ -30,7 +31,7 @@ var MaDDashDataSource = function(url){
 	
 	this.render = function() {
 		this._initXhr();
-		this.xhr.open("GET", this.url, true);
+		this.xhr.open("GET", this.url, this.async);
 		this.xhr.send();
 	}
 	

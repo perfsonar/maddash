@@ -1,12 +1,4 @@
 ##
-# Set the port on which the REST server listens
-serverPort: 8881
-
-##
-# Set the the root of the URL used to access rest data
-urlRoot: /maddash
-
-##
 # Set the directory where the database will be stored
 database: /var/lib/maddash/
 
@@ -21,6 +13,24 @@ database: /var/lib/maddash/
 ###
 # Disable the job scheduler if you only want to run the REST server
 #disableScheduler: 0
+
+##
+# Set the host where the REST server listens
+serverHost: "localhost"
+
+##
+# Activate http and set the port where it listens
+http: 
+    port: 8881
+
+##
+# Activate https and set port and keystores
+#https:
+#    port: 8882
+#    keystore: "/opt/maddash/maddash-webui/etc/maddash.jks"
+#    keystorePassword: "changeit"
+# want, require or off
+#    clientAuth: "want" 
 
 groups:
     owampHosts :
@@ -94,17 +104,16 @@ checks:
                 default: "http://%row:8085/perfSONAR_PS/services/pSB"
             metaDataKeyLookup: "https://stats.es.net/perfsonar/serviceTest/cgi-bin/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=108000&bucket_width=0.0001"
             graphUrl: "https://stats.es.net/perfsonar/serviceTest/cgi-bin/delayGraph.cgi?url=%maUrl&key=%maKey&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dst&src=%src&type=TCP&length=14400"
-            command: "/Users/alake/Programming/Perl/perfSONAR/perfSONAR-PS/trunk/perfSONAR_PS-Nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -s %row -d %col"
+            command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -s %row -d %col"
         checkInterval: 600
         retryInterval: 300
         retryAttempts: 3
         timeout: 60
+            
     owampLossReverseCheck :
         name: "OWAMP Loss Reverse"
         description: "Loss from %col to %row (according to %row MA)"
         type: "net.es.maddash.checks.RandomCheck"
-        params:
-            command: "check_owamp.pl -s %col -d %row"
         checkInterval: 600
         retryInterval: 300
         retryAttempts: 3
@@ -120,6 +129,12 @@ grids:
       colOrder: "alphabetical"
       excludeSelf: 1
       columnAlgorithm: "afterSelf" 
+      statusLabels:
+            ok: "Loss is 0"
+            warning: "N/A"
+            critical: "Loss is greater than 0"
+            unknown: "Unable to retrieve data"
+            notrun: "Check has not yet run"
     - name: "ESnet-GEANT OWAMP"
       rows: "esnetDiceTesters"
       columns: "geantDiceTesters"
@@ -129,19 +144,19 @@ grids:
       colOrder: "alphabetical"
       excludeSelf: 1
       columnAlgorithm: "all" 
+      statusLabels:
+            ok: "Loss is 0"
+            warning: "N/A"
+            critical: "Loss is greater than 0"
+            unknown: "Unable to retrieve data"
+            notrun: "Check has not yet run"
 
-web:
-    title: "ESnet perfSONAR Dashboard"
-    dashboards:
-        - name: "OWAMP"
-          grids:
-            - name: "ESnet OWAMP"
-              cellWidth: 20
-              cellHeight: 14
-            - name: "ESnet-GEANT OWAMP"
-        - name: "ESnet"
-          grids:
-            - name: "ESnet OWAMP"
-              cellWidth: 20
-              cellHeight: 14
-    default: "OWAMP"
+dashboards:
+    - name: "OWAMP"
+      grids:
+        - name: "ESnet OWAMP"
+        - name: "ESnet-GEANT OWAMP"
+    - name: "ESnet"
+      grids:
+        - name: "ESnet OWAMP"
+    

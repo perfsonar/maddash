@@ -29,9 +29,16 @@ print <<EOF;
             require(["dijit/TitlePane", "dijit/layout/TabContainer", "dijit/layout/ContentPane", "dojo/parser"]);
             
             function loadDashWidgets(){
-                var mnuds = new MaDDashDataSource("/maddash"); 
-                mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi"));
-                mnuds.connect(new MadDashTitleSpan("maddashTitle", "index.cgi"));
+                var configDS = new MaDDashDataSource("etc/config.json", false);
+			    var config = new MadDashConfig();
+			    configDS.connect(config);
+			    configDS.render();
+			    var titlePane = new MadDashTitleSpan("maddashTitle", "index.cgi");
+			    titlePane.render(config.data);
+			    
+			    var mnugs = new MaDDashDataSource("/maddash/grids"); 
+                var mnuds = new MaDDashDataSource("/maddash/dashboards"); 
+                mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", mnugs));
                 mnuds.render();
                 
                 var ds = new MaDDashDataSource("$uri");

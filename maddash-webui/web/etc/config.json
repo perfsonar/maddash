@@ -1,0 +1,10 @@
+{
+    "title":"ESnet perfSONAR Dashboard",
+    "defaultDashboard": "ESnet",
+    "grids":{
+        "ESnet OWAMP":{
+            "cellWidth":20,
+            "cellHeight":14,
+        },
+    },
+}
