@@ -1,6 +1,5 @@
 package net.es.maddash;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +20,12 @@ import net.es.maddash.utils.URIUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+/**
+ * Class that handles database access to resources and returns them as JSON objects
+ * 
+ * @author Andy Lake<alake@es.net>
+ *
+ */
 public class ResourceManager {
     private Logger log = Logger.getLogger(ResourceManager.class);
     private Logger netlogger = Logger.getLogger("netlogger");
@@ -80,9 +85,8 @@ public class ResourceManager {
      * Returns the full grid specified.
      * 
      * @param gridId the ID of the grid to query
-     * @throws IOException
      */
-    public JSONObject getGrid(String gridId, UriInfo uriInfo) throws IOException {
+    public JSONObject getGrid(String gridId, UriInfo uriInfo) {
         Connection conn = null;
         NetLogger netLog = NetLogger.getTlogger();
         netlogger.info(netLog.start("maddash.ResourceManager.getGrid"));

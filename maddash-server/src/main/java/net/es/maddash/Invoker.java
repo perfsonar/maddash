@@ -6,7 +6,6 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
 import org.apache.log4j.Logger;
-import org.mortbay.jetty.Server;
 
 /**
  * Main class that starts scheduler and REST server

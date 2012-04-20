@@ -4,6 +4,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+/**
+ * Utility class for doing some common functions relate to URIs
+ * 
+ * @author Andy Lake<alake@es.net>
+ *
+ */
 public class URIUtil {
     /**
      * Encode given string for use in a URI

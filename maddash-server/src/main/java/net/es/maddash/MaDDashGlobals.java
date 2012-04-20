@@ -106,7 +106,6 @@ public class MaDDashGlobals {
     //final static private String JDBC_DRIVER = "org.sqlite.JDBC";
     final static private String JDBC_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     final static private String DEFAULT_HOST = "localhost";
-    final static private String DEFAULT_WEB_TITLE = "MaDDash";
     final static private String DEFAULT_DB = "data/dashboard.db";
     final static private long DEFAULT_DB_DATA_MAX_AGE = 604800;//1 week
     final static private int DEFAULT_JOB_BATCH_SIZE = 250;
