@@ -16,6 +16,7 @@
  *   render(data, uri) function.
  * Parameters:
  *   url: the URL to the rest data that will be rendered by connected objects
+ *   aysnc: optional boolean indicating if the render call should be asynchronous. Defaults to true.
  */
 var MaDDashDataSource = function(url, async){
 	var instance = this;
