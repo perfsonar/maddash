@@ -88,6 +88,7 @@ public class MaDDashGlobals {
     final private static String PROP_RESOURCE_URL_PORT = "port";
     final private String PROP_DATABASE = "database";
     final private String PROP_JOB_BATCH_SIZE = "jobBatchSize";
+    final private String PROP_SKIP_TABLE_BUILD = "skipTableBuild";
     final private String PROP_JOB_THREAD_POOL_SIZE = "jobThreadPoolSize";
     final private String PROP_DISABLE_SCHEDULER = "disableScheduler";
     final private String PROP_DISABLE_CHECKS = "disableChecks";
@@ -188,12 +189,16 @@ public class MaDDashGlobals {
         log.debug("disableChecks is " + disableChecks);
 
         //init database
+        boolean skipTableBuild = false;
+        if(config.containsKey(PROP_SKIP_TABLE_BUILD) && config.get(PROP_SKIP_TABLE_BUILD) != null){
+            skipTableBuild = (((Integer) config.get(PROP_SKIP_TABLE_BUILD)) != 0 ? true : false);
+        }
         String dbFile = DEFAULT_DB;
         if(config.containsKey(PROP_DATABASE) && config.get(PROP_DATABASE) != null){
             dbFile = (String) config.get(PROP_DATABASE);
         }
         try {
-            this.initDatabase(dbFile);
+            this.initDatabase(dbFile, skipTableBuild);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         } 
@@ -467,7 +472,7 @@ public class MaDDashGlobals {
      * @throws PropertyVetoException
      * @throws SQLException
      */
-    synchronized private void initDatabase(String dbname) throws PropertyVetoException, SQLException{
+    synchronized private void initDatabase(String dbname, boolean skipTableBuild) throws PropertyVetoException, SQLException{
         if(dataSource == null){
             System.setProperty("derby.system.home", dbname);
             dataSource = new ComboPooledDataSource();
@@ -489,49 +494,51 @@ public class MaDDashGlobals {
             Connection conn = this.dataSource.getConnection();
 
             //Create tables
-            this.execSQLCreate("CREATE TABLE checks (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
-                    "checkTemplateId INTEGER NOT NULL, gridName VARCHAR(500) NOT NULL, " +
-                    "rowName VARCHAR(500) NOT NULL, colName VARCHAR(500) NOT NULL, checkName " +
-                    "VARCHAR(500) NOT NULL, rowOrder INT NOT NULL, colOrder INT NOT " +
-                    "NULL, description VARCHAR(2000) NOT NULL, prevCheckTime BIGINT " +
-                    "NOT NULL, nextCheckTime BIGINT NOT NULL, checkStatus INTEGER " +
-                    "NOT NULL, prevResultCode INTEGER NOT NULL, statusMessage VARCHAR(2000) NOT NULL, " +
-                    "resultCount INTEGER NOT NULL, active INTEGER NOT NULL)", conn);
-            this.execSQLCreate("CREATE TABLE checkTemplates (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
-                    " checkType VARCHAR(500) NOT NULL, checkParams VARCHAR(2000), checkInterval INTEGER NOT NULL, " +
-                    "retryInterval INTEGER NOT NULL, retryAttempts INTEGER NOT NULL, " +
-                    "timeout INTEGER NOT NULL)", conn);
-            this.execSQLCreate("CREATE TABLE results (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
-                    "checkId INTEGER NOT NULL, checkTime BIGINT NOT NULL, returnCode " +
-                    "INTEGER NOT NULL, returnMessage VARCHAR(2000) NOT NULL, returnParams VARCHAR(2000), " +
-                    "resultCount INTEGER NOT NULL, checkStatus INTEGER NOT NULL)", conn);
-            this.execSQLCreate("CREATE TABLE grids (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
-                    "gridName VARCHAR(500) NOT NULL, okLabel VARCHAR(2000) NOT NULL, " +
-                    "warningLabel VARCHAR(2000) NOT NULL, criticalLabel VARCHAR(2000) NOT NULL, " +
-                    "unknownLabel VARCHAR(2000) NOT NULL, notRunLabel VARCHAR(2000) NOT NULL )", conn);
-            //Create indexes - always rebuilds indexes which can help performance.
-            //    checks indexes
-            this.execSQLCreate("DROP INDEX checksTemplateId", conn);
-            this.execSQLCreate("CREATE INDEX checksTemplateId ON checks(checkTemplateId)", conn);
-            this.execSQLCreate("DROP INDEX checksGridName", conn);
-            this.execSQLCreate("CREATE INDEX checksGridName ON checks(gridName)", conn);
-            this.execSQLCreate("DROP INDEX checksRowName", conn);
-            this.execSQLCreate("CREATE INDEX checksRowName ON checks(rowName)", conn);
-            this.execSQLCreate("DROP INDEX checksColName", conn);
-            this.execSQLCreate("CREATE INDEX checksColName ON checks(colName)", conn);
-            this.execSQLCreate("DROP INDEX checksCheckName", conn);
-            this.execSQLCreate("CREATE INDEX checksCheckName ON checks(checkName)", conn);
-            this.execSQLCreate("DROP INDEX checksActive", conn);
-            this.execSQLCreate("CREATE INDEX checksActive ON checks(active)", conn);
-            //    results indexes
-            this.execSQLCreate("DROP INDEX resultsCheckId", conn);
-            this.execSQLCreate("CREATE INDEX resultsCheckId ON results(checkId)", conn);
-            this.execSQLCreate("DROP INDEX resultsCheckTime", conn);
-            //DESC supposedly helps with MAX
-            this.execSQLCreate("CREATE INDEX resultsCheckTime ON results(checkTime DESC)", conn);
-            //grid index
-            this.execSQLCreate("DROP INDEX gridsGridName", conn);
-            this.execSQLCreate("CREATE UNIQUE INDEX gridsGridName ON grids(gridName)", conn);
+            if(!skipTableBuild){
+                this.execSQLCreate("CREATE TABLE checks (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
+                        "checkTemplateId INTEGER NOT NULL, gridName VARCHAR(500) NOT NULL, " +
+                        "rowName VARCHAR(500) NOT NULL, colName VARCHAR(500) NOT NULL, checkName " +
+                        "VARCHAR(500) NOT NULL, rowOrder INT NOT NULL, colOrder INT NOT " +
+                        "NULL, description VARCHAR(2000) NOT NULL, prevCheckTime BIGINT " +
+                        "NOT NULL, nextCheckTime BIGINT NOT NULL, checkStatus INTEGER " +
+                        "NOT NULL, prevResultCode INTEGER NOT NULL, statusMessage VARCHAR(2000) NOT NULL, " +
+                        "resultCount INTEGER NOT NULL, active INTEGER NOT NULL)", conn);
+                this.execSQLCreate("CREATE TABLE checkTemplates (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
+                        " checkType VARCHAR(500) NOT NULL, checkParams VARCHAR(2000), checkInterval INTEGER NOT NULL, " +
+                        "retryInterval INTEGER NOT NULL, retryAttempts INTEGER NOT NULL, " +
+                        "timeout INTEGER NOT NULL)", conn);
+                this.execSQLCreate("CREATE TABLE results (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        "checkId INTEGER NOT NULL, checkTime BIGINT NOT NULL, returnCode " +
+                        "INTEGER NOT NULL, returnMessage VARCHAR(2000) NOT NULL, returnParams VARCHAR(2000), " +
+                        "resultCount INTEGER NOT NULL, checkStatus INTEGER NOT NULL)", conn);
+                this.execSQLCreate("CREATE TABLE grids (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        "gridName VARCHAR(500) NOT NULL, okLabel VARCHAR(2000) NOT NULL, " +
+                        "warningLabel VARCHAR(2000) NOT NULL, criticalLabel VARCHAR(2000) NOT NULL, " +
+                        "unknownLabel VARCHAR(2000) NOT NULL, notRunLabel VARCHAR(2000) NOT NULL )", conn);
+                //Create indexes - always rebuilds indexes which can help performance.
+                //    checks indexes
+                this.execSQLCreate("DROP INDEX checksTemplateId", conn);
+                this.execSQLCreate("CREATE INDEX checksTemplateId ON checks(checkTemplateId)", conn);
+                this.execSQLCreate("DROP INDEX checksGridName", conn);
+                this.execSQLCreate("CREATE INDEX checksGridName ON checks(gridName)", conn);
+                this.execSQLCreate("DROP INDEX checksRowName", conn);
+                this.execSQLCreate("CREATE INDEX checksRowName ON checks(rowName)", conn);
+                this.execSQLCreate("DROP INDEX checksColName", conn);
+                this.execSQLCreate("CREATE INDEX checksColName ON checks(colName)", conn);
+                this.execSQLCreate("DROP INDEX checksCheckName", conn);
+                this.execSQLCreate("CREATE INDEX checksCheckName ON checks(checkName)", conn);
+                this.execSQLCreate("DROP INDEX checksActive", conn);
+                this.execSQLCreate("CREATE INDEX checksActive ON checks(active)", conn);
+                //    results indexes
+                this.execSQLCreate("DROP INDEX resultsCheckId", conn);
+                this.execSQLCreate("CREATE INDEX resultsCheckId ON results(checkId)", conn);
+                this.execSQLCreate("DROP INDEX resultsCheckTime", conn);
+                //DESC supposedly helps with MAX
+                this.execSQLCreate("CREATE INDEX resultsCheckTime ON results(checkTime DESC)", conn);
+                //grid index
+                this.execSQLCreate("DROP INDEX gridsGridName", conn);
+                this.execSQLCreate("CREATE UNIQUE INDEX gridsGridName ON grids(gridName)", conn);
+                }
             
             conn.close();
 
