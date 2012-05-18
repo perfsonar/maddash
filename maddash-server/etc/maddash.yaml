@@ -14,6 +14,10 @@ database: /var/lib/maddash/
 # Disable the job scheduler if you only want to run the REST server
 #disableScheduler: 0
 
+###
+# Skips table and index rebuild at start-up. It can speed up start-up time if set to 1.
+#skipTableBuild: 0
+
 ##
 # Set the host where the REST server listens
 serverHost: "localhost"

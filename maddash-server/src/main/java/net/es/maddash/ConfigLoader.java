@@ -278,7 +278,7 @@ public class ConfigLoader {
         if(!statusLabelMap.containsKey(label) || statusLabelMap.get(label) == null){
             return "";
         }
-        return label;
+        return statusLabelMap.get(label);
     }
 
     private static String formatCheckDescription(String description, String rowName, String colName) {
