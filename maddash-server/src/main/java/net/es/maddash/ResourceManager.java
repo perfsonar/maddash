@@ -106,11 +106,11 @@ public class ResourceManager {
             ResultSet gridResult = selGridStmt.executeQuery();
             if(gridResult.next()){
                 JSONArray statusLabels = new JSONArray();
-                statusLabels.add(gridResult.getString(1));
-                statusLabels.add(gridResult.getString(2));
-                statusLabels.add(gridResult.getString(3));
-                statusLabels.add(gridResult.getString(4));
-                statusLabels.add(gridResult.getString(5));
+                statusLabels.add("".equals(gridResult.getString(1)) ? null : gridResult.getString(1));
+                statusLabels.add("".equals(gridResult.getString(2)) ? null : gridResult.getString(2));
+                statusLabels.add("".equals(gridResult.getString(3)) ? null : gridResult.getString(3));
+                statusLabels.add("".equals(gridResult.getString(4)) ? null : gridResult.getString(4));
+                statusLabels.add("".equals(gridResult.getString(5)) ? null : gridResult.getString(5));
                 json.put("statusLabels", statusLabels);
             }else{
                 //grid not found
@@ -120,7 +120,7 @@ public class ResourceManager {
             
             //get information on checks
             PreparedStatement stmt = conn.prepareStatement("SELECT rowName, colName," +
-                " checkName, colOrder, statusMessage, checkStatus FROM checks WHERE gridName=? " +
+                " checkName, colOrder, statusMessage, checkStatus, prevCheckTime FROM checks WHERE gridName=? " +
                 "AND active=1 ORDER BY rowOrder, colOrder, checkName");
             stmt.setString(1, gridName);
             ResultSet results = stmt.executeQuery();
@@ -128,12 +128,20 @@ public class ResourceManager {
             HashMap<Integer,String> colMap = new HashMap<Integer,String>();
             ArrayList<String> colList = new ArrayList<String>();
             HashMap<String,Boolean> checkMap = new HashMap<String,Boolean>();
-            HashMap<String,Map<String, Map<String,Map<String, String>>>> grid = new HashMap<String,Map<String, Map<String,Map<String, String>>>>();
+            HashMap<String,Map<String, Map<String,JSONObject>>> grid = new HashMap<String,Map<String, Map<String,JSONObject>>>();
             String lastRow = null;
             String lastCol = null;
-            HashMap<String,Map<String,Map<String,String>>> curRowCols = null;
-            HashMap<String,Map<String,String>> curColChecks = null; 
+            HashMap<String,Map<String,JSONObject>> curRowCols = null;
+            HashMap<String,JSONObject> curColChecks = null; 
+            Long lastUpdateTime = null;
             while(results.next()){
+                if(lastUpdateTime == null){
+                    lastUpdateTime = results.getLong(7);
+                }else if(results.getLong(7) > 0 && results.getLong(7) > lastUpdateTime){
+                    lastUpdateTime = results.getLong(7);
+                    
+                }
+                
                 String rowName = results.getString(1);
                 if(!rowName.equals(lastRow)){
                     JSONObject tmpRowObj = new JSONObject();
@@ -141,24 +149,25 @@ public class ResourceManager {
                     tmpRowObj.put("uri", "/" + uriInfo.getPath() + 
                             "/" + URIUtil.normalizeURIPart(rowName));
                     rowList.add(tmpRowObj);
-                    curRowCols = new HashMap<String,Map<String,Map<String,String>>>();
+                    curRowCols = new HashMap<String,Map<String,JSONObject>>();
                     grid.put(rowName, curRowCols);
                     lastRow = rowName;
                     lastCol = null;
                 }
                 String colName = results.getString(2);
                 if(!colName.equals(lastCol)){
-                    curColChecks = new HashMap<String,Map<String,String>>();
+                    curColChecks = new HashMap<String,JSONObject>();
                     curRowCols.put(colName, curColChecks);
                     lastCol = colName;
                 }
                 colMap.put(results.getInt(4), colName);
                 
                 String checkName = results.getString(3);
-                HashMap<String,String> curCheckMap = new HashMap<String,String>();
+                JSONObject curCheckMap = new JSONObject();
                 //curCheckMap.put("name", results.getString(3));
                 curCheckMap.put("message", results.getString(5));
-                curCheckMap.put("status", results.getString(6));
+                curCheckMap.put("status", results.getInt(6));
+                curCheckMap.put("prevCheckTime", results.getLong(7));
                 curCheckMap.put("uri", "/" + uriInfo.getPath() +
                         "/" + URIUtil.normalizeURIPart(rowName) + "/" +
                         URIUtil.normalizeURIPart(colName) + "/" + URIUtil.normalizeURIPart(checkName));
@@ -176,6 +185,7 @@ public class ResourceManager {
             
             ArrayList<String> checkList = new ArrayList<String>(checkMap.keySet());
             Collections.sort(checkList);
+            json.put("lastUpdateTime", lastUpdateTime);
             json.put("rows", rowList);
             json.put("columnNames", colList);
             json.put("checkNames", checkList);

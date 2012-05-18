@@ -197,17 +197,12 @@ public class ConfigLoader {
 
                 //load up grids table
                 Map<String,String> statusLabelMap = (Map<String, String>) gridMap.get(PROP_GRIDS_STATUS_LABELS);
-                checkRequiredProp(statusLabelMap, PROP_GRIDS_STATUS_LABELS_OK);
-                checkRequiredProp(statusLabelMap, PROP_GRIDS_STATUS_LABELS_WARNING);
-                checkRequiredProp(statusLabelMap, PROP_GRIDS_STATUS_LABELS_CRITICAL);
-                checkRequiredProp(statusLabelMap, PROP_GRIDS_STATUS_LABELS_UNKNOWN);
-                checkRequiredProp(statusLabelMap, PROP_GRIDS_STATUS_LABELS_NOTRUN);
                 insertGridStmt.setString(1, (String)gridMap.get(PROP_GRIDS_NAME));
-                insertGridStmt.setString(2, statusLabelMap.get(PROP_GRIDS_STATUS_LABELS_OK));
-                insertGridStmt.setString(3, statusLabelMap.get(PROP_GRIDS_STATUS_LABELS_WARNING));
-                insertGridStmt.setString(4, statusLabelMap.get(PROP_GRIDS_STATUS_LABELS_CRITICAL));
-                insertGridStmt.setString(5, statusLabelMap.get(PROP_GRIDS_STATUS_LABELS_UNKNOWN));
-                insertGridStmt.setString(6, statusLabelMap.get(PROP_GRIDS_STATUS_LABELS_NOTRUN));
+                insertGridStmt.setString(2, ConfigLoader.genStatusLabel(statusLabelMap, PROP_GRIDS_STATUS_LABELS_OK));
+                insertGridStmt.setString(3, ConfigLoader.genStatusLabel(statusLabelMap, PROP_GRIDS_STATUS_LABELS_WARNING));
+                insertGridStmt.setString(4, ConfigLoader.genStatusLabel(statusLabelMap, PROP_GRIDS_STATUS_LABELS_CRITICAL));
+                insertGridStmt.setString(5, ConfigLoader.genStatusLabel(statusLabelMap, PROP_GRIDS_STATUS_LABELS_UNKNOWN));
+                insertGridStmt.setString(6, ConfigLoader.genStatusLabel(statusLabelMap, PROP_GRIDS_STATUS_LABELS_NOTRUN));
                 insertGridStmt.executeUpdate();
 
                 //load up check database table
@@ -277,6 +272,13 @@ public class ConfigLoader {
         }
 
         return checkTypeClassMap;
+    }
+
+    private static String genStatusLabel(Map<String, String> statusLabelMap, String label) {
+        if(!statusLabelMap.containsKey(label) || statusLabelMap.get(label) == null){
+            return "";
+        }
+        return label;
     }
 
     private static String formatCheckDescription(String description, String rowName, String colName) {
