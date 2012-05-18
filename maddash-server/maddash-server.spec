@@ -79,6 +79,11 @@ mkdir -p %{data_dir}
 chown maddash:maddash %{data_dir}
 
 #Create symbolic links to latest version of jar files
+##if update then delete old links
+if [ "$1" = "2" ]; then
+  unlink %{install_base}/target/%{package_name}.one-jar.jar
+  unlink %{install_base}/target/%{package_name}.jar
+fi
 ln -s %{install_base}/target/%{package_name}-%{version}.one-jar.jar %{install_base}/target/%{package_name}.one-jar.jar
 chown maddash:maddash %{install_base}/target/%{package_name}.one-jar.jar
 ln -s %{install_base}/target/%{package_name}-%{version}.jar %{install_base}/target/%{package_name}.jar
@@ -89,7 +94,7 @@ chown maddash:maddash %{install_base}/target/%{package_name}.jar
 
 %files
 %defattr(-,maddash,maddash,-)
-%config %{config_base}/*
+%config(noreplace) %{config_base}/*
 %{install_base}/target/*
 %{install_base}/bin/*
 /etc/init.d/%{package_name}
