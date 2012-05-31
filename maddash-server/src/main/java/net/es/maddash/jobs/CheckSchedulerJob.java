@@ -67,7 +67,7 @@ public class CheckSchedulerJob extends Thread{
             netlogger.debug(netLog.start("maddash.CheckSchedulerJob.execute.queryDb"));
             PreparedStatement selStmt = conn.prepareStatement("SELECT c.id, c.gridName, " +
                 "c.rowName, c.colName, t.checkType, t.checkParams, t.checkInterval, " +
-                "t.retryInterval, t.retryAttempts, t.timeout FROM checkTemplates AS t, " +
+                "t.retryInterval, t.retryAttempts, t.timeout, c.statusMessage FROM checkTemplates AS t, " +
                 "checks AS c WHERE c.active = 1 AND t.id = c.checkTemplateId AND " +
                 "c.nextCheckTime <= ? ORDER BY c.nextCheckTime ASC");
             selStmt.setLong(1, time);
@@ -98,6 +98,7 @@ public class CheckSchedulerJob extends Thread{
                 dataMap.put("retryInterval", checksToRun.getInt(8));
                 dataMap.put("retryAttempts", checksToRun.getInt(9));
                 dataMap.put("timeout", checksToRun.getInt(10));
+                dataMap.put("statusMessage", checksToRun.getString(11));
                 jobDetail.setJobDataMap(dataMap);
                 globals.updateScheduledChecks(checksToRun.getInt(1), true);
                 globals.getScheduler().scheduleJob(jobDetail, trigger);

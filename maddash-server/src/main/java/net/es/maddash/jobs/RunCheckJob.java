@@ -118,6 +118,7 @@ public class RunCheckJob implements Job{
         int checkInterval = dataMap.getInt("checkInterval");
         int retryInterval = dataMap.getInt("retryInterval");
         int retryAttempts = dataMap.getInt("retryAttempts");
+        String lastCheckMessage = dataMap.getString("statusMessage");
         
         //find last result
         int lastReturnCode = result.getResultCode();
@@ -143,6 +144,7 @@ public class RunCheckJob implements Job{
         long nextTime = time + checkInterval;
         int newResultCount = 0;
         int finalStatus = result.getResultCode();
+        String finalStatusMessage = result.getMessage();
         if(result.getResultCode() != lastCheckStatus){
             newResultCount = 1;
             if(lastReturnCode != lastCheckStatus){
@@ -150,6 +152,7 @@ public class RunCheckJob implements Job{
             }
             if(newResultCount < retryAttempts){
                 finalStatus = lastCheckStatus;
+                finalStatusMessage = lastCheckMessage;
                 nextTime = time + retryInterval;
             }
         }
@@ -179,7 +182,7 @@ public class RunCheckJob implements Job{
         updateCheckStmt.setLong(2, nextTime);
         updateCheckStmt.setInt(3, finalStatus);
         updateCheckStmt.setInt(4, result.getResultCode());
-        updateCheckStmt.setString(5, result.getMessage());
+        updateCheckStmt.setString(5, finalStatusMessage);
         updateCheckStmt.setInt(6, newResultCount);
         updateCheckStmt.setInt(7, checkId);
         updateCheckStmt.executeUpdate();
