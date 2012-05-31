@@ -45,13 +45,14 @@ install -m 755 %{package_name}/web/*.cgi %{buildroot}/%{install_base}/
 install -m 644 %{package_name}/etc/apache-maddash.conf  %{buildroot}/etc/httpd/conf.d/
 cp -r %{package_name}/web/lib %{buildroot}/%{install_base}/lib
 cp -r %{package_name}/web/style %{buildroot}/%{install_base}/style
+cp -r %{package_name}/web/etc %{buildroot}/%{install_base}/etc
 
 %post
 
 %files
 %defattr(-,maddash,maddash,-)
 %config /etc/httpd/conf.d/apache-maddash.conf
-%config %{install_base}/web/etc/config.json
+%config %{install_base}/etc/config.json
 %{install_base}/*
 
 %preun
