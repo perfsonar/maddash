@@ -22,8 +22,11 @@ rect{fill:none;}
 .legends{
         background-color:#fff7fb;
         border:1px solid #d0d1e6;
+        margin: 5px 5px 5px 5px;
         font-size:11px;
         float: left;
+        min-width: 97%;
+        
 }
 .legend{float:left;margin: 4px 10px 4px 10px;}
 .lsymbol{float:left;width:13px;height:13px;margin-right:3px;}

@@ -85,7 +85,10 @@ var MaDDashGrid =function(parentId, legendId){
     var colorscale = d3.scale.category10().range(["green", "yellow", "red", "orange", "gray"]);
     this.parent = parentId;
     this.legend = legendId;
-    
+    this.cellSize = 13;
+    this.cellPadding = 2;
+    this.textBlockSize = 130;
+      
     this.render = function (data){
         //TODO: Set title
         //d3.select("#dashboard_name").html(dashboard.name + " Dashboard");
@@ -94,7 +97,7 @@ var MaDDashGrid =function(parentId, legendId){
     }
       
       
-  this.displaygrid = function (data, canvas){
+    this.displaygrid = function (data, canvas){
       //Display legends
       colorscale.domain(d3.range(0,data.statusLabels.length));
       var legendsdata = data.statusLabels
@@ -118,9 +121,11 @@ var MaDDashGrid =function(parentId, legendId){
       //GRID Container
       var nrows = data.grid.length;
       var ncols = data.grid[0].length;
-      var cellsize = 13;
-      var padding = 2;
-      var text_block_size = 130;
+      
+      //Changed these from portal to allow customization
+      var cellsize = this.cellSize;
+      var padding = this.cellPadding;
+      var text_block_size = this.textBlockSize;
     
       var viz = d3.select("#" + canvas)
         .style("width", ncols * (cellsize + 2*padding) + 110 + text_block_size)
@@ -230,19 +235,15 @@ var MaDDashGrid =function(parentId, legendId){
             viz.selectAll(".gcol"+ i).classed("gactive", false);
             viz.selectAll(".grow"+ d.row).classed("gactive", false);
           })
-          .on("click", function(d,i){
+         /* 
+           //DELETE FROM PORTAL
+           .on("click", function(d,i){
             var that = this;
             if(d.celldata!=null){
-              var uri = d.celldata[0].uri;
-              //We need a API interface in the portal to get this non-domain data (through ajax request)
-              //Right now it is using a static path. which should be removed fr production.
-              //uri = MYESNET.script_prefix + "myesnet/static/js/newjs/loss_data.json";
-              $.getJSON(uri, function(data) {
-                var href = data['history'][0].returnParams.graphUrl.replace("https", "http");
-                window.open( href, "Graph", "menubar=0,location=0,height=700,width=700" );
-              })
+              var href = "details.cgi?uri=" + d.celldata[0].uri;
+              window.open( href, "Graph");
             }
-          })
+          }) */
       
       $("#"+canvas).find(".gcell").each(function(i,d){
         var data = d3.select(this).data()[0];
@@ -266,5 +267,37 @@ var MaDDashGrid =function(parentId, legendId){
         .style("background", function(d,i){
           return colorscale(parseInt(d.status));
         })
+        .on("click", function(d,i){ //CHANGE FROM PORTAL
+            var that = this;
+            if(d!=null && d.uri!=null && instance.handleClick != null){
+              instance.handleClick(d);
+            }
+          })
   }
+  
+  /****************************
+     Customization functions 
+  ****************************/
+    /* Default handler. Can be overridden with setClickHandler */
+    this.handleClick = function(d){
+        var uri = d.uri;
+        $.getJSON(uri, function(data) {
+                var href = data['history'][0].returnParams.graphUrl.replace("https", "http");
+                 window.open( href, "Graph", "menubar=0,location=0,height=700,width=700" );
+         })
+        
+    }
+    this.setClickHandler = function(f){
+        this.handleClick = f;
+    }
+    this.setCellSize = function(value){
+        this.cellSize = value;
+    }
+    this.setCellPadding = function(value){
+        this.cellPadding = value;
+    }
+    this.setTextBlockSize = function(value){
+        this.textBlockSize = value;
+    }
+    
 }

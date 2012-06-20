@@ -356,13 +356,15 @@ var MaDDashGraphPane = function(parent){
  *      type: "grid" or "dashboard". A dashboard is just multiple grids.
  *      name: the name of the dashboard or grid to load
  *      config: data object from MaDDashConfig that has grid style parameters
+ *      clickHandler: optional function to be called when cell is clicked. Passed cell object.
  */
-var MaDDashDashboardPane = function(parent, type, name, config){
+var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.type = (type == null ? "dashboard" : type);
 	this.name = ((name == null && this.type == "dashboard")? config.defaultDashboard : name);
-
+    this.clickHandler = clickHandler;
+    
 	this.render = function(data){
 
 		this.parent.innerHTML = "";
@@ -421,22 +423,33 @@ var MaDDashDashboardPane = function(parent, type, name, config){
             
             var ds = new MaDDashDataSource(gridList[i].uri);
             var mdGrid = new MaDDashGrid(grid_id, legend_id);
+            if(this.clickHandler != undefined && this.clickHandler != null){
+                console.log(this.clickHandler);
+                mdGrid.setClickHandler(this.clickHandler);
+            }
             ds.connect(mdGrid);
             
             //load grid configs
-            /*if(config.grids != undefined && config.grids != null &&  
+            if(config.grids != undefined && config.grids != null &&  
                 config.grids[gridList[i].name] != undefined  && config.grids[gridList[i].name] != null ){
                 
-                //set cell width
-               if(config.grids[gridList[i].name].cellWidth != undefined && config.grids[gridList[i].name].cellWidth != null){
-                    mdGrid.setCellWidth(config.grids[gridList[i].name].cellWidth);
+                //set cell size
+               if(config.grids[gridList[i].name].cellSize != undefined && 
+                        config.grids[gridList[i].name].cellSize != null){
+                    mdGrid.setCellSize(config.grids[gridList[i].name].cellSize);
                 }
                 
-                //set cell height
-                if(config.grids[gridList[i].name].cellHeight != undefined && config.grids[gridList[i].name].cellHeight != null){
-                    mdGrid.setCellHeight(config.grids[gridList[i].name].cellHeight);
+                //set cell padding
+                if(config.grids[gridList[i].name].cellPadding != undefined && 
+                        config.grids[gridList[i].name].cellPadding != null){
+                    mdGrid.setCellPadding(config.grids[gridList[i].name].cellPadding);
                 }
-            }*/
+                
+                if(config.grids[gridList[i].name].textBlockSize != undefined && 
+                        config.grids[gridList[i].name].textBlockSize != null){
+                    mdGrid.setTextBlockSize(config.grids[gridList[i].name].textBlockSize);
+                }
+            }
             
             ds.render();
 		}

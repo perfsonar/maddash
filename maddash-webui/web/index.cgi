@@ -60,12 +60,17 @@ print <<EOF;
 			    var titlePane = new MadDashTitleSpan("maddashTitle", "index.cgi");
 			    titlePane.render(config.data);
 			    
+			    //set custom click handler
+			    var handleClick = function(d){
+			        var href = "details.cgi?uri=" + d.uri;
+                     window.open( href );
+                }
 			    var gs = new MaDDashDataSource("/maddash/grids"); 
 				var ds = new MaDDashDataSource("/maddash/dashboards"); 
 				if($type == "grid"){
-				    gs.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data));
+				    gs.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, handleClick));
 				}else{
-				    ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data));
+				    ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, handleClick));
 				}
 				ds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", gs));
 				ds.render();
@@ -75,7 +80,9 @@ print <<EOF;
 	<body class="claro" style="font-family:sans-serif" marginheight="0" marginwidth="0" onload="loadDashWidgets()">
 		<div id="maddashTitle" class="maddashTitle"></div>
 		<div id="maddashMenuBar"></div>
-		<div id="maddashDashboardPane"></div>
+		<div id="maddashDashboardPane">
+		    <img style='position:relative;left:49%;top:49%' height='20' width='20' class='loader' src='images/loader.gif'/>
+		</div>
 	</body>
 </html>
 EOF
