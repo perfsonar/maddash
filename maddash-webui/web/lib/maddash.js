@@ -89,7 +89,7 @@ var MaDDashGrid =function(parentId, legendId){
     this.render = function (data){
         //TODO: Set title
         //d3.select("#dashboard_name").html(dashboard.name + " Dashboard");
-        d3.select("#" + parent).html("");
+        d3.select("#" + this.parent).html("");
         this.displaygrid(data, this.parent);
     }
       

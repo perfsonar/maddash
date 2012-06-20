@@ -382,7 +382,6 @@ var MaDDashDashboardPane = function(parent, type, name, config){
 		if(this.type == "dashboard"){
 			var dashFound = false;
 			for(var i = 0;i < data.dashboards.length && !dashFound;i++){
-			    console.log(data.dashboards[i].name);
 				if(data.dashboards[i].name == this.name){
 					gridList = data.dashboards[i].grids;
 					dashFound = true;
