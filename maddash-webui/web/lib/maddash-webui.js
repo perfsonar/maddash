@@ -408,31 +408,28 @@ var MaDDashDashboardPane = function(parent, type, name, config){
 		}
 		
 		//start loading grids
+		if(dashFound){
+		    d3.select("#" + this.parent.id).append("div").attr("class", "maddashDashboardName").text(this.name + " Dashboard");
+		}
 		for(var i=0;i<gridList.length;i++){
-            var div = document.createElement("div");
-            div.id = "maddashgrid_top" + i;
-            div.className = "maddashgridTopContainer";
-            var titleDiv = document.createElement("div");
-            titleDiv.id = "maddashgrid_title" + i;
-            titleDiv.className = "maddashgridTitleDiv";
-            titleDiv.appendChild(maddashCreateSpan("maddashgridTitle", gridList[i].name));
-            div.appendChild(titleDiv);
-            var gridDiv = document.createElement("div");
-            gridDiv.id = "maddashgrid_grid" + i;
-            gridDiv.className = "maddashgridPane";
-            div.appendChild(gridDiv);
-            this.parent.appendChild(div);
+            var grid_id = "grid-" + i;
+            var legend_id = "legend-" + i;
+            var container = d3.select("#" + this.parent.id).append("div")
+                .attr('class', function(){return 'grid-container'})
+            container.append("div").attr("class", "maddashGridName").text(gridList[i].name)
+            var legend = container.append("div").attr('class', 'legends').attr("id", legend_id);
+            container.append("div").attr("id", grid_id)
             
             var ds = new MaDDashDataSource(gridList[i].uri);
-            var mdGrid = new MaDDashGrid(gridDiv.id);
+            var mdGrid = new MaDDashGrid(grid_id, legend_id);
             ds.connect(mdGrid);
             
             //load grid configs
-            if(config.grids != undefined && config.grids != null &&  
+            /*if(config.grids != undefined && config.grids != null &&  
                 config.grids[gridList[i].name] != undefined  && config.grids[gridList[i].name] != null ){
                 
                 //set cell width
-                if(config.grids[gridList[i].name].cellWidth != undefined && config.grids[gridList[i].name].cellWidth != null){
+               if(config.grids[gridList[i].name].cellWidth != undefined && config.grids[gridList[i].name].cellWidth != null){
                     mdGrid.setCellWidth(config.grids[gridList[i].name].cellWidth);
                 }
                 
@@ -440,7 +437,7 @@ var MaDDashDashboardPane = function(parent, type, name, config){
                 if(config.grids[gridList[i].name].cellHeight != undefined && config.grids[gridList[i].name].cellHeight != null){
                     mdGrid.setCellHeight(config.grids[gridList[i].name].cellHeight);
                 }
-            }
+            }*/
             
             ds.render();
 		}

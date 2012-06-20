@@ -37,9 +37,16 @@ print <<EOF;
 		<title>MaDDash - Monitoring and Debugging Dashboard</title>
 		<link rel="stylesheet" href="lib/dojo/dijit/themes/claro/claro.css" media="screen">
 		<link rel="stylesheet" href="style/maddash-webui.css" media="screen">
+		<link rel="stylesheet" href="style/maddash.css" media="screen">
+		<link rel="stylesheet" href="style/tipsy.css" />
+        <link rel="stylesheet" href="style/jquery.fancybox-1.3.4.css" />
+	
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="lib/jquery.tipsy.js"></script>
 		<script src="lib/dojo/dojo/dojo.js" data-dojo-config="parseOnLoad: true"></script>
 		<script src="lib/dojo/dojo/dojo-maddash.js"></script>
-		<script type="text/javascript" src="lib/protovis/protovis-r3.2.js"></script>
+		<script src="http://d3js.org/d3.v2.js"></script>
 		<script type="text/javascript" src="lib/maddash.js"></script>
 		<script type="text/javascript" src="lib/maddash-webui.js"></script>
 		<script>

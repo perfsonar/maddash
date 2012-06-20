@@ -74,327 +74,197 @@ var MaDDashDataSource = function(url, async){
 /**
  * Class: MaDDashGrid
  * Description: Widget that displays grid of checks. Uses
- *   protovis to draw the grid.
+ *   d3 and jQuery to draw the grid.
  * Parameters:
- *      parent: a string or object representing a container element
+ *      parentId: id string of the container element
+ *      legendId: id string of the legend element
  */
-var MaDDashGrid = function(parent){
-	var instance = this;
-	this.vis = new pv.Panel();
-	this.parent = document.getElementById(parent);
-	
-	/* Set urls */
-	this.cellUrl = "details.cgi";
-	this.passCellUrlGetParams = true;
-	
-	/* Table margins from top and left of div  */
-	this.t = 125;
-	this.l = 125;
-	/* The cell dimensions. */
-	this.w = 36
-	this.h = 18;
-	
-	/* Various style settings */
-	this.okColor = "#00FF00";
-	this.warnColor = "yellow";
-	this.criticalColor = "red";
-	this.unknownColor = "orange";
-	this.emptyColor = "#CCCCCC";
-	this.defaultLabelColor = "#000000";
-	this.defaultLabelFont = "10px sans-serif";
-	this.selectedLabelFont = "bold 12px sans-serif";
-	this.selectedLabelColor = "#000000";
-	
-	this.setCellUrl = function (url) {
-		this.cellUrl = url;
-	}
-	
-	this.setPassCellUrlGetParams = function (passCellUrlGetParams) {
-		this.passCellUrlGetParams = passCellUrlGetParams;
-	}
-	
-	this.setTopMargin = function (t) {
-		this.t = t;
-	}
-	
-	this.setLeftMargin = function (l) {
-		this.l = l;
-	}
-	
-	this.setCellWidth = function (w) {
-		this.w = w;
-	}
-	
-	this.setCellHeight = function (h) {
-		this.h = h;
-	}
-	
-	this.setOkColor = function (color) {
-		this.okColor = color;
-	}
-	
-	this.setWarnColor = function (color) {
-		this.warnColor = color;
-	}
-	
-	this.setCriticalColor = function (color) {
-		this.criticalColor = color;
-	}
-	
-	this.setEmptyColor = function (color) {
-		this.emptyColor = color;
-	}
-	
-	this.setDefaultLabelFont = function (font) {
-		this.defaultLabelFont = font;
-	}
-	
-	this.setDefaultLabelColor = function (color) {
-		this.defaultLabelColor = color;
-	}
-	
-	this.setSelectedLabelFont = function (font) {
-		this.selectedLabelFont = font;
-	}
-	
-	this.setSelectedLabelColor = function (color) {
-		this.selectedLabelColor = color;
-	}
-	
-	this._getFill = function( d, f ){		
-		if(d == null){
-			return instance.emptyColor;
-		}else if(d.status == 0){
-			return instance.okColor;
-		}else if(d.status == 1){
-			return instance.warnColor;
-		}else if(d.status == 2){
-			return instance.criticalColor;
-		}
-		return instance.unknownColor;
-	}
-	
-	this._setCellLink = function(d, f){
-		if(d == null){ return; }
-		var loc = instance.cellUrl;
-		if (instance.passCellUrlGetParams) {
-			loc += "?uri=" + d.uri;
-		}
-		window.location = loc; 
-	}
-	
-	this._setCellCursor = function(d, f){
-		if(d == null){
-			return "default";
-		}
-		return "pointer";
-	}
-	
-	this._setLabelStyle = function( hLabels, vLabels, hIndex, vIndex ){
-		hLabels.textStyle(function(){
-			if(this.index == hIndex){
-				return instance.selectedLabelColor;
-			}else{
-				return instance.defaultLabelColor;
-			}
-		}).font(function(){
-			if(this.index == hIndex){
-				return instance.selectedLabelFont;
-			}else{
-				return instance.defaultLabelFont;
-			}
-		});
-		vLabels.textStyle(function(d){
-			if(this.index== vIndex){
-				return instance.selectedLabelColor;
-			}else{
-				return instance.defaultLabelColor;
-			}
-		}).font(function(d){
-			if(this.index == vIndex){
-				return instance.selectedLabelFont;
-			}else{
-				return instance.defaultLabelFont;
-			}
-		});
-		instance.vis.render();
-	}
-	
-	this.render = function( data ) {
-		//localize a few vars
-		var h = this.h;
-		var w = this.w;
-		
-		//prepare the data and get the column names
-		var colNames = data.columnNames;
-		var rows = data.rows;
-		var checkNames = data.checkNames;
-		//console.log(data.grid[0]);
-		//data = data.map(function(d){ return pv.dict(cols, function(s){ return d[this.index]; });});
-		//cols.shift();
-		
-		//set the labels
-		var hLabels = this.vis.add(pv.Label)
-		    .data(colNames)
-		    .left(function(){ return this.index * w + w / 2; })
-		    .textAngle(-Math.PI / 2)
-		    .textBaseline("middle")
-			.font(this.defaultLabelFont)
-			.textStyle(this.defaultLabelColor);
-		
-		var vLabels = this.vis.add(pv.Label)
-		    .data(rows)
-		    .top(function(){ return this.index * h + h / 2; })
-			.text(function(d){ return d.name; })
-		    .textAlign("right")
-		    .textBaseline("middle")
-			.font(this.defaultLabelFont)
-			.textStyle(this.defaultLabelColor);
-			
-		this.vis.width(colNames.length * this.w + 5) //add 5 so draws far right stroke
-		    	.height(rows.length * this.h)
-		    	.top(this.t)
-		    	.left(this.l);
-				
-		this.vis.add(pv.Panel)
-		    .data(data.grid)
-		    .top(function(){ return this.index * h; })
-		    .height(this.h)
-			.event("mouseout",function(d, f){
-				instance._setLabelStyle(hLabels, vLabels, -1, -1);
-			})
-		    .add(pv.Panel)
-		    .data(function(){
-				return data.grid[this.parent.index];
-			})
-		    .left(function(){ return this.index * w; })
-	        .width(this.w)
-			.strokeStyle("black")
-		    .lineWidth(2)
-			.add(pv.Panel)
-		    .data(function(){
-				if(data.grid[this.parent.parent.index][this.parent.index] == null){
-					return [ null ];
-				}
-				return data.grid[this.parent.parent.index][this.parent.index];
-			})
-			.height(function(d){
-				if(d == null){
-					return h;
-				}
-				return h/checkNames.length;
-			})
-			.top(function(){
-				return this.index *  h/checkNames.length;
-			})
-		    .fillStyle( this._getFill )
-		    .strokeStyle("black")
-		    .lineWidth(1)
-		    .antialias(false)
-		    .title(function(d, f){
-				if (d != null) {
-					return checkNames[this.index] + ": " + d.message;
-				}else{
-					return "No checks configured";
-				}
-				
-			})
-			.cursor(this._setCellCursor)
-			.event("click", this._setCellLink )
-			.event("mouseover", function(d, f){ instance._setLabelStyle(hLabels, vLabels, this.parent.index, this.parent.parent.index); } );
 
-		this.vis.canvas(this.parent).render()
-	}
-}
+var MaDDashGrid =function(parentId, legendId){
+    var instance = this;
+    var colorscale = d3.scale.category10().range(["green", "yellow", "red", "orange", "gray"]);
+    this.parent = parentId;
+    this.legend = legendId;
+    
+    this.render = function (data){
+        //TODO: Set title
+        //d3.select("#dashboard_name").html(dashboard.name + " Dashboard");
+        d3.select("#" + parent).html("");
+        this.displaygrid(data, this.parent);
+    }
+      
+      
+  this.displaygrid = function (data, canvas){
+      //Display legends
+      colorscale.domain(d3.range(0,data.statusLabels.length));
+      var legendsdata = data.statusLabels
+      .map(function(d,i){ return {label:d, color:colorscale(i)} })
+      //.filter(function(d,i){return d.label === null ? false : true})
+      d3.select("#"+this.legend).html("")
+      var legends = d3.select("#"+this.legend)
+        .selectAll(".legend")
+          .data(legendsdata)
+          .enter()
+            .append("div").attr("class", "legend");
+      legends.append("div")
+        .attr("class", "lsymbol")
+        .style("background", function(d,i){return d.color})
+        .style("display", function(d,i){return d.label === null ? "none" : "block"})
+      legends.append("div")
+        .attr("class", "ltext")
+        .text(function(d,i){return d.label})
+        .style("display", function(d,i){return d.label === null ? "none" : "block"})
 
-/**
- * Class: HistoryBar
- * Description: NOT YET IMPLEMENTED, PLEASE IGNORE
- */
-var HistoryBar = function(src, dst, timeRange, barParts){
-	var instance = this;
-	this.vis = new pv.Panel();
-	
-	this.url = "data/redGreenTable.json";
-	/* Table margins from top and left of div  */
-	this.t = 5;
-	this.l = 5;
-	/* The cell dimensions. */
-	this.w = 48
-	this.h = 26;
-	
-	//specific vars
-	this.src = src;
-	this.dst = dst;
-	this.timeRange = timeRange;
-	this.barParts = barParts;
-	
-	this.setDataUrl = function (url) {
-		this.url = url;
-	}
-	
-	this.setTopMargin = function (t) {
-		this.t = t;
-	}
-	
-	this.setLeftMargin = function (l) {
-		this.l = l;
-	}
-	
-	this.setCellWidth = function (w) {
-		this.w = w;
-	}
-	
-	this.setCellHeight = function (h) {
-		this.h = h;
-	}
-	
-	this.setSrc = function (src) {
-		this.src = src;
-	}
-	
-	this.setDst = function (dst) {
-		this.dst = dst;
-	}
-	
-	this.setTimeRange = function (timeRange) {
-		this.timeRange = timeRange;
-	}
-	
-	this.setBarParts = function (barParts) {
-		this.barParts = barParts;
-	}
-	
-	this._getFill = function( d, f ){
-		if(f == 1){
-			return "red";
-		}else if(f == 0){
-			return "#00FF00";
-		}else{
-			return "#CCCCCC";
-		}
-	}
-	
-	this.render = function( data ) {
-		//localize a few vars
-		var h = this.h;
-		var w = this.w;
-		
-		this.vis.width(data.length * this.w + 5) //add 5 so draws far right stroke
-		    	.height(this.h + 10)
-		    	.top(this.t)
-		    	.left(this.l);
-		this.vis.add(pv.Panel)
-		    .data(data)
-		    .left(function(){ return this.index * w; })
-		    .width(this.w)
-		    .add(pv.Panel)
-		    .height(this.h)
-		    .fillStyle( this._getFill )
-		    .strokeStyle("black")
-		    .lineWidth(1)
-		    .antialias(false)
-			
-		this.vis.render()
-	}
+      //GRID Container
+      var nrows = data.grid.length;
+      var ncols = data.grid[0].length;
+      var cellsize = 13;
+      var padding = 2;
+      var text_block_size = 130;
+    
+      var viz = d3.select("#" + canvas)
+        .style("width", ncols * (cellsize + 2*padding) + 110 + text_block_size)
+    
+      var top = viz.append("div")
+        .attr("class", "gtop")
+        .style("margin-left", text_block_size + "px")
+        .style("float", "left")
+        .append("svg:svg")
+          .attr("height", text_block_size)
+          .attr("width", ncols * (cellsize + 2*padding) + 90)
+        .selectAll(".rname")
+          .data(data.columnNames)
+          .enter()
+            .append("g")
+            .attr("class", function(d,i){return "gcol" + i})
+            .attr("transform", function(d,i){return "translate("+(i*(cellsize+2*padding))+",0)"})        
+    
+      top.append("svg:rect")
+        .attr("class", function(d,i){return "gcol" + i})
+        .attr("x",0).attr("y",0)
+        .attr("transform", "rotate(45,0,"+ text_block_size +") translate (-0.5,3)")
+        .attr("height",text_block_size).attr("width",(cellsize+padding))
+        //.attr("transform", "rotate(35,"+ (cellsize+padding)/2  + "," + text_block_size/2 + ")")
+      
+      
+      top.append("svg:text")
+        .attr("class", "gtext")
+        .attr("text-anchor", "start")
+        .attr("dy", "1.5em")
+        .attr("dx", "1em")
+        .attr("transform", "rotate(-45,0,"+ text_block_size +")  translate(0,"+ (text_block_size-5) + ")")
+        .text(function(d,i){return d})        
+    
+      var left = viz.append("div")
+        .attr("class", "gleft")
+        .append("svg:svg")
+          .attr("width", text_block_size)
+          .attr("height", nrows * (cellsize + 2*padding))
+        .selectAll(".rname")
+          .data(data.rows)
+          .enter()
+            .append("g")
+            .attr("class", function(d,i){return "grow" + i})
+            .attr("transform", function(d,i){return "translate(0,"+(i*(cellsize+2*padding))+")"})
+
+      left.append("svg:rect")
+        .attr("class", function(d,i){return "grow" + i})
+        .attr("x",0).attr("y",0)
+        .attr("width",text_block_size).attr("height",(cellsize+2*padding))
+      
+      left.append("svg:text")
+        .attr("class", "gtext")
+        .attr("transform", "translate("+ (text_block_size-5) +",0)")
+        .text(function(d,i){return data.rows[i].name})
+        .attr("text-anchor", "end")
+        .attr("dy", "1.1em")
+
+
+      var grid = viz.append("div")
+        .attr("class", "ggrid")
+    
+      var cols = grid.selectAll(".gcol")
+        .data(data.columnNames)
+        .enter()
+          .append("div")
+          .attr("class", function(d,i){return "gcol gcol" + i})
+          .style("width", (cellsize+2*padding) + "px")
+          .style("height", "100%")
+          .style("left", function(d,i){return (i*(cellsize+2*padding)) + "px"})
+    
+      var rows = grid.selectAll(".grow")
+        .data(data.grid)
+        .enter()
+          .append("div")
+          .attr("class", function(d,i){return "grow grow" + i})
+          .style("width", "100%")
+          .style("z-index", 1000)
+    
+      var color = "";
+      var selected_row = 0;
+      var selected_col = 0;
+      var cells = rows.selectAll(".gcell")
+        .data(function(d,r){ return d.map(function(d,i){ return {celldata:d, row:r}}) })
+        .enter()
+          .append("div")
+          .attr("class", "gcell")
+          .style("height", cellsize +"px")
+          .style("width", cellsize +"px")
+          .style("margin", (padding) +"px")
+          
+          .on("mouseover", function(d,i){
+            selected_row = d.row;
+            selected_col = i;
+            if(d.celldata){
+              d3.select(this).style("margin", (padding-1) +"px");
+              d3.select(this).classed("shadow", true);
+            }
+            viz.selectAll(".gcol"+ i).classed("gactive", true);
+            viz.selectAll(".grow"+ d.row).classed("gactive", true);
+          })
+          .on("mouseout", function(d,i){
+            // d3.select(this).classed("shadow", false);
+            // d3.select(this).style("background-color", color.brighter());
+            d3.select(this).style("margin", (padding) +"px");
+            d3.select(this).classed("shadow", false);
+            viz.selectAll(".gcol"+ i).classed("gactive", false);
+            viz.selectAll(".grow"+ d.row).classed("gactive", false);
+          })
+          .on("click", function(d,i){
+            var that = this;
+            if(d.celldata!=null){
+              var uri = d.celldata[0].uri;
+              //We need a API interface in the portal to get this non-domain data (through ajax request)
+              //Right now it is using a static path. which should be removed fr production.
+              //uri = MYESNET.script_prefix + "myesnet/static/js/newjs/loss_data.json";
+              $.getJSON(uri, function(data) {
+                var href = data['history'][0].returnParams.graphUrl.replace("https", "http");
+                window.open( href, "Graph", "menubar=0,location=0,height=700,width=700" );
+              })
+            }
+          })
+      
+      $("#"+canvas).find(".gcell").each(function(i,d){
+        var data = d3.select(this).data()[0];
+        if(data.celldata!=null){
+          var html = "<div class='tooltip'><div class='top-tip'>" + (data.celldata[0]? data.celldata[0].message : "") + "</div><div class='bottom-tip'>" + (data.celldata[1]? data.celldata[1].message : "") + "</div></div>";
+          $(this).tipsy({
+            html :true,
+            opacity: 0.9,
+            title : function(){
+            return html
+          }})
+        }
+      })
+      
+      var temp = cells.selectAll(".gsubcell")
+        .data(function(d,i){return d.celldata===null? [] : d.celldata })
+        .enter()
+          .append("div");
+      temp
+        .style("height", cellsize/2 +"px")              
+        .style("background", function(d,i){
+          return colorscale(parseInt(d.status));
+        })
+  }
 }
