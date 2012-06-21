@@ -36,131 +36,212 @@ http:
 # want, require or off
 #    clientAuth: "want" 
 
+##
+# 'groups' are where you define lists of hosts. You need to provide the name of the group 
+# and the list of the hosts in that group. The default example below defines two groups:
+# "myOwampHosts" and "myBwctlHosts". You can define any number of other groups and give them
+# any alphanumeric name. A host may belong to multiple groups.
 groups:
-    owampHosts :
+    myOwampHosts :
         - "albu-owamp.es.net"
         - "bois-owamp.es.net"
         - "bost-owamp.es.net"
         - "chic-owamp.es.net"
-        - "clev-owamp.es.net"
-        - "elpa-owamp.es.net"
-        - "hous-owamp.es.net"
-        - "kans-owamp.es.net"
-        - "newy-owamp.es.net"
-        - "pnwg-owamp.es.net" 
-        - "ameslab-owamp.es.net"
-        - "eqx-ash-owamp.es.net"
-        - "eqx-chi-owamp.es.net"
-        - "eqx-sj-owamp.es.net"
-        - "ga-owamp.es.net"
-        - "lasv-owamp.es.net"
-        - "lbl-owamp.es.net"
-        - "llnl-owamp.es.net" 
-        - "nersc-owamp.es.net"
-        - "ornl-owamp.es.net"
-        - "paix-pa-owamp.es.net"
-        - "pppl-owamp.es.net"
-        - "sdsc-owamp.es.net" 
-        - "slac-owamp.es.net" 
-        - "snll-owamp.es.net"
-        - "doe-owamp.es.net"
-        - "forr-owamp.es.net"
-        - "inl-owamp.es.net"
-        - "lvk-owamp.es.net"
-        - "nrel-owamp.es.net"
-        - "orau-owamp.es.net"
-        - "osti-owamp.es.net"
-        - "pantex-owamp.es.net"
-        - "snla-owamp.es.net"
-        - "srs-owamp.es.net"
-        - "anl-owamp.es.net" 
-        - "aofa-owamp.es.net"
-        - "atla-owamp.es.net" 
-        - "bnl-owamp.es.net" 
-        - "denv-owamp.es.net"
-        - "fnal-owamp.es.net"
-        - "nash-owamp.es.net"
-        - "star-owamp.es.net"
-        - "sunn-owamp.es.net"
-        - "wash-owamp.es.net"
     
-    esnetDiceTesters :
-        - "chic-owamp.es.net"
-        - "newy-owamp.es.net"
-        - "sunn-owamp.es.net"
-        - "pnwg-owamp.es.net"
-        - "wash-owamp.es.net"
-    
-    geantDiceTesters :
-        - "fe1-vlan71.srv3.par.fr.geant2.net"
-        - "ge1-vlan71.mp1.lon.uk.geant2.net "
-        - "ge1-vlan71.mp1.mad.es.geant2.net"
-        - "ge1-vlan71.mp1.vie.at.geant2.net "
-        - "fe1-vlan71.srv3.gen.ch.geant2.net"
-        
+    myBwctlHosts :
+        - "albu-pt1.es.net"
+        - "bois-pt1.es.net"
+        - "bost-pt1.es.net"
+        - "chic-pt1.es.net"
+
+##
+# 'checks' are where you define a template for a check to execute. You'll provide a 
+#  command to run, 
 checks:
+    # Below defines a check that alarms against the loss between the row and column host.
+    # It looks at data for the last 30 minutes and runs every 30 minutes. It will go 
+    # critical if there is any loss. There is no warning level.
     owampLossCheck :
-        name: "OWAMP Loss"
+        #A descriptive name of the check
+        name: "Loss"
+        #A description of the check
         description: "Loss from %row to %col (according to %row MA)"
+        #The type of check. Other valid values are net.es.maddash.checks.NagiosCheck and
+        # net.es.maddash.checks.RandomCheck.
+        type: "net.es.maddash.checks.PSNagiosCheck"
+        params:
+            #The URL of the measurement archive. You can define templates on a per host 
+             #basis here. If not defined explicitly the 'default' template will be used.
+            maUrl: 
+                default: "http://%row:8085/perfSONAR_PS/services/pSB"
+            #This is required to get graphs to work. It looks up all the 'keys' the 
+            #perfSONAR associates with a particular source/destination regardless of 
+            #whether IP or hostname is used. In general you should just be able to change 
+            #the hostname in the URL (ps-lat.es.net),  to the name of your toolkit host 
+            #and it will work. You can leave the rest of the URL untouched.
+            metaDataKeyLookup: "http://ps-lat.es.net/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=108000&bucket_width=0.0001"
+            #This is the URL to the graph script. You should be able to change the 
+            #hostname(ps-lat.es.net) to your toolkit hostname and leave the rest of the 
+            #URL untouched. 
+            graphUrl: "http://ps-lat.es.net/serviceTest/delayGraph.cgi?url=%maUrl&key=%maKey&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dst&src=%src&type=TCP&length=14400"
+            #The Nagios command to execute. The -w and -c options define the thresholds. 
+            #The -r option specifies the time range to query.
+            command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 1800 -l -s %row -d %col"
+        #How often to run the check (in seconds)
+        checkInterval: 1800
+        #How often to run the check if it detects a state different than the previous 
+        #state. For example, if a check has been OK for 3 days, but suddenly a critical 
+        #is seen, it will try again in this number of seconds rather than waiting the full 
+        #interval
+        retryInterval: 300
+        #The number of consecutive times a new state must be seen before it changes the 
+        #color in a grid. For example, if a check has been OK for 3 days, but suddenly a 
+        #critical is seen, It must be seen 2 more times before the color will change
+        retryAttempts: 3
+        #The maximum number of seconds a command will be allowed to run
+        timeout: 60
+    
+    # Below defines a check that alarms against the loss between the column and row host. 
+    # It just swaps the source and destination of the other OWAMP check to get data for 
+    # the reverse direction. The parameters have the same meaning as the previous example
+    owampLossRevCheck :
+        name: "Loss Reverse"
+        description: "Loss from %col to %row (according to %row MA)"
         type: "net.es.maddash.checks.PSNagiosCheck"
         params:
             maUrl: 
                 default: "http://%row:8085/perfSONAR_PS/services/pSB"
-            metaDataKeyLookup: "https://stats.es.net/perfsonar/serviceTest/cgi-bin/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=108000&bucket_width=0.0001"
-            graphUrl: "https://stats.es.net/perfsonar/serviceTest/cgi-bin/delayGraph.cgi?url=%maUrl&key=%maKey&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dst&src=%src&type=TCP&length=14400"
-            command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -s %row -d %col"
-        checkInterval: 600
+            metaDataKeyLookup: "http://ps-lat.es.net/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%col&dstRaw=%row&count=108000&bucket_width=0.0001"
+            graphUrl: "http://ps-lat.es.net/serviceTest/delayGraph.cgi?url=%maUrl&key=%maKey&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dst&src=%src&type=TCP&length=14400"
+            command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -s %col -d %row"
+        checkInterval: 1800
         retryInterval: 300
         retryAttempts: 3
         timeout: 60
-            
-    owampLossReverseCheck :
-        name: "OWAMP Loss Reverse"
-        description: "Loss from %col to %row (according to %row MA)"
-        type: "net.es.maddash.checks.RandomCheck"
-        checkInterval: 600
-        retryInterval: 300
+    
+    # Below defines a check that alarms on throughput reported by BWCTL from the row host 
+    # to the column host. It runs every 8 hours. It alarms on average throughput for the 
+    # last 24 hours. It will go to the warning (yellow) level if throughput drops below 
+    # 100Mbps. It goes to critical if it drops below 10Mbps. Adjust the 'command' 
+    # parameter's -w property to change the warning level and -c parameter to change the 
+    # critical level. All units are in Gbps (e.g. .1 = 100Mbps).
+    bwctlCheck :
+        name: "Throughput"
+        description: "Throughput from %row to %col (according to %row MA)"
+        type: "net.es.maddash.checks.PSNagiosCheck"
+        params:
+            maUrl:
+                default: "http://%row:8085/perfSONAR_PS/services/pSB"
+            metaDataKeyLookup: "http://ps-lat.es.net/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.iperf&srcRaw=%row&dstRaw=%col&protocol=TCP&timeDuration=20"
+            graphUrl: "http://ps-lat.es.net/serviceTest/bandwidthGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=2592000"
+            #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
+            command:  "/opt/perfsonar_ps/nagios/bin/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %row -d %col"
+        checkInterval: 28800
+        retryInterval: 600
+        retryAttempts: 3
+        timeout: 60
+    
+    # Same as the BWCTL check above but tests in the reverse direction (from the column 
+    # host to the row host).
+    bwctlRevCheck :
+        name: "Throughput Reverse"
+        description: "Throughput from %col to %row (according to %row MA)"
+        type: "net.es.maddash.checks.PSNagiosCheck"
+        params:
+            maUrl:
+                default: "http://%row:8085/perfSONAR_PS/services/pSB"
+            metaDataKeyLookup: "http://ps-lat.es.net/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.iperf&srcRaw=%col&dstRaw=%row&protocol=TCP&timeDuration=20"
+            graphUrl: "http://ps-lat.es.net/serviceTest/bandwidthGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=2592000"
+            #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
+            command:  "/opt/perfsonar_ps/nagios/bin/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %col -d %row"
+        checkInterval: 28800
+        retryInterval: 600
         retryAttempts: 3
         timeout: 60
 
+#'grids' are where you define the two dimensional tables that get displayed. You specify 
+# which host 'groups' will compose the rows and columns and the 'checks' you want run. You also
+# provide some descriptive information that will be displayed
 grids:
-    - name: "ESnet OWAMP"
-      rows: "owampHosts"
-      columns: "owampHosts"
+      #The first item in the list is a grid for the loss checks between the OWAMP hosts
+      # defined. The first property "name" defines the title that will display on the dashboard.
+    - name: "OWAMP"
+      # Define the hosts that will be listed down the left side of the grid. This MUST be a 
+      # value defined in the 'groups' section of this config file.
+      rows: "myOwampHosts"
+      # Define the hosts that will be listed across the top of the grid. This MUST be a 
+      # value defined in the 'groups' section of this config file. It can be the same or 
+      # a different group from teh one defined in 'rows'.
+      columns: "myOwampHosts"
+      #Define the checks that will be shown in each cell in the grid. You may define up 
+      # to 2. If there are more than one the top half of the cell will be the first check 
+      # listed and the bottom half will be the second. This is often useful for showing 
+      # results in the different directions.
       checks: 
         - "owampLossCheck"
+        - "owampLossRevCheck"
+      #Specify the order you want hosts assigned to the 'rows' attribute to be displayed.
+      # Valid values are as follows:
+      #   alphabetical - automatically sorts members of the group alphabetically
+      #   group - displays the members of the group exactly in the order they are defined
       rowOrder: "alphabetical"
+      #Specify the order you want hosts assigned to the 'cols' attribute to be displayed.
+      # Valid values are as follows:
+      #   alphabetical - automatically sorts members of the group alphabetically
+      #   group - displays the members of the group exactly in the order they are defined
       colOrder: "alphabetical"
+      # Set to  if you don't want results to be checked from a host to itself. Set to 0 
+      # otherwise.
       excludeSelf: 1
-      columnAlgorithm: "afterSelf" 
+      # Determines which checks will be run. Valid values are as follows:
+      #  all - Run a check between every row and column. This will be the most common.
+      #  afterSelf - Run a check to every host that's defined after the current row in the 'rows' group
+      #  beforeSelf - Run a check to every host that's defined before the current row in the 'rows' group
+      columnAlgorithm: "all" 
+      # 'statusLabels' is where you provide a human-readable description of what each 
+      #  threshold means. These are the values that will be displayed in the legend. If a 
+      #  threshold is not defined below then that will not be displayed in the legend. 
+      #  Valid values are as follows:
+      #     ok: corresponds to the green status.
+      #     warning: the yellow status.
+      #     critical: the red status.
+      #     unknown: the orange status
+      #     notrun: the gray status. means the check has not run yet. should only happen first time check deployed.
       statusLabels:
             ok: "Loss is 0"
-            warning: "N/A"
             critical: "Loss is greater than 0"
             unknown: "Unable to retrieve data"
             notrun: "Check has not yet run"
-    - name: "ESnet-GEANT OWAMP"
-      rows: "esnetDiceTesters"
-      columns: "geantDiceTesters"
+            #note: 'warning' not defined because no warning threshold set
+    #Below is a second grid that defines the throughput checks to the BWCTL hosts defined.
+    # The parameters have the same meaning as the OWAMP check above so they are not repeated here.
+    - name: "BWCTL"
+      rows: "myBwctlHosts"
+      columns: "myBwctlHosts"
       checks: 
-        - "owampLossCheck"
+        - "bwctlCheck"
+        - "bwctlRevCheck"
       rowOrder: "alphabetical"
       colOrder: "alphabetical"
       excludeSelf: 1
       columnAlgorithm: "all" 
       statusLabels:
-            ok: "Loss is 0"
-            warning: "N/A"
-            critical: "Loss is greater than 0"
+            ok: "Throughput >= 100Mbps"
+            warning: "Throughput >= 10Mbps"
+            critical: "Throughput < 10Mbps"
             unknown: "Unable to retrieve data"
             notrun: "Check has not yet run"
 
+#'dashboard' provide a way to group grids together. Grids grouped in this manner will
+# be displayed on the same page together. This is a list, so you can define as many 
+# dashboards as you want.
 dashboards:
-    - name: "OWAMP"
+    #The following defines a dashboard that shows the BWCTL and OWAMP results on the same 
+    # page. The 'name' parameter defines the title that will displayed on the dashboard
+    - name: "My Sites"
+      # Defines the list of grids that belong to this dashboard. Each 'name' must 
+      # correspond to the name defined under the 'grids' sections of this config file. 
       grids:
-        - name: "ESnet OWAMP"
-        - name: "ESnet-GEANT OWAMP"
-    - name: "ESnet"
-      grids:
-        - name: "ESnet OWAMP"
+        - name: "OWAMP"
+        - name: "BWCTL"
     
