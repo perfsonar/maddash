@@ -419,7 +419,10 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
                 .attr('class', function(){return 'grid-container'})
             container.append("div").attr("class", "maddashGridName").text(gridList[i].name)
             var legend = container.append("div").attr('class', 'legends').attr("id", legend_id);
-            container.append("div").attr("id", grid_id)
+            var gridDiv = container.append("div").attr("id", grid_id)
+            gridDiv.append("img").attr("src", "images/loader.gif").attr("height", "20")
+                .attr("width", "20").attr("class", "loader")
+                .attr("style", "position:relative;left:49%;top:49%");
             
             var ds = new MaDDashDataSource(gridList[i].uri);
             var mdGrid = new MaDDashGrid(grid_id, legend_id);
