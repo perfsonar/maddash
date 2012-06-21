@@ -1,25 +1,11 @@
 {
-    <!-- Defines the title displayed at the top of the page-->
     "title":"My perfSONAR Dashboard",
-    
-    <!-- Defines the default dashboard to display. The value must correspond to a name 
-    defined under the 'dashboards' section of /etc/maddash/maddash-server/maddash.yaml. -->
     "defaultDashboard": "My Sites",
-    
-    <!-- define display settings for individual grids. The format is the following:
-    "GRID_NAME": { PARAMS }. GRID_NAME must correspond to a name under the 'grids' section 
-    of /etc/maddash/maddash-server/maddash.yaml. All parameters are option and you can 
-    choose from the following:
-        cellSize: The height and width of each cell in the grid (in pixels). defaults to 13. 
-        cellPadding: The space between each cell in the grid (in pixels). defaults to 3.
-        textBlockSize: The length of the textBlocks on teh side and above the grid 
-            (in pixels). Defauls to 130.
-    -->
-    <!-- "grids":{
+    "grids":{
         "OWAMP":{
             "cellSize": 13,
             "cellPadding": 3,
             "textBlockSize": 130,
         },
-    }, -->
+    },
 }
