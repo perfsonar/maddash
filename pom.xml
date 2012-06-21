@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.es.maddash</groupId>
     <artifactId>maddash</artifactId>
-    <version>0.1</version>
+    <version>1.0</version>
     <packaging>pom</packaging>
     <name>MadDASH</name>
 
