@@ -18,13 +18,13 @@ print <<EOF;
     <head>
         <meta charset="utf-8">
         <title>MaDDash Dashboard - Check Results</title>
-        <link rel="stylesheet" href="/maddash-webui/lib/dojo/dijit/themes/claro/claro.css" media="screen">
-        <link rel="stylesheet" href="/maddash-webui/style/maddash-webui.css" media="screen">
-        <script src="/maddash-webui/lib/dojo/dojo/dojo.js" data-dojo-config="parseOnLoad: true"></script>
-        <script src="/maddash-webui/lib/dojo/dojo/dojo-maddash.js"></script>
-        <script type="text/javascript" src="/maddash-webui/lib/protovis/protovis-r3.2.js"></script>
-        <script type="text/javascript" src="/maddash-webui/lib/maddash.js"></script>
-        <script type="text/javascript" src="/maddash-webui/lib/maddash-webui.js"></script>
+        <link rel="stylesheet" href="lib/dojo/dijit/themes/claro/claro.css" media="screen">
+        <link rel="stylesheet" href="style/maddash-webui.css" media="screen">
+        <script src="lib/dojo/dojo/dojo.js" data-dojo-config="parseOnLoad: true"></script>
+        <script src="lib/dojo/dojo/dojo-maddash.js"></script>
+        <script type="text/javascript" src="lib/protovis/protovis-r3.2.js"></script>
+        <script type="text/javascript" src="lib/maddash.js"></script>
+        <script type="text/javascript" src="lib/maddash-webui.js"></script>
         <script>
             require(["dijit/TitlePane", "dijit/layout/TabContainer", "dijit/layout/ContentPane", "dojo/parser"]);
             
