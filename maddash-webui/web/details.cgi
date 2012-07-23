@@ -22,7 +22,6 @@ print <<EOF;
         <link rel="stylesheet" href="style/maddash-webui.css" media="screen">
         <script src="lib/dojo/dojo/dojo.js" data-dojo-config="parseOnLoad: true"></script>
         <script src="lib/dojo/dojo/dojo-maddash.js"></script>
-        <script type="text/javascript" src="lib/protovis/protovis-r3.2.js"></script>
         <script type="text/javascript" src="lib/maddash.js"></script>
         <script type="text/javascript" src="lib/maddash-webui.js"></script>
         <script>
