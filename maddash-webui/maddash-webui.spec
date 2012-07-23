@@ -49,6 +49,8 @@ cp -r %{package_name}/web/images %{buildroot}/%{install_base}/images
 cp -r %{package_name}/web/etc %{buildroot}/%{install_base}/etc
 
 %post
+#restart apache so config changes are applied
+/etc/init.d/httpd restart
 
 %files
 %defattr(-,maddash,maddash,-)
