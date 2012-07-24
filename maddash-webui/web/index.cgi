@@ -41,12 +41,12 @@ print <<EOF;
 		<link rel="stylesheet" href="style/tipsy.css" />
         <link rel="stylesheet" href="style/jquery.fancybox-1.3.4.css" />
 	
-	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
+	    <script src="lib/jquery.min.js"></script>
+        <script src="lib/jquery-ui.min.js"></script>
         <script type="text/javascript" src="lib/jquery.tipsy.js"></script>
 		<script src="lib/dojo/dojo/dojo.js" data-dojo-config="parseOnLoad: true"></script>
 		<script src="lib/dojo/dojo/dojo-maddash.js"></script>
-		<script src="http://d3js.org/d3.v2.js"></script>
+		<script src="lib/d3.v2.js"></script>
 		<script type="text/javascript" src="lib/maddash.js"></script>
 		<script type="text/javascript" src="lib/maddash-webui.js"></script>
 		<script>
@@ -83,6 +83,8 @@ print <<EOF;
 		<div id="maddashDashboardPane">
 		    <img style='position:relative;left:49%;top:49%' height='20' width='20' class='loader' src='images/loader.gif'/>
 		</div>
+		<!-- add space for mouseover -->
+	    <div id="footer" class="maddashFooter"></div>
 	</body>
 </html>
 EOF

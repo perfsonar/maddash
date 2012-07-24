@@ -172,3 +172,8 @@ td.maddashFieldLabel {
 	color:#000000;
 	margin: 15px 5px 5px 5px;
 }
+.maddashFooter {
+    display: block;
+    clear: both;
+    height: 200px;
+}
