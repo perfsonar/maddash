@@ -86,7 +86,7 @@ checks:
             graphUrl: "http://example.mydomain.local/serviceTest/delayGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=14400"
             #The Nagios command to execute. The -w and -c options define the thresholds. 
             #The -r option specifies the time range to query.
-            command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 1800 -l -s %row -d %col"
+            command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 1800 -l -p -s %row -d %col"
         #How often to run the check (in seconds)
         checkInterval: 1800
         #How often to run the check if it detects a state different than the previous 
@@ -113,7 +113,7 @@ checks:
                 default: "http://%row:8085/perfSONAR_PS/services/pSB"
             metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%col&dstRaw=%row&count=108000&bucket_width=0"
             graphUrl: "http://example.mydomain.local/serviceTest/delayGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=14400"
-            command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -s %col -d %row"
+            command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -p -s %col -d %row"
         checkInterval: 1800
         retryInterval: 300
         retryAttempts: 3
