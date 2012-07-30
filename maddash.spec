@@ -1,5 +1,5 @@
 %define install_base /opt/maddash
-%define relnum 1 
+%define relnum 2 
 
 Name:           maddash
 Version:        1.0
@@ -13,6 +13,7 @@ BuildArch:      noarch
 Requires:       maddash-server
 Requires:       maddash-webui
 Requires:       perl-perfSONAR_PS-Nagios
+Requires:       perl-perfSONAR_PS-serviceTest
 
 %description
 MaDDash is a framework for scheduling service checks and displaying results in a grid. This package installs a default set of modules that can be used to perform basic maddash functions. 
