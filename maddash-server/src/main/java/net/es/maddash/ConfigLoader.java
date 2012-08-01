@@ -48,6 +48,7 @@ public class ConfigLoader {
     static final public String PROP_GRIDS_COLS = "columns";
     static final public String PROP_GRIDS_CHECKS = "checks";
     static final public String PROP_GRIDS_EXCL_SELF = "excludeSelf";
+    static final public String PROP_GRIDS_EXCL_CHECKS = "excludeChecks";
     static final public String PROP_GRIDS_COL_ALG = "columnAlgorithm";
     static final public String PROP_GRIDS_ROW_ORDER = "rowOrder";
     static final public String PROP_GRIDS_COL_ORDER = "colOrder";
@@ -63,7 +64,9 @@ public class ConfigLoader {
     static final public String ALG_ALL = "all";
     static final public String ORDER_ALPHA = "alphabetical";
     static final public String ORDER_GROUP = "group";
-
+    static final public String EXCL_CHECKS_DEFAULT = "default";
+    static final public String EXCL_CHECKS_ALL = "all";
+    
     /**
      * Loads YAML properties into scheduler database
      * 
@@ -169,6 +172,12 @@ public class ConfigLoader {
 
                 String colAlg = ((String)gridMap.get(PROP_GRIDS_COL_ALG)).toLowerCase();
                 int exclSelf = (Integer)gridMap.get(PROP_GRIDS_EXCL_SELF);
+                Map<String, List<String>> exclChecks = new HashMap<String, List<String>>();
+                if(gridMap.containsKey(PROP_GRIDS_EXCL_CHECKS) && 
+                        gridMap.get(PROP_GRIDS_EXCL_CHECKS) != null){
+                    exclChecks = (Map<String, List<String>>) gridMap.get(PROP_GRIDS_EXCL_CHECKS);
+                }
+                
                 //check groups
                 checkRequiredProp(groupMap, (String) gridMap.get(PROP_GRIDS_ROWS));
                 checkRequiredProp(groupMap, (String) gridMap.get(PROP_GRIDS_COLS));
@@ -211,52 +220,67 @@ public class ConfigLoader {
                     String row = rows.get(ri);
                     boolean rowColFound = false;
                     selCheckStmt.setString(2, row);
-                    for(String col : cols){;
-                    //compare column and row
-                    if(col.equals(row) && exclSelf == 1){
-                        rowColFound = true;
-                        continue;
-                    }else if(col.equals(row)){
-                        rowColFound = true;
-                    }
-
-                    //determine if we need to add a check
-                    if(colAlg.equals(ALG_AFTER) && !rowColFound){
-                        continue;
-                    }else if(colAlg.equals(ALG_BEFORE) && rowColFound){
-                        break;
-                    }
-
-                    //Handle database insert/update
-                    selCheckStmt.setString(3, col);
-                    for(String checkName : (List<String>)gridMap.get(PROP_GRIDS_CHECKS)){
-                        String checkNiceName = (String)checkMap.get(checkName).get(PROP_CHECKS_NAME);
-                        String checkDescrName = (String)checkMap.get(checkName).get(PROP_CHECKS_DESCRIPTION);
-                        checkRequiredProp(templateIdMap, checkName);
-                        selCheckStmt.setString(4, checkNiceName);
-                        selCheckStmt.setInt(5, templateIdMap.get(checkName));
-                        ResultSet selResult = selCheckStmt.executeQuery();
-                        if(selResult.next()){
-                            log.debug("Updated check " + checkName);
-                            updateCheckStmt.setString(1, formatCheckDescription(checkDescrName, row, col));
-                            updateCheckStmt.setInt(2, ri);
-                            updateCheckStmt.setInt(3, colOrderMap.get(col));
-                            updateCheckStmt.setInt(4, selResult.getInt(1));
-                            updateCheckStmt.executeUpdate();
-                        }else{
-                            log.debug("Added check " + checkName);
-                            insertCheckStmt.setInt(1, templateIdMap.get(checkName));
-                            insertCheckStmt.setString(2, (String)gridMap.get(PROP_GRIDS_NAME));
-                            insertCheckStmt.setString(3, row);
-                            insertCheckStmt.setString(4, col);
-                            insertCheckStmt.setString(5, checkNiceName);
-                            insertCheckStmt.setInt(6, ri);
-                            insertCheckStmt.setInt(7, colOrderMap.get(col));
-                            insertCheckStmt.setString(8, formatCheckDescription(checkDescrName, row, col));
-                            insertCheckStmt.executeUpdate();
+                    for(String col : cols){
+                        //compare column and row
+                        if(col.equals(row) && exclSelf == 1){
+                            rowColFound = true;
+                            continue;
+                        }else if(col.equals(row)){
+                            rowColFound = true;
+                        }
+                        
+                        //check if we should skip
+                        if(exclChecks.containsKey(row) && exclChecks.get(row) != null){
+                            if(exclChecks.get(row).contains(col) || 
+                                    exclChecks.get(row).contains(EXCL_CHECKS_ALL)){
+                               continue; 
+                            }
+                            
+                        }else if(exclChecks.containsKey(EXCL_CHECKS_DEFAULT) && 
+                                exclChecks.get(EXCL_CHECKS_DEFAULT) != null){
+                            if(exclChecks.get(EXCL_CHECKS_DEFAULT).contains(col) || 
+                                    exclChecks.get(EXCL_CHECKS_DEFAULT).contains(EXCL_CHECKS_ALL)){
+                               continue; 
+                            }
                         }
 
-                    }
+                        //determine if we need to add a check
+                        if(colAlg.equals(ALG_AFTER) && !rowColFound){
+                            continue;
+                        }else if(colAlg.equals(ALG_BEFORE) && rowColFound){
+                            break;
+                        }
+
+                        //Handle database insert/update
+                        selCheckStmt.setString(3, col);
+                        for(String checkName : (List<String>)gridMap.get(PROP_GRIDS_CHECKS)){
+                            String checkNiceName = (String)checkMap.get(checkName).get(PROP_CHECKS_NAME);
+                            String checkDescrName = (String)checkMap.get(checkName).get(PROP_CHECKS_DESCRIPTION);
+                            checkRequiredProp(templateIdMap, checkName);
+                            selCheckStmt.setString(4, checkNiceName);
+                            selCheckStmt.setInt(5, templateIdMap.get(checkName));
+                            ResultSet selResult = selCheckStmt.executeQuery();
+                            if(selResult.next()){
+                                log.debug("Updated check " + checkName);
+                                updateCheckStmt.setString(1, formatCheckDescription(checkDescrName, row, col));
+                                updateCheckStmt.setInt(2, ri);
+                                updateCheckStmt.setInt(3, colOrderMap.get(col));
+                                updateCheckStmt.setInt(4, selResult.getInt(1));
+                                updateCheckStmt.executeUpdate();
+                            }else{
+                                log.debug("Added check " + checkName);
+                                insertCheckStmt.setInt(1, templateIdMap.get(checkName));
+                                insertCheckStmt.setString(2, (String)gridMap.get(PROP_GRIDS_NAME));
+                                insertCheckStmt.setString(3, row);
+                                insertCheckStmt.setString(4, col);
+                                insertCheckStmt.setString(5, checkNiceName);
+                                insertCheckStmt.setInt(6, ri);
+                                insertCheckStmt.setInt(7, colOrderMap.get(col));
+                                insertCheckStmt.setString(8, formatCheckDescription(checkDescrName, row, col));
+                                insertCheckStmt.executeUpdate();
+                            }
+
+                        }
                     }
                 }
             }
