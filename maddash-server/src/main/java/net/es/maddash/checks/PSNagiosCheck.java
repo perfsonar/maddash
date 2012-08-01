@@ -54,6 +54,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
     private final String PARAM_MD_KEY_LOOKUP = "metaDataKeyLookup";
     private final String PARAM_GRAPH_URL = "graphUrl";
     private final String PARAM_MAURL = "maUrl";
+    private final String PROP_MAURL_DEFAULT = "default";
     
     public CheckResult check(String gridName, String rowName, String colName,
             Map params, int timeout) {
@@ -74,10 +75,18 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         Map maUrlMap = (Map)params.get(PARAM_MAURL);
         String maUrl = null;
         if(maUrlMap.containsKey(rowName) && maUrlMap.get(rowName) != null){
-            maUrl = (String) maUrlMap.get(rowName);
-        }else{
-            maUrl = (String) maUrlMap.get("default");
+            Map<String,String> rowMaUrlMap = (Map<String,String>) maUrlMap.get(rowName);
+            if(rowMaUrlMap.containsKey(colName) && rowMaUrlMap.get(colName) != null){
+                maUrl = (String) rowMaUrlMap.get(colName);
+            }else if(rowMaUrlMap.containsKey(PROP_MAURL_DEFAULT) && rowMaUrlMap.get(PROP_MAURL_DEFAULT) != null){
+                maUrl = (String) rowMaUrlMap.get(PROP_MAURL_DEFAULT);
+            }
         }
+        //try to set default
+        if(maUrl == null){
+            maUrl = (String) maUrlMap.get(PROP_MAURL_DEFAULT);
+        }
+        //if still not set then throw error
         if(maUrl == null){
             return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
                      "Default MA URL not defined. Please check config file", null);
