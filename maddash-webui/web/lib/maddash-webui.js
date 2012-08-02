@@ -373,24 +373,32 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
 			return;
 		}
 		
-		//set defaults
-		if(this.name == null){
-			console.log("Unable to determine dashboard to render");
-			return;	
-		}
-		
 		//get the list of grids that need to be drawn
 		var gridList = new Array();
 		if(this.type == "dashboard"){
 			var dashFound = false;
-			for(var i = 0;i < data.dashboards.length && !dashFound;i++){
-				if(data.dashboards[i].name == this.name){
-					gridList = data.dashboards[i].grids;
+			if (this.name) {
+				for(var i = 0;i < data.dashboards.length && !dashFound;i++){
+					if(data.dashboards[i].name == this.name){
+						gridList = data.dashboards[i].grids;
+						dashFound = true;
+					}
+				}
+			}
+			else {
+				this.name = data.dashboards[0].name;
+				gridList = data.dashboards[0].grids;
+				if (gridList) {
 					dashFound = true;
 				}
 			}
 			if(!dashFound){
-				console.log("Dashboard " + this.name + " not found");
+				if(this.name){
+					console.log("Dashboard " + this.name + " not found");
+				}
+				else {
+					console.log("No dashboards not found");
+				}
 			}
 		}else if(this.type == "grid"){
 		    var gridFound = false;
