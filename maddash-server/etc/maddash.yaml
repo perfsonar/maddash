@@ -71,9 +71,22 @@ checks:
         type: "net.es.maddash.checks.PSNagiosCheck"
         params:
             #The URL of the measurement archive. You can define templates on a per host 
-             #basis here. If not defined explicitly the 'default' template will be used.
+            #basis here. If not defined explicitly the 'default' template will be used.
             maUrl: 
                 default: "http://%row:8085/perfSONAR_PS/services/pSB"
+            # The section below sets a different maURL for every column in the row albu-owamp.es.net
+            #   albu-owamp.es.net:
+            #       default: "http://%col:8085/perfSONAR_PS/services/pSB"     
+            # The section below sets a different maURL for every column in the row 
+            # bois-owamp.es.net EXCEPT the column bost-owamp.es.net
+            #   bois-owamp.es.net:
+            #       default: "http://%col:8085/perfSONAR_PS/services/pSB"  
+            #       bost-owamp.es.net: "http://%row:8085/perfSONAR_PS/services/pSB"
+            # The section below sets a different maURL for the check at row bost-owamp.es.net 
+            # and column albu-owamp.es.net
+            #   bost-owamp.es.net:
+            #       albu-owamp.es.net: "http://ma.es.net:8085/perfSONAR_PS/services/pSB"
+            #
             #This is required to get graphs to work. It looks up all the 'keys' the 
             #perfSONAR associates with a particular source/destination regardless of 
             #whether IP or hostname is used. In general you should just be able to change 
@@ -193,6 +206,24 @@ grids:
       # Set to  if you don't want results to be checked from a host to itself. Set to 0 
       # otherwise.
       excludeSelf: 1
+      # The section below allows you to exclude individual checks. The structure is a map
+      # where the key is the name of the row where you want to exclude a check. It should match
+      # a member of the group assigned to the "rows" property of this grid or it can be the special
+      # key 'default' that matches every row. The value is a list of columns that should not appear 
+      # in the grid. An item in the list must be a member of the group assigned to the "columns"
+      # property of this grid or the special value "all" which removes all columns for a row. The example
+      # below does the following:
+      #     * Excludes the column albu-pt1.es.net from every row 
+      #     * Excludes the column chic-pt1.es.net from the row bois-owamp.es.net
+      #     * Excludes every column in the row bost-owamp.es.net
+      # excludeChecks:
+      #  default:
+      #      - "albu-pt1.es.net"
+      #  bois-owamp.es.net: 
+      #      - "chic-pt1.es.net"
+      #  bost-owamp.es.net:
+      #      - "all"
+      #
       # Determines which checks will be run. Valid values are as follows:
       #  all - Run a check between every row and column. This will be the most common.
       #  afterSelf - Run a check to every host that's defined after the current row in the 'rows' group
