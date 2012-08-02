@@ -269,7 +269,7 @@ var MaDDashCheckSummary = function(parent){
 				" times before state change)"));
 		}
 		this.parent.appendChild(document.createElement("br"));
-		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Message from last check: "));
+		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Message For Current Status: "));
 		this.parent.appendChild(maddashCreateSpan("maddashFieldValue", data.message));
 		this.parent.appendChild(document.createElement("br"));
 	}
