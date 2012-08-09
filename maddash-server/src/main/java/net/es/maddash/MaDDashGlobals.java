@@ -504,12 +504,12 @@ public class MaDDashGlobals {
                         "NOT NULL, prevResultCode INTEGER NOT NULL, statusMessage VARCHAR(2000) NOT NULL, " +
                         "resultCount INTEGER NOT NULL, active INTEGER NOT NULL)", conn);
                 this.execSQLCreate("CREATE TABLE checkTemplates (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
-                        " checkType VARCHAR(500) NOT NULL, checkParams VARCHAR(2000), checkInterval INTEGER NOT NULL, " +
+                        " checkType VARCHAR(500) NOT NULL, checkParams VARCHAR(32672), checkInterval INTEGER NOT NULL, " +
                         "retryInterval INTEGER NOT NULL, retryAttempts INTEGER NOT NULL, " +
                         "timeout INTEGER NOT NULL)", conn);
                 this.execSQLCreate("CREATE TABLE results (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "checkId INTEGER NOT NULL, checkTime BIGINT NOT NULL, returnCode " +
-                        "INTEGER NOT NULL, returnMessage VARCHAR(2000) NOT NULL, returnParams VARCHAR(2000), " +
+                        "INTEGER NOT NULL, returnMessage VARCHAR(2000) NOT NULL, returnParams VARCHAR(32672), " +
                         "resultCount INTEGER NOT NULL, checkStatus INTEGER NOT NULL)", conn);
                 this.execSQLCreate("CREATE TABLE grids (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "gridName VARCHAR(500) NOT NULL, okLabel VARCHAR(2000) NOT NULL, " +

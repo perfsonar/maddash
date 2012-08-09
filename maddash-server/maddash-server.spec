@@ -51,12 +51,14 @@ mvn -DskipTests --projects %{mvn_project_list} install
 #Create directory structure for build root
 mkdir -p %{buildroot}/%{install_base}/target
 mkdir -p %{buildroot}/%{install_base}/bin
+mkdir -p %{buildroot}/%{install_base}/sql
 mkdir -p %{buildroot}/%{config_base}
 mkdir -p %{buildroot}/etc/init.d
 
 #Copy jar files and scripts
 cp %{package_name}/target/*.jar %{buildroot}/%{install_base}/target/
 install -m 755 %{package_name}/bin/* %{buildroot}/%{install_base}/bin/
+install -m 744 %{package_name}/sql/* %{buildroot}/%{install_base}/sql/
 install -m 755 %{package_name}/scripts/%{package_name} %{buildroot}/etc/init.d/%{package_name}
 
 # Copy default config file
@@ -92,11 +94,17 @@ chown maddash:maddash %{install_base}/target/%{package_name}.jar
 #Configure service to start when machine boots
 /sbin/chkconfig --add %{package_name}
 
+##Upgrade database
+if [ "$1" = "2" ]; then
+  %{install_base}/bin/update_db.sh -d %{data_dir} -f %{install_base}/sql/upgrade-1.0rc1-tables.sql
+fi
+
 %files
 %defattr(-,maddash,maddash,-)
 %config(noreplace) %{config_base}/*
 %{install_base}/target/*
 %{install_base}/bin/*
+%{install_base}/sql/*
 /etc/init.d/%{package_name}
 
 %preun
