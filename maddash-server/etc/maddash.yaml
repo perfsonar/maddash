@@ -92,7 +92,7 @@ checks:
             #whether IP or hostname is used. In general you should just be able to change 
             #the hostname in the URL (example.mydomain.local),  to the name of your toolkit host 
             #and it will work. You can leave the rest of the URL untouched.
-            metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=108000&bucket_width=0"
+            metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=0&bucket_width=0"
             #This is the URL to the graph script. You should be able to change the 
             #hostname(example.mydomain.local) to your toolkit hostname and leave the rest of the 
             #URL untouched. 
@@ -124,7 +124,7 @@ checks:
         params:
             maUrl: 
                 default: "http://%row:8085/perfSONAR_PS/services/pSB"
-            metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%col&dstRaw=%row&count=108000&bucket_width=0"
+            metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%col&dstRaw=%row&count=0&bucket_width=0"
             graphUrl: "http://example.mydomain.local/serviceTest/delayGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=14400"
             command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -p -s %col -d %row"
         checkInterval: 1800
