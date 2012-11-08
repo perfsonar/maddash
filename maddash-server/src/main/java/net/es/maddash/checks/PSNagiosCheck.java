@@ -57,7 +57,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
     private final String PROP_MAURL_DEFAULT = "default";
     
     public CheckResult check(String gridName, String rowName, String colName,
-            Map params, int timeout) {
+            Map params,  Map<String,String> rowVars, Map<String,String> colVars, int timeout) {
         HashMap<String, String> netLogParams = new HashMap<String, String>();
         NetLogger netLog = NetLogger.getTlogger();
         
@@ -119,7 +119,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         params.put(PARAM_COMMAND, command);
         
         //run command
-        CheckResult nagiosResult = super.check(gridName, rowName, colName, params, timeout);
+        CheckResult nagiosResult = super.check(gridName, rowName, colName, params, rowVars, colVars, timeout);
         if(nagiosResult.getStats() == null){
             nagiosResult.setStats(new HashMap<String, String>());
         }

@@ -515,6 +515,9 @@ public class MaDDashGlobals {
                         "gridName VARCHAR(500) NOT NULL, okLabel VARCHAR(2000) NOT NULL, " +
                         "warningLabel VARCHAR(2000) NOT NULL, criticalLabel VARCHAR(2000) NOT NULL, " +
                         "unknownLabel VARCHAR(2000) NOT NULL, notRunLabel VARCHAR(2000) NOT NULL )", conn);
+                this.execSQLCreate("CREATE TABLE dimensions (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        "configIdent VARCHAR(2000) NOT NULL, keyName VARCHAR(2000) NOT NULL, value VARCHAR(2000) NOT NULL )", conn);
+                
                 //Create indexes - always rebuilds indexes which can help performance.
                 //    checks indexes
                 this.execSQLCreate("DROP INDEX checksTemplateId", conn);
@@ -538,6 +541,9 @@ public class MaDDashGlobals {
                 //grid index
                 this.execSQLCreate("DROP INDEX gridsGridName", conn);
                 this.execSQLCreate("CREATE UNIQUE INDEX gridsGridName ON grids(gridName)", conn);
+                //dimensions
+                this.execSQLCreate("DROP INDEX dimensionsConfigIdent", conn);
+                this.execSQLCreate("CREATE INDEX dimensionsConfigIdent ON dimensions(configIdent)", conn);
                 }
             
             conn.close();

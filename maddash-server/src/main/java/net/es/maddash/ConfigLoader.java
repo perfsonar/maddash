@@ -30,8 +30,12 @@ public class ConfigLoader {
     static final Logger log = Logger.getLogger(ConfigLoader.class);
 
     //properties
+    static final public String PROP_DIMENSIONS = "dimensions";
+    static final public String PROP_DIMENSIONS_ID = "id";
+    static final public String PROP_DIMENSIONS_LABEL = "label";
+    
     static final public String PROP_GROUPS = "groups";
-
+    
     static final public String PROP_CHECKS = "checks";
     static final public String PROP_CHECKS_NAME = "name";
     static final public String PROP_CHECKS_DESCRIPTION = "description";
@@ -87,7 +91,30 @@ public class ConfigLoader {
         Connection conn = null;
         try{
             conn = dataSource.getConnection();
-
+            
+            //populate the dimensions table
+            conn.createStatement().executeUpdate("DELETE FROM dimensions");
+            PreparedStatement insertDimension = conn.prepareStatement("INSERT INTO dimensions VALUES(DEFAULT, ?, ?, ?)");
+            if(config.containsKey(PROP_DIMENSIONS) && config.get(PROP_DIMENSIONS) != null){
+            	int i = 1;
+            	for(Map<String,String> dimension : (List<Map<String,String>>) config.get(PROP_DIMENSIONS)){
+            		if(!dimension.containsKey(PROP_DIMENSIONS_ID) || dimension.get(PROP_DIMENSIONS_ID) == null){
+            			throw new RuntimeException("Found dimension at position " + i + 
+            					" that is missing 'id' attribute");
+            		}
+            		for(String dimensionParam : dimension.keySet()){
+            			if(dimensionParam.equals(PROP_DIMENSIONS_ID)){
+            				continue;
+            			}
+            			insertDimension.setString(1, dimension.get(PROP_DIMENSIONS_ID));
+            			insertDimension.setString(2, dimensionParam);
+            			insertDimension.setString(3, dimension.get(dimensionParam));
+            			insertDimension.executeUpdate();
+            		}
+            		i++;
+            	}
+            }
+            
             //Build prepared statements for each check
             HashMap<String, Integer> templateIdMap = new HashMap<String, Integer>();
             PreparedStatement selTemplateStmt = conn.prepareStatement("SELECT id FROM " +

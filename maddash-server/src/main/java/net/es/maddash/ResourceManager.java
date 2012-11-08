@@ -117,11 +117,19 @@ public class ResourceManager {
                 return null;
             }
             
+            //get row and column labels
+            HashMap<String, String> dimesnionLabelMap = new HashMap<String, String>();
+            PreparedStatement labelStmt = conn.prepareStatement("SELECT configIdent, value FROM dimensions WHERE keyName=?");
+            labelStmt.setString(1, ConfigLoader.PROP_DIMENSIONS_LABEL);
+            ResultSet labelResults = labelStmt.executeQuery();
+            while(labelResults.next()){
+            	dimesnionLabelMap.put(labelResults.getString(1), labelResults.getString(2));
+            }
             
             //get information on checks
             PreparedStatement stmt = conn.prepareStatement("SELECT rowName, colName," +
-                " checkName, colOrder, statusMessage, checkStatus, prevCheckTime FROM checks WHERE gridName=? " +
-                "AND active=1 ORDER BY rowOrder, colOrder, checkName");
+                    " checkName, colOrder, statusMessage, checkStatus, prevCheckTime FROM checks WHERE gridName=? " +
+                    "AND active=1 ORDER BY rowOrder, colOrder, checkName");
             stmt.setString(1, gridName);
             ResultSet results = stmt.executeQuery();
             
@@ -142,7 +150,11 @@ public class ResourceManager {
                     
                 }
                 
+                //translate to label of there is one
                 String rowName = results.getString(1);
+                if(dimesnionLabelMap.containsKey(rowName) && dimesnionLabelMap.get(rowName) != null){
+                	rowName = dimesnionLabelMap.get(rowName);
+                }
                 if(!rowName.equals(lastRow)){
                     JSONObject tmpRowObj = new JSONObject();
                     tmpRowObj.put("name", rowName);
@@ -180,7 +192,12 @@ public class ResourceManager {
             ArrayList<Integer> checkOrderList = new ArrayList<Integer>(colMap.keySet());
             Collections.sort(checkOrderList);
             for(Integer colIndex : checkOrderList){
-                colList.add(colMap.get(colIndex));
+            	//translate column to label if possible
+            	String colLabel = colMap.get(colIndex);
+            	if(dimesnionLabelMap.containsKey(colLabel) && dimesnionLabelMap.get(colLabel) != null){
+            		colLabel = dimesnionLabelMap.get(colLabel);
+                }
+                colList.add(colLabel);
             }
             
             ArrayList<String> checkList = new ArrayList<String>(checkMap.keySet());

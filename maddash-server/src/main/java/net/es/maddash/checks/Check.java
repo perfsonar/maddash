@@ -18,5 +18,6 @@ public interface Check {
      * @param timeout the maximum amount of time to wait for this check
      * @return the result of the check
      */
-    public CheckResult check(String gridName, String rowName, String colName, Map params, int timeout);
+    public CheckResult check(String gridName, String rowName, String colName, 
+    		Map params, Map<String,String> rowVars, Map<String,String> colVars, int timeout);
 }

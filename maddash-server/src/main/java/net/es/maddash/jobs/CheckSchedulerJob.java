@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import net.es.maddash.MaDDashGlobals;
 import net.es.maddash.NetLogger;
+import net.es.maddash.utils.DimensionUtil;
 
 import org.apache.log4j.Logger;
 import org.quartz.JobDataMap;
@@ -99,6 +100,8 @@ public class CheckSchedulerJob extends Thread{
                 dataMap.put("retryAttempts", checksToRun.getInt(9));
                 dataMap.put("timeout", checksToRun.getInt(10));
                 dataMap.put("statusMessage", checksToRun.getString(11));
+                dataMap.put("rowVars", DimensionUtil.getParams(checksToRun.getString(3), conn));
+                dataMap.put("colVars", DimensionUtil.getParams(checksToRun.getString(4), conn));
                 jobDetail.setJobDataMap(dataMap);
                 globals.updateScheduledChecks(checksToRun.getInt(1), true);
                 globals.getScheduler().scheduleJob(jobDetail, trigger);
