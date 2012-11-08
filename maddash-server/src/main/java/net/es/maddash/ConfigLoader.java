@@ -30,7 +30,7 @@ public class ConfigLoader {
     static final Logger log = Logger.getLogger(ConfigLoader.class);
 
     //properties
-    static final public String PROP_DIMENSIONS = "dimensions";
+    static final public String PROP_DIMENSIONS = "groupMembers";
     static final public String PROP_DIMENSIONS_ID = "id";
     static final public String PROP_DIMENSIONS_LABEL = "label";
     
