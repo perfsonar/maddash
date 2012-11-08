@@ -16,6 +16,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.log4j.Logger;
 
 import net.es.maddash.checks.CheckConstants;
+import net.es.maddash.utils.DimensionUtil;
 import net.es.maddash.utils.URIUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -152,9 +153,6 @@ public class ResourceManager {
                 
                 //translate to label of there is one
                 String rowName = results.getString(1);
-                if(dimesnionLabelMap.containsKey(rowName) && dimesnionLabelMap.get(rowName) != null){
-                	rowName = dimesnionLabelMap.get(rowName);
-                }
                 if(!rowName.equals(lastRow)){
                     JSONObject tmpRowObj = new JSONObject();
                     tmpRowObj.put("name", rowName);
@@ -192,19 +190,13 @@ public class ResourceManager {
             ArrayList<Integer> checkOrderList = new ArrayList<Integer>(colMap.keySet());
             Collections.sort(checkOrderList);
             for(Integer colIndex : checkOrderList){
-            	//translate column to label if possible
-            	String colLabel = colMap.get(colIndex);
-            	if(dimesnionLabelMap.containsKey(colLabel) && dimesnionLabelMap.get(colLabel) != null){
-            		colLabel = dimesnionLabelMap.get(colLabel);
-                }
-                colList.add(colLabel);
+                colList.add(colMap.get(colIndex));
             }
             
             ArrayList<String> checkList = new ArrayList<String>(checkMap.keySet());
             Collections.sort(checkList);
             json.put("lastUpdateTime", lastUpdateTime);
-            json.put("rows", rowList);
-            json.put("columnNames", colList);
+            json.put("columnNames", DimensionUtil.translateNames(colList, dimesnionLabelMap));
             json.put("checkNames", checkList);
             JSONArray jsonGrid = new JSONArray();
             for(JSONObject rowObj : rowList){
@@ -228,6 +220,7 @@ public class ResourceManager {
                 jsonGrid.add(jsonRow);
             }
             json.put("grid", jsonGrid);
+            json.put("rows",  DimensionUtil.translateNames(rowList, dimesnionLabelMap));
         } catch (Exception e) {
             if(conn != null){
                 try {
@@ -243,7 +236,7 @@ public class ResourceManager {
         netlogger.info(netLog.end("maddash.ResourceManager.getGrid"));
         return json;
     }
-
+    
     /**
      * Returns a grid row
      * 
