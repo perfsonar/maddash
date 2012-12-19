@@ -5,7 +5,7 @@
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
-%define relnum 5 
+%define relnum 6 
 
 Name:           %{package_name}
 Version:        1.0

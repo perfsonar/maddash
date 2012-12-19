@@ -59,7 +59,7 @@ public class ResourceManager {
             JSONArray jsonGridList = new JSONArray();
             conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet grids = stmt.executeQuery("SELECT DISTINCT gridName FROM checks");
+            ResultSet grids = stmt.executeQuery("SELECT DISTINCT gridName FROM grids");
             while(grids.next()){
                 JSONObject gridJson = new JSONObject();
                 gridJson.put("name", grids.getString(1));
