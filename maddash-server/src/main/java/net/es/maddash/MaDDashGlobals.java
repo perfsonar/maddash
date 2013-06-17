@@ -504,7 +504,7 @@ public class MaDDashGlobals {
                         "NOT NULL, prevResultCode INTEGER NOT NULL, statusMessage VARCHAR(2000) NOT NULL, " +
                         "resultCount INTEGER NOT NULL, active INTEGER NOT NULL)", conn);
                 this.execSQLCreate("CREATE TABLE checkTemplates (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
-                        " checkType VARCHAR(500) NOT NULL, checkParams VARCHAR(32672), checkInterval INTEGER NOT NULL, " +
+                        " checkType VARCHAR(500) NOT NULL, checkParams CLOB, checkInterval INTEGER NOT NULL, " +
                         "retryInterval INTEGER NOT NULL, retryAttempts INTEGER NOT NULL, " +
                         "timeout INTEGER NOT NULL)", conn);
                 this.execSQLCreate("CREATE TABLE results (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
