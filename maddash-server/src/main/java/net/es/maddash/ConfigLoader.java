@@ -1,5 +1,6 @@
 package net.es.maddash;
 
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.sql.rowset.serial.SerialClob;
 
 import org.apache.log4j.Logger;
 
@@ -118,10 +121,11 @@ public class ConfigLoader {
             //Build prepared statements for each check
             HashMap<String, Integer> templateIdMap = new HashMap<String, Integer>();
             PreparedStatement selTemplateStmt = conn.prepareStatement("SELECT id FROM " +
-                    "checkTemplates WHERE checkType=? AND checkParams=? AND " +
-            "checkInterval=? AND retryInterval=? AND retryAttempts=? AND timeout=?");
+                    "checkTemplates WHERE checkType=? AND " +
+                    "checkInterval=? AND retryInterval=? AND retryAttempts=? AND timeout=?");
             PreparedStatement insertTemplateStmt = conn.prepareStatement("INSERT INTO " +
                     "checkTemplates VALUES(DEFAULT, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement updateTemplateStmt = conn.prepareStatement("UPDATE checkTemplates SET checkParams=? WHERE id=?");
             for(String checkName : checkMap.keySet()){
                 Map check = checkMap.get(checkName);
                 checkRequiredProp(check, PROP_CHECKS_NAME);
@@ -138,27 +142,29 @@ public class ConfigLoader {
                 if(check.containsKey(PROP_CHECKS_PARAMS) && check.get(PROP_CHECKS_PARAMS) != null){
                     jsonParamString = JSONObject.fromObject(check.get(PROP_CHECKS_PARAMS)).toString();
                 }
-                selTemplateStmt.setString(2, jsonParamString);
-                insertTemplateStmt.setString(2, jsonParamString);
+                updateTemplateStmt.setClob(1, new SerialClob(jsonParamString.toCharArray()));
+                insertTemplateStmt.setClob(2, new SerialClob(jsonParamString.toCharArray()));
 
                 checkRequiredProp(check, PROP_CHECKS_INTERVAL);
-                selTemplateStmt.setInt(3, (Integer) check.get(PROP_CHECKS_INTERVAL));
+                selTemplateStmt.setInt(2, (Integer) check.get(PROP_CHECKS_INTERVAL));
                 insertTemplateStmt.setInt(3, (Integer) check.get(PROP_CHECKS_INTERVAL));
 
                 checkRequiredProp(check, PROP_CHECKS_RETRY_INT);
-                selTemplateStmt.setInt(4, (Integer) check.get(PROP_CHECKS_RETRY_INT));
+                selTemplateStmt.setInt(3, (Integer) check.get(PROP_CHECKS_RETRY_INT));
                 insertTemplateStmt.setInt(4, (Integer) check.get(PROP_CHECKS_RETRY_INT));
 
                 checkRequiredProp(check, PROP_CHECKS_RETRY_ATT);
-                selTemplateStmt.setInt(5, (Integer) check.get(PROP_CHECKS_RETRY_ATT));
+                selTemplateStmt.setInt(4, (Integer) check.get(PROP_CHECKS_RETRY_ATT));
                 insertTemplateStmt.setInt(5, (Integer) check.get(PROP_CHECKS_RETRY_ATT));
 
                 checkRequiredProp(check, PROP_CHECKS_TIMEOUT);
-                selTemplateStmt.setInt(6, (Integer) check.get(PROP_CHECKS_TIMEOUT));
+                selTemplateStmt.setInt(5, (Integer) check.get(PROP_CHECKS_TIMEOUT));
                 insertTemplateStmt.setInt(6, (Integer) check.get(PROP_CHECKS_TIMEOUT));
 
                 ResultSet selResult = selTemplateStmt.executeQuery();
                 if(selResult.next()){
+                    updateTemplateStmt.setInt(2, selResult.getInt(1));
+                    updateTemplateStmt.execute();
                     templateIdMap.put(checkName, selResult.getInt(1));
                 }else{
                     insertTemplateStmt.executeUpdate();
