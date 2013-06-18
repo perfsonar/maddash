@@ -62,6 +62,11 @@ public class CheckSchedulerJob extends Thread{
         //query database
         Connection conn = null;
         try{
+            /* garbage collect before hitting database. memory spikes occur 
+             * here as we pull in new check data so this maximizes memory 
+             * available prior to spike and should help prevent heap errors */
+            System.gc();
+            
             MaDDashGlobals globals = MaDDashGlobals.getInstance();
             conn = globals.getDataSource().getConnection();
             long time = System.currentTimeMillis()/1000;

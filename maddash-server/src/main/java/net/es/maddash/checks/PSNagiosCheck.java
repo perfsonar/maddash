@@ -75,27 +75,14 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         Map maUrlMap = (Map)params.get(PARAM_MAURL);
         String maUrl = null;
         if(maUrlMap.containsKey(rowName) && maUrlMap.get(rowName) != null){
-            //System.out.println("rowName=" + rowName);
-            //System.out.println("    containsKey=" + maUrlMap.containsKey(rowName));
             Map<String,String> rowMaUrlMap = (Map<String,String>) maUrlMap.get(rowName);
-            for(String key: rowMaUrlMap.keySet()){
-                //System.out.println("       " + key + ": " + rowMaUrlMap.get(key));
-            }
-            
             if(rowMaUrlMap.containsKey(colName) && rowMaUrlMap.get(colName) != null){
                 maUrl = (String) rowMaUrlMap.get(colName);
-                //System.out.println("       colName=" + maUrl);
             }else if(rowMaUrlMap.containsKey(PROP_MAURL_DEFAULT) && rowMaUrlMap.get(PROP_MAURL_DEFAULT) != null){
                 maUrl = (String) rowMaUrlMap.get(PROP_MAURL_DEFAULT);
-                //System.out.println("       default=" + maUrl);
             }
-        }else{
-            System.out.println("Unable to find " + rowName);
-            for(Object key: maUrlMap.keySet()){
-                System.out.println("       " + key);
-            }
-            
         }
+        
         //try to set default
         if(maUrl == null){
             maUrl = (String) maUrlMap.get(PROP_MAURL_DEFAULT);
