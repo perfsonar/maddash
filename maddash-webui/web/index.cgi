@@ -84,9 +84,16 @@ print <<EOF;
 		    <img style='position:relative;left:49%;top:49%' height='20' width='20' class='loader' src='images/loader.gif'/>
 		</div>
 		<!-- add space for mouseover -->
-	    <div id="footer" class="maddashFooter"></div>
+	        <div id="footer" class="maddashFooter">
+                </div>
+                <div class="maddashFooterMoreInfo">
+                  <br>
+                  <hr width="90%">
+                  More information on MaDDash available <a target="newwindow" href="https://code.google.com/p/perfsonar-ps/wiki/MaDDashInstall">here</a>
+                </div>
 	</body>
 </html>
 EOF
 
 }
+

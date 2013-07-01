@@ -175,5 +175,15 @@ td.maddashFieldLabel {
 .maddashFooter {
     display: block;
     clear: both;
-    height: 200px;
+    height: 50px;
 }
+.maddashFooterMoreInfo {
+        text-align:center;
+        margin-left:auto;
+        margin-right:auto;
+        width: 100%;
+        font-size: 12px;
+        height: 100px;
+        color:#000000;
+}
+
