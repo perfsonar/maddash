@@ -96,12 +96,11 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         vars.put("%maUrl", maUrl);
         
         //get metadata key lookup URL
-        if(!params.containsKey(PARAM_MD_KEY_LOOKUP) || params.get(PARAM_MD_KEY_LOOKUP) == null){
-            return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
-                    PARAM_MD_KEY_LOOKUP + " not defined. Please check config file", null);
+        String mdKeyLookupUrl = null;
+        if(params.containsKey(PARAM_MD_KEY_LOOKUP) && params.get(PARAM_MD_KEY_LOOKUP) != null){
+            mdKeyLookupUrl = (String)params.get(PARAM_MD_KEY_LOOKUP);
+            mdKeyLookupUrl = this.replaceVars(mdKeyLookupUrl, vars);
         }
-        String mdKeyLookupUrl = (String)params.get(PARAM_MD_KEY_LOOKUP);
-        mdKeyLookupUrl = this.replaceVars(mdKeyLookupUrl, vars);
         
         //get graph url
         if(!params.containsKey(PARAM_GRAPH_URL) || params.get(PARAM_GRAPH_URL) == null){
@@ -129,35 +128,37 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         //get MA key
         String response = "";
         try{
-            netlogger.debug(netLog.start("maddash.PSNagiosCheck.getMdKey", null, mdKeyLookupUrl));
-            URL url = new URL(mdKeyLookupUrl);
-            HttpURLConnection httpConn = (HttpURLConnection)url.openConnection();
-            log.debug("mdKeyLookupUrl=" + mdKeyLookupUrl);
-            log.debug("Status code: " + httpConn.getResponseCode());
-            log.debug("Response Message: " + httpConn.getResponseMessage());
-            netLogParams.put("responseCode", httpConn.getResponseCode()+"");
-            if(httpConn.getResponseCode()/200 != 1 ){
+            if(mdKeyLookupUrl != null){
+                netlogger.debug(netLog.start("maddash.PSNagiosCheck.getMdKey", null, mdKeyLookupUrl));
+                URL url = new URL(mdKeyLookupUrl);
+                HttpURLConnection httpConn = (HttpURLConnection)url.openConnection();
+                log.debug("mdKeyLookupUrl=" + mdKeyLookupUrl);
+                log.debug("Status code: " + httpConn.getResponseCode());
+                log.debug("Response Message: " + httpConn.getResponseMessage());
+                netLogParams.put("responseCode", httpConn.getResponseCode()+"");
+                if(httpConn.getResponseCode()/200 != 1 ){
+                    netlogger.debug(netLog.end("maddash.PSNagiosCheck.getMdKey", null, mdKeyLookupUrl, netLogParams));
+                    return nagiosResult;
+                }
+                BufferedReader responseReader  = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
+                String line = null;
+                while ((line = responseReader.readLine()) != null){
+                    response += (line + '\n');
+                }
                 netlogger.debug(netLog.end("maddash.PSNagiosCheck.getMdKey", null, mdKeyLookupUrl, netLogParams));
-                return nagiosResult;
+                log.debug("Response: " + response);
+                
+                //load response into check result
+                JSONObject responseJSON = JSONObject.fromObject(response);
+                //make sure not to replace longer vars with shorter (i.e. dst and dstIP)
+                vars.put("%maKeyF", ""+responseJSON.get("maKey"));
+                vars.put("%maKeyR",""+responseJSON.get("maKeyR"));
+                vars.put("%srcName", ""+responseJSON.get("src"));
+                vars.put("%srcIP", ""+responseJSON.get("srcIP"));
+                vars.put("%dstName", ""+responseJSON.get("dst"));
+                vars.put("%dstIP", ""+responseJSON.get("dstIP"));
+                vars.put("%eventType", ""+responseJSON.get("eventType"));
             }
-            BufferedReader responseReader  = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
-            String line = null;
-            while ((line = responseReader.readLine()) != null){
-                response += (line + '\n');
-            }
-            netlogger.debug(netLog.end("maddash.PSNagiosCheck.getMdKey", null, mdKeyLookupUrl, netLogParams));
-            log.debug("Response: " + response);
-            
-            //load response into check result
-            JSONObject responseJSON = JSONObject.fromObject(response);
-            //make sure not to replace longer vars with shorter (i.e. dst and dstIP)
-            vars.put("%maKeyF", ""+responseJSON.get("maKey"));
-            vars.put("%maKeyR",""+responseJSON.get("maKeyR"));
-            vars.put("%srcName", ""+responseJSON.get("src"));
-            vars.put("%srcIP", ""+responseJSON.get("srcIP"));
-            vars.put("%dstName", ""+responseJSON.get("dst"));
-            vars.put("%dstIP", ""+responseJSON.get("dstIP"));
-            vars.put("%eventType", ""+responseJSON.get("eventType"));
             graphUrl = this.replaceVars(graphUrl, vars);
             nagiosResult.getStats().put("graphUrl", graphUrl);
         }catch(Exception e){
