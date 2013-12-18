@@ -1,9 +1,9 @@
 %define package_name maddash-webui 
 %define install_base /opt/maddash/%{package_name}
-%define relnum 2
+%define relnum 1
 
 Name:           %{package_name}
-Version:        1.0
+Version:        1.1
 Release:        %{relnum}
 Summary:        MaDDash Web Interface 
 License:        distributable, see LICENSE
