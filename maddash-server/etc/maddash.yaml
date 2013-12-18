@@ -3,8 +3,8 @@
 database: /var/lib/maddash/
 
 ##
-# Set the number of jobs that can run in parallel. Default is 50.
-#jobThreadPoolSize: 50
+# Set the number of jobs that can run in parallel. Default is 20.
+#jobThreadPoolSize: 20
 
 ##
 # Set number of jobs that can be in queue at one time. Default is 250.
@@ -43,16 +43,27 @@ http:
 # any alphanumeric name. A host may belong to multiple groups.
 groups:
     myOwampHosts :
-        - "albu-owamp.es.net"
+        - "albq-owamp.es.net"
         - "bois-owamp.es.net"
         - "bost-owamp.es.net"
         - "chic-owamp.es.net"
     
     myBwctlHosts :
-        - "albu-pt1.es.net"
+        - "albq-pt1.es.net"
         - "bois-pt1.es.net"
         - "bost-pt1.es.net"
         - "chic-pt1.es.net"
+
+##
+# 'groupMembers' allow you to assign labels to items in 'groups'. 
+# Set the "id" to the value used in the "group" list and the "label" 
+# to what you want displayed. This block is useful in cases where you want 
+# a value such as an IP address or port number passed to a check but on the GUI
+# you want a human-readable value displayed
+groupMembers:
+    - id: "chic-pt1.es.net"
+      label: "Chicago Tester" 
+##
 
 ##
 # 'checks' are where you define a template for a check to execute. You'll provide a 
@@ -87,16 +98,16 @@ checks:
             #   bost-owamp.es.net:
             #       albu-owamp.es.net: "http://ma.es.net:8085/perfSONAR_PS/services/pSB"
             #
-            #This is required to get graphs to work. It looks up all the 'keys' the 
+            #DEPRECATED: It looks up all the 'keys' the 
             #perfSONAR associates with a particular source/destination regardless of 
             #whether IP or hostname is used. In general you should just be able to change 
             #the hostname in the URL (example.mydomain.local),  to the name of your toolkit host 
             #and it will work. You can leave the rest of the URL untouched.
-            metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=0&bucket_width=0"
+            #metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=0&bucket_width=0"
             #This is the URL to the graph script. You should be able to change the 
             #hostname(example.mydomain.local) to your toolkit hostname and leave the rest of the 
             #URL untouched. 
-            graphUrl: "http://example.mydomain.local/serviceTest/delayGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=14400"
+            graphUrl: "http://example.mydomain.local/serviceTest/delayGraph.cgi?url=%maUrl&dst=%col&src=%row&length=14400"
             #The Nagios command to execute. The -w and -c options define the thresholds. 
             #The -r option specifies the time range to query.
             command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 1800 -l -p -s %row -d %col"
@@ -124,8 +135,7 @@ checks:
         params:
             maUrl: 
                 default: "http://%row:8085/perfSONAR_PS/services/pSB"
-            metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%col&dstRaw=%row&count=0&bucket_width=0"
-            graphUrl: "http://example.mydomain.local/serviceTest/delayGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=14400"
+            graphUrl: "http://example.mydomain.local/serviceTest/delayGraph.cgi?url=%maUrl&dst=%row&src=%col&length=14400"
             command: "/opt/perfsonar_ps/nagios/bin/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -p -s %col -d %row"
         checkInterval: 1800
         retryInterval: 300
@@ -145,8 +155,7 @@ checks:
         params:
             maUrl:
                 default: "http://%row:8085/perfSONAR_PS/services/pSB"
-            metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.iperf&srcRaw=%row&dstRaw=%col&protocol=TCP&timeDuration=0"
-            graphUrl: "http://example.mydomain.local/serviceTest/bandwidthGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=2592000"
+            graphUrl: "http://example.mydomain.local/serviceTest/bandwidthGraph.cgi?url=%maUrl&dst=%col&src=%row&length=2592000"
             #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
             command:  "/opt/perfsonar_ps/nagios/bin/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %row -d %col"
         checkInterval: 28800
@@ -163,8 +172,7 @@ checks:
         params:
             maUrl:
                 default: "http://%row:8085/perfSONAR_PS/services/pSB"
-            metaDataKeyLookup: "http://example.mydomain.local/serviceTest/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.iperf&srcRaw=%col&dstRaw=%row&protocol=TCP&timeDuration=0"
-            graphUrl: "http://example.mydomain.local/serviceTest/bandwidthGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=2592000"
+            graphUrl: "http://example.mydomain.local/serviceTest/bandwidthGraph.cgi?url=%maUrl&dst=%row&src=%col&length=2592000"
             #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
             command:  "/opt/perfsonar_ps/nagios/bin/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %col -d %row"
         checkInterval: 28800
