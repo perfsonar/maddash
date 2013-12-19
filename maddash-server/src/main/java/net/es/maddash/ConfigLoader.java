@@ -36,9 +36,9 @@ public class ConfigLoader {
     static final public String PROP_DIMENSIONS = "groupMembers";
     static final public String PROP_DIMENSIONS_ID = "id";
     static final public String PROP_DIMENSIONS_LABEL = "label";
-    
+
     static final public String PROP_GROUPS = "groups";
-    
+
     static final public String PROP_CHECKS = "checks";
     static final public String PROP_CHECKS_NAME = "name";
     static final public String PROP_CHECKS_DESCRIPTION = "description";
@@ -73,7 +73,7 @@ public class ConfigLoader {
     static final public String ORDER_GROUP = "group";
     static final public String EXCL_CHECKS_DEFAULT = "default";
     static final public String EXCL_CHECKS_ALL = "all";
-    
+
     /**
      * Loads YAML properties into scheduler database
      * 
@@ -94,30 +94,31 @@ public class ConfigLoader {
         Connection conn = null;
         try{
             conn = dataSource.getConnection();
-            
+
             //populate the dimensions table
             conn.createStatement().executeUpdate("DELETE FROM dimensions");
             PreparedStatement insertDimension = conn.prepareStatement("INSERT INTO dimensions VALUES(DEFAULT, ?, ?, ?)");
             if(config.containsKey(PROP_DIMENSIONS) && config.get(PROP_DIMENSIONS) != null){
-            	int i = 1;
-            	for(Map<String,String> dimension : (List<Map<String,String>>) config.get(PROP_DIMENSIONS)){
-            		if(!dimension.containsKey(PROP_DIMENSIONS_ID) || dimension.get(PROP_DIMENSIONS_ID) == null){
-            			throw new RuntimeException("Found dimension at position " + i + 
-            					" that is missing 'id' attribute");
-            		}
-            		for(String dimensionParam : dimension.keySet()){
-            			if(dimensionParam.equals(PROP_DIMENSIONS_ID)){
-            				continue;
-            			}
-            			insertDimension.setString(1, dimension.get(PROP_DIMENSIONS_ID));
-            			insertDimension.setString(2, dimensionParam);
-            			insertDimension.setString(3, dimension.get(dimensionParam));
-            			insertDimension.executeUpdate();
-            		}
-            		i++;
-            	}
+                int i = 1;
+                for(Map<Object,Object> dimension : (List<Map<Object,Object>>) config.get(PROP_DIMENSIONS)){
+                    if(!dimension.containsKey(PROP_DIMENSIONS_ID) || dimension.get(PROP_DIMENSIONS_ID) == null){
+                        throw new RuntimeException("Found dimension at position " + i + 
+                                " that is missing 'id' attribute");
+                    }
+                    for(Object dimensionParamObj : dimension.keySet()){
+                        String dimensionParam = dimensionParamObj+"";
+                        if(dimensionParam.equals(PROP_DIMENSIONS_ID)){
+                            continue;
+                        }
+                        insertDimension.setString(1, dimension.get(PROP_DIMENSIONS_ID)+"");
+                        insertDimension.setString(2, dimensionParam);
+                        insertDimension.setString(3, dimension.get(dimensionParam)+"");
+                        insertDimension.executeUpdate();
+                    }
+                    i++;
+                }
             }
-            
+
             //Build prepared statements for each check
             HashMap<String, Integer> templateIdMap = new HashMap<String, Integer>();
             PreparedStatement selTemplateStmt = conn.prepareStatement("SELECT id FROM " +
@@ -129,7 +130,7 @@ public class ConfigLoader {
             for(String checkName : checkMap.keySet()){
                 selTemplateStmt.setString(1, checkName);
                 insertTemplateStmt.setString(1, checkName);
-                
+
                 Map check = checkMap.get(checkName);
                 checkRequiredProp(check, PROP_CHECKS_NAME);
                 checkRequiredProp(check, PROP_CHECKS_DESCRIPTION);
@@ -140,7 +141,7 @@ public class ConfigLoader {
                 }
                 selTemplateStmt.setString(2, (String) check.get(PROP_CHECKS_TYPE));
                 insertTemplateStmt.setString(2, (String) check.get(PROP_CHECKS_TYPE));
-                
+
                 String jsonParamString = CheckConstants.EMPTY_PARAMS;
                 if(check.containsKey(PROP_CHECKS_PARAMS) && check.get(PROP_CHECKS_PARAMS) != null){
                     jsonParamString = JSONObject.fromObject(check.get(PROP_CHECKS_PARAMS)).toString();
@@ -190,7 +191,7 @@ public class ConfigLoader {
             //parse grids and update database
             PreparedStatement insertGridStmt = conn.prepareStatement("INSERT INTO grids VALUES(DEFAULT, ?, ?, ?, ?, ?, ?)");            
             PreparedStatement selCheckStmt = conn.prepareStatement("SELECT id FROM checks WHERE " +
-            "gridName=? AND rowName=? AND colName =? AND checkName=? AND checkTemplateId=?");
+                    "gridName=? AND rowName=? AND colName =? AND checkName=? AND checkTemplateId=?");
             PreparedStatement updateCheckStmt = conn.prepareStatement("UPDATE checks SET description=?, rowOrder=?, colOrder=?, active=1 WHERE id=?");
             PreparedStatement insertCheckStmt = conn.prepareStatement("INSERT INTO checks VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, " + CheckConstants.RESULT_NOTRUN  + "," + CheckConstants.RESULT_NOTRUN  + ", 'Check has not run', 0, 1)");
             for(Map gridMap : gridList){
@@ -214,24 +215,25 @@ public class ConfigLoader {
                         gridMap.get(PROP_GRIDS_EXCL_CHECKS) != null){
                     exclChecks = (Map<String, List<String>>) gridMap.get(PROP_GRIDS_EXCL_CHECKS);
                 }
-                
+
                 //check groups
                 checkRequiredProp(groupMap, (String) gridMap.get(PROP_GRIDS_ROWS));
                 checkRequiredProp(groupMap, (String) gridMap.get(PROP_GRIDS_COLS));
 
                 //Load rows and columns and get in right order
                 List<String> rows = new ArrayList<String>();
-                for(String tmpRow : (List<String>) groupMap.get(gridMap.get(PROP_GRIDS_ROWS))){
-                    rows.add(tmpRow);
+                for(Object tmpRow : (List<Object>) groupMap.get(gridMap.get(PROP_GRIDS_ROWS))){
+                    rows.add(tmpRow+"");//convert to string in case not quoted in file
                 }
                 if(ORDER_ALPHA.equals(rowOrder)){
                     Collections.sort(rows);
                 }
 
-                List<String> cols =  (List<String>) groupMap.get(gridMap.get(PROP_GRIDS_COLS));
+                List<String> cols = new ArrayList<String>();
                 List<String> tmpCols = new ArrayList<String>();
-                for(String tmpCol : cols){
-                    tmpCols.add(tmpCol);
+                for(Object tmpCol :  (List<Object>) groupMap.get(gridMap.get(PROP_GRIDS_COLS))){
+                    cols.add(tmpCol+"");//convert to string in case not quoted in file
+                    tmpCols.add(tmpCol+"");
                 }
                 if(ORDER_ALPHA.equals(colOrder)){
                     Collections.sort(tmpCols);
@@ -265,19 +267,19 @@ public class ConfigLoader {
                         }else if(col.equals(row)){
                             rowColFound = true;
                         }
-                        
+
                         //check if we should skip
                         if(exclChecks.containsKey(row) && exclChecks.get(row) != null){
                             if(exclChecks.get(row).contains(col) || 
                                     exclChecks.get(row).contains(EXCL_CHECKS_ALL)){
-                               continue; 
+                                continue; 
                             }
-                            
+
                         }else if(exclChecks.containsKey(EXCL_CHECKS_DEFAULT) && 
                                 exclChecks.get(EXCL_CHECKS_DEFAULT) != null){
                             if(exclChecks.get(EXCL_CHECKS_DEFAULT).contains(col) || 
                                     exclChecks.get(EXCL_CHECKS_DEFAULT).contains(EXCL_CHECKS_ALL)){
-                               continue; 
+                                continue; 
                             }
                         }
 
