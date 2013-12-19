@@ -1,8 +1,8 @@
 %define install_base /opt/maddash
-%define relnum 2 
+%define relnum 1 
 
 Name:           maddash
-Version:        1.0
+Version:        1.1
 Release:        %{relnum}
 Summary:        MaDDash  
 License:        distributable, see LICENSE
