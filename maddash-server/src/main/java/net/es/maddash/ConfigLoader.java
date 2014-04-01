@@ -293,6 +293,9 @@ public class ConfigLoader {
                         //Handle database insert/update
                         selCheckStmt.setString(3, col);
                         for(String checkName : (List<String>)gridMap.get(PROP_GRIDS_CHECKS)){
+                            if(!checkMap.containsKey(checkName) || checkMap.get(checkName) == null){
+                                throw new RuntimeException("Invalid check name " + checkName + " provided in grid definition.");
+                            }
                             String checkNiceName = (String)checkMap.get(checkName).get(PROP_CHECKS_NAME);
                             String checkDescrName = (String)checkMap.get(checkName).get(PROP_CHECKS_DESCRIPTION);
                             checkRequiredProp(templateIdMap, checkName);
