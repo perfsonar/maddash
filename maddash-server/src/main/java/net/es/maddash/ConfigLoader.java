@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,8 @@ public class ConfigLoader {
         Map groupMap = (Map) config.get(PROP_GROUPS);
         List<Map> gridList = (List<Map>) config.get(PROP_GRIDS);
         HashMap<String, Class> checkTypeClassMap = new HashMap<String, Class>();
-
+        HashMap<String,String> dimensionLabelMap = new HashMap<String,String>();
+        
         Connection conn = null;
         try{
             conn = dataSource.getConnection();
@@ -109,6 +111,10 @@ public class ConfigLoader {
                         String dimensionParam = dimensionParamObj+"";
                         if(dimensionParam.equals(PROP_DIMENSIONS_ID)){
                             continue;
+                        }
+                        
+                        if(dimensionParam.equals(PROP_DIMENSIONS_LABEL)){
+                            dimensionLabelMap.put(dimension.get(PROP_DIMENSIONS_ID)+"", dimension.get(dimensionParam)+"");
                         }
                         insertDimension.setString(1, dimension.get(PROP_DIMENSIONS_ID)+"");
                         insertDimension.setString(2, dimensionParam);
@@ -225,8 +231,9 @@ public class ConfigLoader {
                 for(Object tmpRow : (List<Object>) groupMap.get(gridMap.get(PROP_GRIDS_ROWS))){
                     rows.add(tmpRow+"");//convert to string in case not quoted in file
                 }
+                
                 if(ORDER_ALPHA.equals(rowOrder)){
-                    Collections.sort(rows);
+                    rows = ConfigLoader.sortDimension(rows, dimensionLabelMap);
                 }
 
                 List<String> cols = new ArrayList<String>();
@@ -236,7 +243,7 @@ public class ConfigLoader {
                     tmpCols.add(tmpCol+"");
                 }
                 if(ORDER_ALPHA.equals(colOrder)){
-                    Collections.sort(tmpCols);
+                    tmpCols = ConfigLoader.sortDimension(tmpCols, dimensionLabelMap);
                 }
                 HashMap<String,Integer> colOrderMap = new HashMap<String,Integer>();
                 for(int i = 0; i < tmpCols.size(); i++){
@@ -338,6 +345,33 @@ public class ConfigLoader {
         }
 
         return checkTypeClassMap;
+    }
+    
+    /**
+     * Sorts rows and/or columns alphabetically by label if provided or by ID otherwise
+     * @param dimension the row or column list to sort
+     * @param dimensionLabelMap the map of row/column ids to labels
+     * @return the sorted list
+     */
+    private static List<String> sortDimension(List<String> dimension,
+            HashMap<String, String> dimensionLabelMap) {
+        final HashMap<String,String> tmpMap = new HashMap<String,String>();
+        for (String d : dimension){
+            if(dimensionLabelMap.containsKey(d) && dimensionLabelMap.get(d) != null){
+                tmpMap.put(d, dimensionLabelMap.get(d));
+            }else{
+                tmpMap.put(d, d);
+            }
+        }
+        List<String> tmpMapKeys = new ArrayList<String>();
+        tmpMapKeys.addAll(tmpMap.keySet());
+        Collections.sort(tmpMapKeys, new Comparator<String>(){
+            public int compare(String s1, String s2) {
+                return tmpMap.get(s1).compareTo(tmpMap.get(s2));
+            }
+        });
+        
+        return tmpMapKeys;
     }
 
     private static String genStatusLabel(Map<String, String> statusLabelMap, String label) {
