@@ -1,0 +1,5 @@
+# ignore Sphinx build products
+/docs/_build
+
+#ignore .DS-Store file on Mac
+.DS_Store
