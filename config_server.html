@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration &mdash; MaDDash 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/esnet/esnet.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="MaDDash 1.1 documentation" href="index.html" />
+    <link rel="next" title="Customizing the Web Interface" href="config_webui.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          <!-- LOGO: logo-esnet-ball-sm.png _static/logo-esnet-ball-sm.png --><img src="_static/logo-esnet-ball-sm.png">
+          MaDDash</a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Section <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_dashboards.html">Dashboards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="install.html" title="Previous Chapter: Installation">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      <span class="hidden-sm">
+        Installation
+      </span>
+    </a>
+  </li>
+  <li>
+    <a href="config_webui.html" title="Next Chapter: Customizing the Web Interface">
+      <span class="hidden-sm">
+        Customizing the ...
+      </span>
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+  </li>
+              
+            
+            <li class="divider-vertical"></li>
+            
+                <li><a href="genindex.html">Index</a></li>
+                <li><a href="https://www.es.net">ESnet</a></li>
+            
+            <li><a href="https://github.com/esnet/maddash"><img src="_static/esnet/icon-github.png" height="20" width="20"></a></li>
+            
+            
+            
+          </ul>
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#groups">groups</a></li>
+<li><a class="reference internal" href="#checks">checks</a><ul>
+<li><a class="reference internal" href="#general-parameters">General Parameters</a></li>
+<li><a class="reference internal" href="#type-specific-parameters">Type-specific Parameters</a><ul>
+<li><a class="reference internal" href="#nagioscheck">NagiosCheck</a></li>
+<li><a class="reference internal" href="#psnagioscheck">PSNagiosCheck</a><ul>
+<li><a class="reference internal" href="#template-variables">Template Variables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#grids">grids</a></li>
+<li><a class="reference internal" href="#dashboards">dashboards</a></li>
+<li><a class="reference internal" href="#global-properties">Global Properties</a><ul>
+<li><a class="reference internal" href="#general-properties">General Properties</a></li>
+<li><a class="reference internal" href="#group-member-properties">Group Member Properties</a></li>
+<li><a class="reference internal" href="#web-server-properties">Web Server Properties</a><ul>
+<li><a class="reference internal" href="#http-properties">http properties</a></li>
+<li><a class="reference internal" href="#https-properties">https properties</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    <div class="col-md-9">
+      
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>The main configuration file for the maddash-server component is located at <em>/etc/maddash/maddash-server/maddash.yaml</em></p>
+<p>The file is in <a class="reference external" href="http://www.yaml.org/">YAML</a> format. In this file you define the checks you want to run and how they are organized. You can also tweak setting for the embedded web server and various other aspects of the software. The configuration file is broken into the following primary sections:</p>
+<ul class="simple">
+<li><em>groups</em> - In general, this is the section where you define lists of hosts that you want to check. You can define any number of custom groups in this section. When you define <em>grids</em> these groups will be used to define what constitutes the rows and columns. In theory they don&#8217;t have to be hosts, but for the perfSONAR checks this is the common case because your dimensions are endpoints of a test.</li>
+<li><em>checks</em> - This is where you define how to run each check. For Nagios checks, this means defining the command-line script to run and arguments to pass it.</li>
+<li><em>grids</em>  - This is where you define how the groups will be applied to the checks. You define the <em>groups</em> that will compose the rows and columns, then define the type of check that will be run.</li>
+<li><em>dashboards</em> - This is where you group <em>grids</em> together.</li>
+</ul>
+<p>There are also a number of miscellaneous parameters related to the general operation of the service. Each of these property categories is described in the remainder of this section.</p>
+<div class="section" id="groups">
+<h2>groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
+<p><strong>groups</strong> are used to define the resources that will compose the rows and columns of a grid. For the perfSONAR checks, this is often used to group the endpoints used in performance tests together (e.g. create a group for all the hosts running OWAMP tests and another for all the hosts running BWCTL tests). The names, members and number of groups is all customizable. <em>groups</em> take the following format:</p>
+<div class="highlight-python"><div class="highlight"><pre>groups:
+    groupName:
+        - &quot;member&quot;
+        - &quot;member&quot;
+</pre></div>
+</div>
+<p>All groups go under the <em>group</em> block. In the example above <em>groupName</em> can replaced with any alphanumeric string that does not contain whitespace. For example &#8220;myOwampHosts&#8221;, &#8220;campusHosts&#8221;, or any other string that meets the requirements. This name will be used later in the configuration, so its important to make note of it. In the above example, you should change <em>member</em> to the name of the host or other resource you want in the list.</p>
+</div>
+<div class="section" id="checks">
+<h2>checks<a class="headerlink" href="#checks" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="general-parameters">
+<h3>General Parameters<a class="headerlink" href="#general-parameters" title="Permalink to this headline">¶</a></h3>
+<p><strong>checks</strong> are where you provide instructions as to how results should be obtained. Checks take the current format in the configuration file:</p>
+<div class="highlight-python"><div class="highlight"><pre>checks:
+    checkName :
+       ...check-parameters...
+</pre></div>
+</div>
+<p>The <em>checkName</em> can be any alphanumeric string with no whitespace. It is used to identify the check later in the file, so you should note it. For example you could name it something like &#8220;owampLossCheck&#8221; or &#8220;bwctl100Gbps&#8221;. The following parameters are available for the check:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="4%" />
+<col width="5%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>Yes</td>
+<td>A human-readable name used for display purposes when describing this check</td>
+</tr>
+<tr class="row-odd"><td>description</td>
+<td>String</td>
+<td>Yes</td>
+<td>Human-readable text describing the purpose of this check. The description field accepts the template variables %row and %col that will be populated with the current row and column values respectively when the check in applied to a grid.</td>
+</tr>
+<tr class="row-even"><td>type</td>
+<td>String</td>
+<td>Yes</td>
+<td>The type of check. Currently the software supports <em>net.es.maddash.checks.NagiosCheck</em>, <em>net.es.maddash.checks.PSNagiosCheck</em>, and <em>net.es.maddash.checks.RandomCheck</em></td>
+</tr>
+<tr class="row-odd"><td>params</td>
+<td>YAML Object</td>
+<td>Type dependent</td>
+<td>A YAML object containing parameters specific to the check. See the <a class="reference internal" href="#type-specific-params"><em>Type-specific Parameters</em></a> section.</td>
+</tr>
+<tr class="row-even"><td>checkInterval</td>
+<td>int</td>
+<td>Yes</td>
+<td>How frequently to run the check in seconds</td>
+</tr>
+<tr class="row-odd"><td>retryInterval</td>
+<td>int</td>
+<td>Yes</td>
+<td>How frequently to run the check in seconds if it encounters a state different from the current state</td>
+</tr>
+<tr class="row-even"><td>retryAttempts</td>
+<td>int</td>
+<td>Yes</td>
+<td>The number of consecutive times a new state must be seen before it changes the state of the check. For example, if a check has been OK for many days, but suddenly a critical is seen, then a critical state must be seen 2 more times before the status will change</td>
+</tr>
+<tr class="row-odd"><td>timeout</td>
+<td>int</td>
+<td>Yes</td>
+<td>The number of seconds to wait for the check to return. If it does not return in this timeframe, the check is set to the UNKNOWN status.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="type-specific-parameters">
+<span id="type-specific-params"></span><h3>Type-specific Parameters<a class="headerlink" href="#type-specific-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Currently the software supports the following types of checks:</p>
+<ul class="simple">
+<li><em>net.es.maddash.checks.NagiosCheck</em> - This check is performed using Nagios command. The parameters provided describe how to run that command.</li>
+<li><em>net.es.maddash.checks.PSNagiosCheck</em> - This check is a perfSONAR Nagios command. It is an extension of <em>net.es.maddash.checks.NagiosCheck</em>, but includes additional fields to collect information necessary to display graphs from the perfSONAR toolkit.</li>
+<li><em>net.es.maddash.checks.RandomCheck</em> - This should only be used for testing. This check returns a random result every time it runs.</li>
+</ul>
+<div class="section" id="nagioscheck">
+<span id="nagios-check"></span><h4>NagiosCheck<a class="headerlink" href="#nagioscheck" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="4%" />
+<col width="5%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>command</td>
+<td>String</td>
+<td>Yes</td>
+<td>The full nagios command to run on the local system. It accepts the template variables %row and %col that will be populated with the row and column values when applied to a grid.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="psnagioscheck">
+<span id="psnagios-check"></span><h4>PSNagiosCheck<a class="headerlink" href="#psnagioscheck" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="95%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>command</td>
+<td>String</td>
+<td>Yes</td>
+<td>See <a class="reference internal" href="#nagios-check"><em>NagiosCheck</em></a></td>
+</tr>
+<tr class="row-odd"><td>maUrl</td>
+<td>YAML Object</td>
+<td>Yes</td>
+<td>The URL of the measurement archive where performance data related to this check may be retrieved. This accepts the template variables listed in the <a class="reference internal" href="#psnagios-check-template-vars"><em>Template Variables</em></a> section. The object has one key that is called <em>default</em> which will be the default URL used for any cell in a grid. The remaining keys are members of groups assigned to the row. If default and a row key are specified, the row key is preferred for that row. The value of each key is a map where the key is a member of a group assigned to the column or you can use the <em>default</em> key to apply the URL to every column in the row. If default is specified and a specific value for a column, the specific value for the column is preferred. See the default configuration file for a full example.</td>
+</tr>
+<tr class="row-even"><td>graphUrl</td>
+<td>String</td>
+<td>Yes</td>
+<td>A URL where a graph of data related to the check can be retrieved. This accepts the template variables listed in the <a class="reference internal" href="#psnagios-check-template-vars"><em>Template Variables</em></a> section.</td>
+</tr>
+<tr class="row-odd"><td>metaDataKeyLookup</td>
+<td>String</td>
+<td>Yes</td>
+<td><em>DEPRECATED</em> A URL where metaDataKeys can be looked up for the data. These are often needed to generate the graph URL. This accepts some of the template variables listed in the <a class="reference internal" href="#psnagios-check-template-vars"><em>Template Variables</em></a> section. <em>Note: Some variables it cannot accept because it is responsible for generating them.</em></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="template-variables">
+<span id="psnagios-check-template-vars"></span><h5>Template Variables<a class="headerlink" href="#template-variables" title="Permalink to this headline">¶</a></h5>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>%row</td>
+<td>The row in the grid associated with this check at the time its run</td>
+</tr>
+<tr class="row-odd"><td>%col</td>
+<td>The column in the grid associated with this check at the time its run</td>
+</tr>
+<tr class="row-even"><td>%maUrl</td>
+<td>The url of the measurement archive. You can&#8217;t use this in the maUrl parameters as this is generated from that template.</td>
+</tr>
+<tr class="row-odd"><td>%maKeyF</td>
+<td><strong>DEPRECATED</strong> A comma-separated list of the metaDataKeys for the forward direction of a test. This cannot be used in metaDataKeyLookup as it is generated after the URL that is called.</td>
+</tr>
+<tr class="row-even"><td>%maKeyR</td>
+<td><strong>DEPRECATED</strong> A comma-separated list of the metaDataKeys for the reverse direction of a test. This cannot be used in metaDataKeyLookup as it is generated after the URL that is called.</td>
+</tr>
+<tr class="row-odd"><td>%srcName</td>
+<td><strong>DEPRECATED</strong> The hostname of the source endpoint of a point-to-point test. This cannot be used in metaDataKeyLookup as it is generated after the URL is called.</td>
+</tr>
+<tr class="row-even"><td>%srcIP</td>
+<td><strong>DEPRECATED</strong> The IP address of the source endpoint of a point-to-point test. This cannot be used in metaDataKeyLookup as it is generated after the URL is called.</td>
+</tr>
+<tr class="row-odd"><td>%dstName</td>
+<td><strong>DEPRECATED</strong> The hostname of the destination endpoint of a point-to-point test. This cannot be used in metaDataKeyLookup as it is generated after the URL is called.</td>
+</tr>
+<tr class="row-even"><td>%dstIP</td>
+<td><strong>DEPRECATED</strong> The IP of the destination endpoint of a point-to-point test. This cannot be used in metaDataKeyLookup as it is generated after the URL is called.</td>
+</tr>
+<tr class="row-odd"><td>%eventType</td>
+<td><strong>DEPRECATED</strong> The eventType returned by metaDataKeyLookup of the destination endpoint of a point-to-point test. This cannot be used in metaDataKeyLookup as it is generated after the URL is called.</td>
+</tr>
+<tr class="row-even"><td>%event.delayBuckets</td>
+<td>The string <em>http://ggf.org/ns/nmwg/characteristic/delay/summary/20110317</em></td>
+</tr>
+<tr class="row-odd"><td>%event.delay</td>
+<td>The string <em>http://ggf.org/ns/nmwg/characteristic/delay/summary/20070921</em></td>
+</tr>
+<tr class="row-even"><td>%event.bandwidth</td>
+<td>The string <em>http://ggf.org/ns/nmwg/characteristics/bandwidth/achievable/2.0</em></td>
+</tr>
+<tr class="row-odd"><td>%event.iperf</td>
+<td>The string <em>http://ggf.org/ns/nmwg/tools/iperf/2.0</em></td>
+</tr>
+<tr class="row-even"><td>%event.utilization</td>
+<td><em>The string http://ggf.org/ns/nmwg/characteristic/utilization/2.0</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="grids">
+<h2>grids<a class="headerlink" href="#grids" title="Permalink to this headline">¶</a></h2>
+<p><strong>grids</strong> associate <em>groups</em> with <em>checks</em> and arrange them in a two-dimensional structure. Grids are arranged as a list of objects with the following parameters:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="3%" />
+<col width="2%" />
+<col width="93%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>Yes</td>
+<td>A human readable name of the grid</td>
+</tr>
+<tr class="row-odd"><td>rows</td>
+<td>String</td>
+<td>Yes</td>
+<td>The name of the <em>group</em> that will compose the rows of the grid. This must match a group name defined in the <em>groups</em> section of the configuration file or an error will be returned.</td>
+</tr>
+<tr class="row-even"><td>columns</td>
+<td>String</td>
+<td>Yes</td>
+<td>The name of the <em>group</em> that will compose the columns of the grid. This must match a group name defined in the <em>groups</em> section of the configuration file or an error will be returned.</td>
+</tr>
+<tr class="row-odd"><td>checks</td>
+<td>List of Strings</td>
+<td>Yes</td>
+<td>The name of the <em>check</em> elements that need to be run for each row and column. Each element must match a check name defined under the <em>checks</em> section of the configuration or an error will be returned.</td>
+</tr>
+<tr class="row-even"><td>rowOrder</td>
+<td>String</td>
+<td>Yes</td>
+<td>Specifies how the rows should be ordered. Valid values are <em>alphabetical</em>, which will sort them alphabetically, or <em>group</em> which will present them exactly in the order they are defined in the <em>group</em> section.</td>
+</tr>
+<tr class="row-odd"><td>colOrder</td>
+<td>String</td>
+<td>Yes</td>
+<td>Specifies how the columns should be ordered. Valid values are <em>alphabetical</em>, which will sort them alphabetically, or <em>group</em> which will present them exactly in the order they are defined in the <em>group</em> section.</td>
+</tr>
+<tr class="row-even"><td>excludeSelf</td>
+<td>boolean</td>
+<td>Yes</td>
+<td>If set to 1, then a check will not be run where the value of the current row is equal to the value of the current column. If set to 0, then a check will be run in this case.</td>
+</tr>
+<tr class="row-odd"><td>excludeChecks</td>
+<td>YAML Object</td>
+<td>No</td>
+<td>This excludes individual checks based on the row and column. The structure is a map where the key is the name of the row where you want to exclude a check. It should match a member of the group assigned to the &#8220;rows&#8221; property of this grid or it can be the special key &#8216;default&#8217; that matches every row. The value is a list of columns that should not appear in the grid. An item in the list must be a member of the group assigned to the &#8220;columns&#8221; property of this grid or the special value &#8220;all&#8221; which removes all columns for a row. A full example is provided in the default configuration file.</td>
+</tr>
+<tr class="row-even"><td>columnAlgorithm</td>
+<td>boolean</td>
+<td>Yes</td>
+<td>Determines which checks will be run. Valid values are as follows: all - Run a check between every row and column; afterSelf - Run a check to every host that&#8217;s defined after the current row in the &#8216;rows&#8217; group; beforeSelf - Run a check to every host that&#8217;s defined before the current row in the &#8216;rows&#8217; group</td>
+</tr>
+<tr class="row-odd"><td>statusLabels</td>
+<td>YAML object</td>
+<td>Yes</td>
+<td>Describes what each status means. Its structured as a set of key/value pairs where the key is the status and the value is the description of the status. Valid status values are <em>ok</em>, <em>warning</em>, <em>critical</em>, <em>unknown</em> and <em>notrun</em>. You do not need to define every status if not all are applicable to your check.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="dashboards">
+<h2>dashboards<a class="headerlink" href="#dashboards" title="Permalink to this headline">¶</a></h2>
+<p><strong>dashboards</strong> group grids together. You define them as as a list of YAML objects with the following properties:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="2%" />
+<col width="8%" />
+<col width="4%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>String</td>
+<td>Yes</td>
+<td>The name you want displayed as the title of the dashboard</td>
+</tr>
+<tr class="row-odd"><td>grids</td>
+<td>List of YAML objects</td>
+<td>Yes</td>
+<td>The list of grids you want included in this dashboard. Each item in the list has one property <em>name</em>, where you specify the name of the grid. This must map to a <em>name</em> property for one of the defined grids in the configuration file.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="global-properties">
+<h2>Global Properties<a class="headerlink" href="#global-properties" title="Permalink to this headline">¶</a></h2>
+<p>The following list some global properties available for controlling the behavior of the maddash-server instance.</p>
+<div class="section" id="general-properties">
+<h3>General Properties<a class="headerlink" href="#general-properties" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="6%" />
+<col width="3%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>database</td>
+<td>String</td>
+<td>Yes</td>
+<td>The path to the directory where the database is stored</td>
+</tr>
+<tr class="row-odd"><td>jobThreadPoolSize</td>
+<td>Integer</td>
+<td>No</td>
+<td>The maximum number of checks that can run in parallel. Defaults to 20</td>
+</tr>
+<tr class="row-even"><td>jobBatchSize</td>
+<td>Integer</td>
+<td>No</td>
+<td>The maximum number of checks that can be running or waiting to run in memory. Defaults to 250.</td>
+</tr>
+<tr class="row-odd"><td>disableScheduler</td>
+<td>Boolean</td>
+<td>No</td>
+<td>If set to 1 then the server will only run as a REST server and not execute any new checks. Default is 0.</td>
+</tr>
+<tr class="row-even"><td>skipTableBuild</td>
+<td>Boolean</td>
+<td>No</td>
+<td>If set to 1 then the database tables will not be built and indexes will not be built/rebuilt. The first time you run the server it must be set to 0. After that, you may find that setting it to 1 significantly speeds-up boot time. Keeping it on though has the advantage of rebuilding indexes on startup which can improve query performance.</td>
+</tr>
+<tr class="row-odd"><td>groupMembers</td>
+<td>YAML Array of Objects</td>
+<td>No</td>
+<td>An optional YAML array containing additional information about the items listed under &#8220;groups&#8221;. See the <a class="reference internal" href="#group-member-props"><em>Group Member Properties</em></a> section</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="group-member-properties">
+<span id="group-member-props"></span><h3>Group Member Properties<a class="headerlink" href="#group-member-properties" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="6%" />
+<col width="7%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>id</td>
+<td>String</td>
+<td>Yes</td>
+<td>The group member this is referencing. For example, the hostname or address of a single item in a <em>group</em> list</td>
+</tr>
+<tr class="row-odd"><td>label</td>
+<td>String</td>
+<td>Yes</td>
+<td>The value to show when displaying information about the referenced group member.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="web-server-properties">
+<h3>Web Server Properties<a class="headerlink" href="#web-server-properties" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="8%" />
+<col width="19%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>serverHost</td>
+<td>String</td>
+<td>No</td>
+<td>The hostname of the interface where the web server should listen. Defaults to localhost.</td>
+</tr>
+<tr class="row-odd"><td>http</td>
+<td>YAML Object</td>
+<td>Yes (unless https specified)</td>
+<td>Parameters related to http. See <a class="reference internal" href="#http-props"><em>http properties</em></a> section.</td>
+</tr>
+<tr class="row-even"><td>https</td>
+<td>YAML Object</td>
+<td>Yes (unless http specified)</td>
+<td>Parameters related to https. See <a class="reference internal" href="#https-props"><em>https properties</em></a> section.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="http-properties">
+<span id="http-props"></span><h4>http properties<a class="headerlink" href="#http-properties" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="4%" />
+<col width="4%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>port</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>The port on which the web server should listen for HTTP connections</td>
+</tr>
+<tr class="row-odd"><td>proxyMode</td>
+<td>String</td>
+<td>Yes</td>
+<td>Reserved for future use. Currently let&#8217;s the server know that if it is behind a proxy. This may be used in later implementation to extract headers that forward information related to authentication.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="https-properties">
+<span id="https-props"></span><h4>https properties<a class="headerlink" href="#https-properties" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="2%" />
+<col width="2%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>port</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>The port on which the web server should listen for HTTPS connections</td>
+</tr>
+<tr class="row-odd"><td>keystore</td>
+<td>String</td>
+<td>Yes</td>
+<td>The keystore containing the key &#8216;mykey&#8217; to use as the ssl server certificate. It should also contain any trusted certificates if doing client authentication.</td>
+</tr>
+<tr class="row-even"><td>keystorePassword</td>
+<td>String</td>
+<td>Yes</td>
+<td>The password to access the keystore.</td>
+</tr>
+<tr class="row-odd"><td>clientAuth</td>
+<td>String</td>
+<td>Yes</td>
+<td>Indicates whether a client to the rest server must have a trusted SSL certificate. Valid values are <em>require</em>, <em>want</em> and <em>off</em>. <em>require</em> means the user MUST have a trusted certificate or the request will be rejected. <em>want</em> means the server will check the certificate if one is presented, but will not reject requests that do not provide one. <em>off</em> means no certificate is required.</td>
+</tr>
+<tr class="row-even"><td>proxyMode</td>
+<td>String</td>
+<td>Yes</td>
+<td>Reserved for future use. Currently let&#8217;s the server know that if it is behind a proxy. This may be used in later implementation to extract headers that forward information related to authentication.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1">
+        <a href="http://www.es.net/"><img src="_static/esnet/logo-esnet.png" alt="[ESnet]"></a>
+      </div>
+      <div class="col-md-11">
+        <p class="pull-right">
+        <a href="#">Back to top</a>
+        
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/config_server.txt"
+     rel="nofollow">Source</a>
+</div>
+        
+        </p>
+        <p>
+            &copy; Copyright 2014, Andy Lake.<br/>
+          Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>
