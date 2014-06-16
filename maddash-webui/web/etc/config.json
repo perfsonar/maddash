@@ -1,0 +1,11 @@
+{
+    "title":"My perfSONAR Dashboard",
+    "defaultDashboard": "My Sites",
+    "grids":{
+        "OWAMP":{
+            "cellSize": 13,
+            "cellPadding": 3,
+            "textBlockSize": 130,
+        },
+    },
+}
