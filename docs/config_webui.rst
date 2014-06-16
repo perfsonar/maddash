@@ -27,13 +27,11 @@ grids properties
 ----------------
 grids are specified as follows (where *gridName* is the name of the grid you want to adjust)::
 
-    {{{
     "grids":{
             "gridName":{
                 ...properties...
             },
-        },
-    }}}
+        }
 
 The following properties are available:
 
