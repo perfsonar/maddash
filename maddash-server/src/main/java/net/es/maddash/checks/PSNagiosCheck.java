@@ -55,6 +55,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
     private final String PARAM_GRAPH_URL = "graphUrl";
     private final String PARAM_MAURL = "maUrl";
     private final String PROP_MAURL_DEFAULT = "default";
+    private final String PROP_GRAPHURL_DEFAULT = "default";
     
     public CheckResult check(String gridName, String rowName, String colName,
             Map params,  Map<String,String> rowVars, Map<String,String> colVars, int timeout) {
@@ -107,7 +108,32 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
             return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
                     PARAM_GRAPH_URL + " not defined. Please check config file", null);
         }
-        String graphUrl = (String)params.get(PARAM_GRAPH_URL);
+        String graphUrl = null;
+        //try to get as string for backward compatibility
+        try{
+            graphUrl = (String)params.get(PARAM_GRAPH_URL); //try to get as string for backward compatibility
+        }catch(Exception e){}
+        //try to get as map
+        if(graphUrl == null){
+            Map graphUrlMap = (Map)params.get(PARAM_GRAPH_URL);
+            if(graphUrlMap.containsKey(rowName) && graphUrlMap.get(rowName) != null){
+                Map<String,String> rowGraphUrlMap = (Map<String,String>) graphUrlMap.get(rowName);
+                if(rowGraphUrlMap.containsKey(colName) && rowGraphUrlMap.get(colName) != null){
+                    graphUrl = (String) rowGraphUrlMap.get(colName);
+                }else if(rowGraphUrlMap.containsKey(PROP_GRAPHURL_DEFAULT) && rowGraphUrlMap.get(PROP_GRAPHURL_DEFAULT) != null){
+                    graphUrl = (String) rowGraphUrlMap.get(PROP_GRAPHURL_DEFAULT);
+                }
+            }
+           //try to set default
+            if(graphUrl == null){
+                graphUrl = (String) graphUrlMap.get(PROP_GRAPHURL_DEFAULT);
+            }
+        }
+        //if still not set then throw error
+        if(graphUrl == null){
+            return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
+                     "Default graph URL not defined. Please check config file", null);
+        }
         
         //replace maUrl in command
         if(!params.containsKey(PARAM_COMMAND) || params.get(PARAM_COMMAND) == null){
