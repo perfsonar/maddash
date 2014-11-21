@@ -152,7 +152,17 @@ var MaDDashGrid =function(parentId, legendId){
         //.attr("transform", "rotate(35,"+ (cellsize+padding)/2  + "," + text_block_size/2 + ")")
       
       
-      top.append("svg:text")
+      top.append("svg:a")
+        .attr("xlink:href", function(d,i){return data.columnProps[i]['pstoolkiturl']})
+        .attr("target", "_blank")
+        .attr("class", function(d,i){
+            if(data.columnProps[i]['pstoolkiturl']){
+                return "glink";
+            }else{
+                return "gnolink";
+            }
+        })
+        .append("svg:text")
         .attr("class", "gtext")
         .attr("text-anchor", "start")
         .attr("dy", "1.5em")
@@ -177,7 +187,17 @@ var MaDDashGrid =function(parentId, legendId){
         .attr("x",0).attr("y",0)
         .attr("width",text_block_size).attr("height",(cellsize+2*padding))
       
-      left.append("svg:text")
+      left.append("svg:a")
+        .attr("xlink:href", function(d,i){return data.rows[i].props['pstoolkiturl']})
+        .attr("target", "_blank")
+        .attr("class", function(d,i){
+            if(data.rows[i].props['pstoolkiturl']){
+                return "glink";
+            }else{
+                return "gnolink";
+            }
+        })
+        .append("svg:text")
         .attr("class", "gtext")
         .attr("transform", "translate("+ (text_block_size-5) +",0)")
         .text(function(d,i){return data.rows[i].name})

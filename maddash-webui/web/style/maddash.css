@@ -3,7 +3,10 @@
 .gactive{background:#3c3c3c; fill:#3c3c3c}
 .grow{overflow:hidden;clear:both;z-index:1;position:relative;}
 .grow-heading{float:left;margin:1px 0px;}
-.gtext{font-family:verdana;font-size:10px;fill:#242424}
+.gtext{font-family:verdana;font-size:10px;}
+.glink .gtext {fill:#242424;text-decoration: underline;}
+.glink .gtext:hover {text-decoration: underline;font-size:12px;}
+.gnolink .gtext {fill:#242424; }
 .gactive .gtext {fill:#fff;font-size:11px;}
 .gcell{float:left;cursor:pointer;background:none;}
 .shadow {
