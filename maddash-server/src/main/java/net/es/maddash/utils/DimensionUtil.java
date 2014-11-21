@@ -57,4 +57,18 @@ public class DimensionUtil {
 		return namedObjs;
 	}
 
+    public static Object translateProperties(List<String> names,
+            HashMap<String, HashMap<String, String>> propMap) {
+        ArrayList<HashMap<String, String>> translatedProps = new ArrayList<HashMap<String, String>>();
+        //translate column to label if possible
+        for(String name : names){
+            if(propMap.containsKey(name) && propMap.get(name) != null){
+                translatedProps.add(propMap.get(name));
+            }else{
+                translatedProps.add(new HashMap<String, String>());//add an empty map
+            }
+        }
+        return translatedProps;
+    }
+
 }

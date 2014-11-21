@@ -120,11 +120,17 @@ public class ResourceManager {
             
             //get row and column labels
             HashMap<String, String> dimesnionLabelMap = new HashMap<String, String>();
-            PreparedStatement labelStmt = conn.prepareStatement("SELECT configIdent, value FROM dimensions WHERE keyName=?");
-            labelStmt.setString(1, ConfigLoader.PROP_DIMENSIONS_LABEL);
+            HashMap<String,HashMap<String, String>> dimensionProperties = new HashMap<String,HashMap<String, String>>();
+            PreparedStatement labelStmt = conn.prepareStatement("SELECT configIdent, keyName, value FROM dimensions");
             ResultSet labelResults = labelStmt.executeQuery();
             while(labelResults.next()){
-            	dimesnionLabelMap.put(labelResults.getString(1), labelResults.getString(2));
+                if(ConfigLoader.PROP_DIMENSIONS_LABEL.equals(labelResults.getString(2))){
+                    dimesnionLabelMap.put(labelResults.getString(1), labelResults.getString(3));
+                }
+                if(!dimensionProperties.containsKey(labelResults.getString(1)) || dimensionProperties.get(labelResults.getString(1)) == null){
+                    dimensionProperties.put(labelResults.getString(1), new HashMap<String, String>());
+                }
+                dimensionProperties.get(labelResults.getString(1)).put(labelResults.getString(2).toLowerCase(), labelResults.getString(3));
             }
             
             //get information on checks
@@ -158,6 +164,11 @@ public class ResourceManager {
                     tmpRowObj.put("name", rowName);
                     tmpRowObj.put("uri", "/" + uriInfo.getPath() + 
                             "/" + URIUtil.normalizeURIPart(rowName));
+                    if(dimensionProperties.containsKey(rowName) && dimensionProperties.get(rowName) != null){
+                        tmpRowObj.put("params", dimensionProperties.get(rowName));
+                    }else{
+                        tmpRowObj.put("params", new HashMap<String,String>());
+                    }
                     rowList.add(tmpRowObj);
                     curRowCols = new HashMap<String,Map<String,JSONObject>>();
                     grid.put(rowName, curRowCols);
@@ -197,6 +208,7 @@ public class ResourceManager {
             Collections.sort(checkList);
             json.put("lastUpdateTime", lastUpdateTime);
             json.put("columnNames", DimensionUtil.translateNames(colList, dimesnionLabelMap));
+            json.put("columnPropeties", DimensionUtil.translateProperties(colList, dimensionProperties));
             json.put("checkNames", checkList);
             JSONArray jsonGrid = new JSONArray();
             for(JSONObject rowObj : rowList){
