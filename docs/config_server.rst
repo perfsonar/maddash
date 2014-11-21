@@ -208,14 +208,17 @@ General Properties
 
 Group Member Properties
 -----------------------
+The following are properties used to further describe members of a group. Any custom property may be added but only the values listed are understood by the default MaDDash interface.
 
-+-------+--------+----------+---------------------------------------------------------------------------------------------------------------+
-| Name  | Type   | Required | Description                                                                                                   |
-+=======+========+==========+===============================================================================================================+
-| id    | String | Yes      | The group member this is referencing. For example, the hostname or address of a single item in a *group* list |
-+-------+--------+----------+---------------------------------------------------------------------------------------------------------------+
-| label | String | Yes      | The value to show when displaying information about the referenced group member.                              |
-+-------+--------+----------+---------------------------------------------------------------------------------------------------------------+
++--------------+--------+----------+---------------------------------------------------------------------------------------------------------------+
+| Name         | Type   | Required | Description                                                                                                   |
++==============+========+==========+===============================================================================================================+
+| id           | String | Yes      | The group member this is referencing. For example, the hostname or address of a single item in a *group* list |
++--------------+--------+----------+---------------------------------------------------------------------------------------------------------------+
+| label        | String | No       | The value to show when displaying information about the referenced group member.                              |
++--------------+--------+----------+---------------------------------------------------------------------------------------------------------------+
+| pstoolkiturl | String | No       | The URL of the perfSONAR Toolkit web page.                                                                    |
++--------------+--------+----------+---------------------------------------------------------------------------------------------------------------+
 
 Web Server Properties
 ---------------------
