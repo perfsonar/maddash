@@ -162,111 +162,138 @@ Example
        "rows":[
           {
              "name":"albu-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net",
+             "props":{ "pstoolkiturl": "http://albu-pt1.es.net"}
           },
           {
              "name":"ameslab-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net",
+             "props":{}
           },
           {
              "name":"aofa-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net",
+             "props":{}
           },
           {
              "name":"atla-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net",
+             "props":{}
           },
           {
              "name":"bois-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net",
+             "props":{}
           },
           {
              "name":"bost-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net",
+             "props":{}
           },
           {
              "name":"clev-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net",
+             "props":{}
           },
           {
              "name":"denv-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net",
+             "props":{}
           },
           {
              "name":"doe-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net",
+             "props":{}
           },
           {
              "name":"elpa-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net",
+             "props":{}
           },
           {
              "name":"eqx-ash-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net",
+             "props":{}
           },
           {
              "name":"eqx-chi-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net",
+             "props":{}
           },
           {
              "name":"eqx-sj-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net",
+             "props":{}
           },
           {
              "name":"forr-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net",
+             "props":{}
           },
           {
              "name":"inl-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net",
+             "props":{}
           },
           {
              "name":"kans-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net",
+             "props":{}
           },
           {
              "name":"lasv-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net",
+             "props":{}
           },
           {
              "name":"lvk-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net",
+             "props":{}
           },
           {
              "name":"newy-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net",
+             "props":{}
           },
           {
              "name":"nrel-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net",
+             "props":{}
           },
           {
              "name":"orau-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net",
+             "props":{}
           },
           {
              "name":"osti-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net",
+             "props":{}
           },
           {
              "name":"paix-pa-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net",
+             "props":{}
           },
           {
              "name":"pantex-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net",
+             "props":{}
           },
           {
              "name":"snla-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net",
+             "props":{}
           },
           {
              "name":"srs-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net",
+             "props":{}
           },
           {
              "name":"star-pt1.es.net",
-             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net"
+             "uri":"/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net",
+             "props":{}
           }
        ],
        "columnNames":[
@@ -274,6 +301,12 @@ Example
           "hous-pt1.es.net",
           "sunn-pt1.es.net",
           "wash-pt1.es.net"
+       ],
+       "columnProps":[
+          { "pstoolkiturl": "http://chic-pt1.es.net" },
+          {},
+          {},
+          {}
        ],
        "checkNames":[
           "BWCTL 500Mbps",
