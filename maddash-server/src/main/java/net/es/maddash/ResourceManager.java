@@ -165,9 +165,9 @@ public class ResourceManager {
                     tmpRowObj.put("uri", "/" + uriInfo.getPath() + 
                             "/" + URIUtil.normalizeURIPart(rowName));
                     if(dimensionProperties.containsKey(rowName) && dimensionProperties.get(rowName) != null){
-                        tmpRowObj.put("params", dimensionProperties.get(rowName));
+                        tmpRowObj.put("props", dimensionProperties.get(rowName));
                     }else{
-                        tmpRowObj.put("params", new HashMap<String,String>());
+                        tmpRowObj.put("props", new HashMap<String,String>());
                     }
                     rowList.add(tmpRowObj);
                     curRowCols = new HashMap<String,Map<String,JSONObject>>();
@@ -208,7 +208,7 @@ public class ResourceManager {
             Collections.sort(checkList);
             json.put("lastUpdateTime", lastUpdateTime);
             json.put("columnNames", DimensionUtil.translateNames(colList, dimesnionLabelMap));
-            json.put("columnPropeties", DimensionUtil.translateProperties(colList, dimensionProperties));
+            json.put("columnProps", DimensionUtil.translateProperties(colList, dimensionProperties));
             json.put("checkNames", checkList);
             JSONArray jsonGrid = new JSONArray();
             for(JSONObject rowObj : rowList){
