@@ -510,5 +510,69 @@ public class ResourceManager {
         return checkJson;
         
     }
+
+    public JSONObject updateSchedule(JSONObject request) {
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        JSONObject response = new JSONObject();
+        long nextCheckTime = 0;
+        String sql = "UPDATE checks SET nextCheckTime=?";
+        ArrayList<String> sqlParams = new ArrayList<String>();
+        HashMap<String,String> fields = new HashMap<String,String>();
+        fields.put("gridName", "gridName");
+        fields.put("rowName", "rowName");
+        fields.put("columnName", "colName");
+        fields.put("checkName", "checkName");
+        fields.put("nextCheckTime", "nextCheckTime");
+        
+        netlogger.info(netLog.start("maddash.ResourceManager.updateSchedule"));
+        try{
+            //check required fields
+            for(String jsonField : fields.keySet()){
+                if(!request.containsKey(jsonField)){
+                    throw new RuntimeException("Missing required field " + jsonField);
+                }else if("nextCheckTime".equals(jsonField)){
+                    nextCheckTime = Long.parseLong(request.getString(jsonField));
+                }else if(!"*".equals(request.getString(jsonField))){
+                    if(sqlParams.isEmpty()){
+                        sql += " WHERE";
+                    }else{
+                        sql += " AND";
+                    }
+                    sql += " " + fields.get(jsonField) + "=?";
+                    sqlParams.add(request.getString(jsonField));
+                }
+            }
+            
+            //Run update
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, nextCheckTime);
+            for (int i= 0; i < sqlParams.size(); i++){
+                stmt.setString(i+2, sqlParams.get(i));
+            }
+            int rowCount = stmt.executeUpdate();
+            if(rowCount == 0){
+                response.put("status", -1);
+                response.put("checkUpdateCount", rowCount);
+                response.put("message", "Now checks matched request");
+            }else{
+                response.put("status", 0);
+                response.put("checkUpdateCount", rowCount);
+                response.put("message", "Successfully updated " + rowCount + " checks.");
+            }
+        }catch(Exception e){
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.end("maddash.ResourceManager.updateSchedule"));
+            log.error("Error handling request: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+        
+        return response;
+    }
     
 }

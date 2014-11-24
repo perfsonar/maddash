@@ -21,6 +21,7 @@ import net.es.maddash.jobs.CheckSchedulerJob;
 import net.es.maddash.jobs.CleanDBJob;
 import net.es.maddash.utils.URIUtil;
 import net.es.maddash.www.WebServer;
+import net.es.maddash.www.rest.AdminSchedule;
 import net.es.maddash.www.rest.CellResource;
 import net.es.maddash.www.rest.CheckResource;
 import net.es.maddash.www.rest.DashboardsResource;
@@ -270,7 +271,8 @@ public class MaDDashGlobals {
                 GridResource.class.getName(),
                 RowResource.class.getName(),
                 CellResource.class.getName(),
-                CheckResource.class.getName()
+                CheckResource.class.getName(),
+                AdminSchedule.class.getName()
         };
         ResourceConfig rc = new ClassNamesResourceConfig(services);
 
