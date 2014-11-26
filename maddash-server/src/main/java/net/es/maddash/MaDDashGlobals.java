@@ -19,6 +19,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import net.es.maddash.jobs.CheckSchedulerJob;
 import net.es.maddash.jobs.CleanDBJob;
+import net.es.maddash.jobs.EventCalendarJob;
 import net.es.maddash.utils.URIUtil;
 import net.es.maddash.www.WebServer;
 import net.es.maddash.www.rest.AdminEventResource;
@@ -66,6 +67,7 @@ public class MaDDashGlobals {
     private Map<String, Class> checkTypeClassMap;
     private HashMap<Integer, Boolean> scheduledChecks; 
     private CheckSchedulerJob checkShedJob;
+    private EventCalendarJob eventCalJob;
     private WebServer webServer;
     private String resourceURL;
 
@@ -259,7 +261,11 @@ public class MaDDashGlobals {
             }
             this.scheduledChecks = new HashMap<Integer,Boolean>();
         }
-
+        
+        //init event calendar
+        this.eventCalJob = new EventCalendarJob();
+        this.eventCalJob.start();
+        
         /*
          * NOTE: PackagesResourceConfig does not appear to work
          * with one-jar class loader so loading individually for now
