@@ -571,7 +571,7 @@ public class ResourceManager {
         NetLogger netLog = NetLogger.getTlogger();
         JSONObject response = new JSONObject();
         String selectSQL = "SELECT id FROM checks WHERE active=?";
-        String insertSQL = "INSERT INTO events VALUES(DEFAULT, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO events VALUES(DEFAULT, ?, ?, ?, ?, ?)";
         ArrayList<String> selectSQlParams = new ArrayList<String>();
         selectSQlParams.add("1");
         
@@ -598,6 +598,7 @@ public class ResourceManager {
                     insertStmt.setString(2, RESTUtil.checkStringField(AdminEventsResource.FIELD_DESCR, request, true, false));
                     insertStmt.setLong(3, RESTUtil.checkLongField(AdminEventsResource.FIELD_STARTTIME, request, true, false));
                     insertStmt.setLong(4, RESTUtil.checkLongField(AdminEventsResource.FIELD_ENDTIME, request, false, true));
+                    insertStmt.setInt(5, RESTUtil.checkBooleanField(AdminEventsResource.FIELD_CHANGESTATUS, request, false, false, false));
                     insertStmt.executeUpdate();
                     ResultSet genKeys = insertStmt.getGeneratedKeys();
                     if(!genKeys.next()){
@@ -638,7 +639,7 @@ public class ResourceManager {
         Connection conn = null;
         NetLogger netLog = NetLogger.getTlogger();
         JSONObject response = new JSONObject();
-        String selectSQL = "SELECT DISTINCT events.id, events.name, events.description, events.startTime, events.endTime FROM events";
+        String selectSQL = "SELECT DISTINCT events.id, events.name, events.description, events.startTime, events.endTime, events.changeStatus FROM events";
         
         netlogger.info(netLog.start("maddash.ResourceManager.getEvents"));
         try{
@@ -663,6 +664,7 @@ public class ResourceManager {
                 eventObj.put("description", queryResults.getString(3));
                 eventObj.put("startTime", queryResults.getLong(4));
                 eventObj.put("endTime", queryResults.getLong(5));
+                eventObj.put("changeStatus", queryResults.getBoolean(6));
                 eventList.add(eventObj);
             }
             response.put("events", eventList);
@@ -686,7 +688,7 @@ public class ResourceManager {
         Connection conn = null;
         NetLogger netLog = NetLogger.getTlogger();
         JSONObject response = new JSONObject();
-        String eventSQL = "SELECT name, description, startTime, endTime FROM events WHERE id=?"; 
+        String eventSQL = "SELECT name, description, startTime, endTime, changeStatus FROM events WHERE id=?"; 
         String checkSQL = "SELECT checks.gridName, checks.rowName, checks.colName, checks.checkName " +
                             "FROM checks INNER JOIN eventChecks ON eventChecks.checkId = checks.id " +
                             "WHERE eventChecks.eventId=?"; 
@@ -704,6 +706,7 @@ public class ResourceManager {
                 response.put("description", eventResults.getString(2));
                 response.put("startTime", eventResults.getLong(3));
                 response.put("endTime", eventResults.getLong(4));
+                response.put("changeStatus", eventResults.getBoolean(5));
             }else{
                 return null;
             }

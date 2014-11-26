@@ -524,7 +524,7 @@ public class MaDDashGlobals {
                 this.execSQLCreate("CREATE TABLE dimensions (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "configIdent VARCHAR(2000) NOT NULL, keyName VARCHAR(2000) NOT NULL, value VARCHAR(2000) NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE events (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
-                        "name VARCHAR(2000) NOT NULL, description VARCHAR(2000) NOT NULL, startTime BIGINT NOT NULL, endTime BIGINT )", conn);
+                        "name VARCHAR(2000) NOT NULL, description VARCHAR(2000) NOT NULL, startTime BIGINT NOT NULL, endTime BIGINT, changeStatus INTEGER NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE eventChecks (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "eventId INTEGER NOT NULL, checkId INTEGER NOT NULL )", conn);
                 

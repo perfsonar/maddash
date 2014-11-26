@@ -32,6 +32,7 @@ public class AdminEventsResource {
     final public static String FIELD_DESCR = "description";
     final public static String FIELD_STARTTIME = "startTime";
     final public static String FIELD_ENDTIME = "endTime";
+    final public static String FIELD_CHANGESTATUS = "changeStatus";
     
     @Produces("application/json")
     @Consumes("application/json")

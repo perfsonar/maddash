@@ -85,6 +85,25 @@ public class RESTUtil {
         return request.getLong(field);
     }
     
+    public static int checkBooleanField(String field, JSONObject request, boolean required, boolean nullable, boolean defaultVal) {
+        int defaultIntVal = defaultVal ? 1 : 0;
+        if(!request.containsKey(field)){
+            if(required){
+                throw new RuntimeException("Missing required field " + field);
+            }else{
+                return defaultIntVal;
+            }
+        }else if(request.get(field) instanceof net.sf.json.JSONNull){
+            if(!nullable){
+                throw new RuntimeException("Field " + field + " cannot be null");
+            }else{
+                return defaultIntVal;
+            }
+        }
+        
+        return (request.getBoolean(field) ? 1 : 0);
+    }
+    
     static public String buildWhereClauseFromGet(List<String> gridName, List<String> rowName, List<String> colName, List<String> checkName, List<String> dimensionName, List<String> sqlParams){
         String whereClause = "";
         whereClause = RESTUtil.buildWhereClauseFromGet(whereClause, gridName, "checks.gridName", sqlParams);
