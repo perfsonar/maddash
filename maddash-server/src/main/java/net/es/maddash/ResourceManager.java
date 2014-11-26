@@ -21,7 +21,7 @@ import net.es.maddash.utils.DimensionUtil;
 import net.es.maddash.utils.RESTUtil;
 import net.es.maddash.utils.URIUtil;
 import net.es.maddash.www.rest.AdminEventsResource;
-import net.es.maddash.www.rest.AdminSchedule;
+import net.es.maddash.www.rest.AdminScheduleResource;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -526,8 +526,8 @@ public class ResourceManager {
         netlogger.info(netLog.start("maddash.ResourceManager.updateSchedule"));
         try{
             //check required fields
-            JSONObject jsonCheckFilters = (JSONObject) RESTUtil.checkField(AdminSchedule.FIELD_CHECKFILTERS, request, true, false, null);
-            nextCheckTime = RESTUtil.checkLongField(AdminSchedule.FIELD_NEXTCHECKTIME, request, true, true);
+            JSONObject jsonCheckFilters = (JSONObject) RESTUtil.checkField(AdminScheduleResource.FIELD_CHECKFILTERS, request, true, false, null);
+            nextCheckTime = RESTUtil.checkLongField(AdminScheduleResource.FIELD_NEXTCHECKTIME, request, true, true);
             //append where clause
             sql = RESTUtil.buildWhereClauseFromPost(sql, jsonCheckFilters, sqlParams);
             
@@ -577,7 +577,7 @@ public class ResourceManager {
         netlogger.info(netLog.start("maddash.ResourceManager.createEvent"));
         try{
             //check required fields
-            JSONObject jsonCheckFilters = (JSONObject) RESTUtil.checkField(AdminSchedule.FIELD_CHECKFILTERS, request, true, false, null);
+            JSONObject jsonCheckFilters = (JSONObject) RESTUtil.checkField(AdminScheduleResource.FIELD_CHECKFILTERS, request, true, false, null);
             selectSQL = RESTUtil.buildWhereClauseFromPost(selectSQL, jsonCheckFilters, selectSQlParams);
             
             //Run query to get list of affected checks

@@ -22,7 +22,7 @@ import net.es.maddash.jobs.CleanDBJob;
 import net.es.maddash.utils.URIUtil;
 import net.es.maddash.www.WebServer;
 import net.es.maddash.www.rest.AdminEventsResource;
-import net.es.maddash.www.rest.AdminSchedule;
+import net.es.maddash.www.rest.AdminScheduleResource;
 import net.es.maddash.www.rest.CellResource;
 import net.es.maddash.www.rest.CheckResource;
 import net.es.maddash.www.rest.DashboardsResource;
@@ -273,7 +273,7 @@ public class MaDDashGlobals {
                 RowResource.class.getName(),
                 CellResource.class.getName(),
                 CheckResource.class.getName(),
-                AdminSchedule.class.getName(),
+                AdminScheduleResource.class.getName(),
                 AdminEventsResource.class.getName()
         };
         ResourceConfig rc = new ClassNamesResourceConfig(services);

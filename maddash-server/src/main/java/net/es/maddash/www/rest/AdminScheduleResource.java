@@ -16,8 +16,8 @@ import net.es.maddash.NetLogger;
 import net.sf.json.JSONObject;
 
 @Path("/maddash/admin/schedule")
-public class AdminSchedule {
-    Logger log = Logger.getLogger(AdminSchedule.class);
+public class AdminScheduleResource {
+    Logger log = Logger.getLogger(AdminScheduleResource.class);
     Logger netLogger = Logger.getLogger("netLogger");
     @Context UriInfo uriInfo;
     final private String POST_EVENT = "maddash.www.rest.AdminSchedule.post";
