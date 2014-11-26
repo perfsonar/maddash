@@ -3,3 +3,25 @@
 
 #ignore .DS-Store file on Mac
 .DS_Store
+
+#Eclipse
+.project
+.settings
+maddash-server/.classpath
+maddash-server/.project
+maddash-server/.settings
+
+#Build directories and files
+common-libs/target
+maddash-server/target
+maddash-webui/dojo-build/dojo-release-1.7.2-src
+maddash-webui/web/lib/dojo-release-1.7.2-maddash.tar.gz
+maddash-webui/web/lib/dojo
+
+#Misc dev environment files
+maddash-server/run
+maddash-server/data
+maddash-server/maddash-server.log
+maddash-server/maddash-server.netlogger.log
+
+
