@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.UriInfo;
@@ -17,7 +18,10 @@ import org.apache.log4j.Logger;
 
 import net.es.maddash.checks.CheckConstants;
 import net.es.maddash.utils.DimensionUtil;
+import net.es.maddash.utils.RESTUtil;
 import net.es.maddash.utils.URIUtil;
+import net.es.maddash.www.rest.AdminEventsResource;
+import net.es.maddash.www.rest.AdminSchedule;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -518,31 +522,14 @@ public class ResourceManager {
         long nextCheckTime = 0;
         String sql = "UPDATE checks SET nextCheckTime=?";
         ArrayList<String> sqlParams = new ArrayList<String>();
-        HashMap<String,String> fields = new HashMap<String,String>();
-        fields.put("gridName", "gridName");
-        fields.put("rowName", "rowName");
-        fields.put("columnName", "colName");
-        fields.put("checkName", "checkName");
-        fields.put("nextCheckTime", "nextCheckTime");
         
         netlogger.info(netLog.start("maddash.ResourceManager.updateSchedule"));
         try{
             //check required fields
-            for(String jsonField : fields.keySet()){
-                if(!request.containsKey(jsonField)){
-                    throw new RuntimeException("Missing required field " + jsonField);
-                }else if("nextCheckTime".equals(jsonField)){
-                    nextCheckTime = Long.parseLong(request.getString(jsonField));
-                }else if(!"*".equals(request.getString(jsonField))){
-                    if(sqlParams.isEmpty()){
-                        sql += " WHERE";
-                    }else{
-                        sql += " AND";
-                    }
-                    sql += " " + fields.get(jsonField) + "=?";
-                    sqlParams.add(request.getString(jsonField));
-                }
-            }
+            JSONObject jsonCheckFilters = (JSONObject) RESTUtil.checkField(AdminSchedule.FIELD_CHECKFILTERS, request, true, false, null);
+            nextCheckTime = RESTUtil.checkLongField(AdminSchedule.FIELD_NEXTCHECKTIME, request, true, true);
+            //append where clause
+            sql = RESTUtil.buildWhereClauseFromPost(sql, jsonCheckFilters, sqlParams);
             
             //Run update
             conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
@@ -552,10 +539,12 @@ public class ResourceManager {
                 stmt.setString(i+2, sqlParams.get(i));
             }
             int rowCount = stmt.executeUpdate();
+            
+            //build JSON response
             if(rowCount == 0){
                 response.put("status", -1);
                 response.put("checkUpdateCount", rowCount);
-                response.put("message", "Now checks matched request");
+                response.put("message", "No checks matched request");
             }else{
                 response.put("status", 0);
                 response.put("checkUpdateCount", rowCount);
@@ -572,6 +561,123 @@ public class ResourceManager {
             throw new RuntimeException(e.getMessage());
         }
         
+        netlogger.info(netLog.end("maddash.ResourceManager.updateSchedule"));
+        return response;
+    }
+
+    public JSONObject createEvent(JSONObject request, UriInfo uriInfo) {
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        JSONObject response = new JSONObject();
+        String selectSQL = "SELECT id FROM checks WHERE active=?";
+        String insertSQL = "INSERT INTO events VALUES(DEFAULT, ?, ?, ?, ?)";
+        ArrayList<String> selectSQlParams = new ArrayList<String>();
+        selectSQlParams.add("1");
+        
+        netlogger.info(netLog.start("maddash.ResourceManager.createEvent"));
+        try{
+            //check required fields
+            JSONObject jsonCheckFilters = (JSONObject) RESTUtil.checkField(AdminSchedule.FIELD_CHECKFILTERS, request, true, false, null);
+            selectSQL = RESTUtil.buildWhereClauseFromPost(selectSQL, jsonCheckFilters, selectSQlParams);
+            
+            //Run query to get list of affected checks
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            PreparedStatement stmt = conn.prepareStatement(selectSQL);
+            for (int i= 0; i < selectSQlParams.size(); i++){
+                stmt.setString(i+1, selectSQlParams.get(i));
+            }
+            ResultSet matchingChecks = stmt.executeQuery();
+            int matchingCheckCount = 0;
+            PreparedStatement insertEventCheckStmt = conn.prepareStatement("INSERT INTO eventChecks VALUES(DEFAULT, ?, ?)");
+            while(matchingChecks.next()){
+                //Insert event if we have to
+                if(matchingCheckCount == 0){
+                    PreparedStatement insertStmt = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS);
+                    insertStmt.setString(1, RESTUtil.checkStringField(AdminEventsResource.FIELD_NAME, request, true, false));
+                    insertStmt.setString(2, RESTUtil.checkStringField(AdminEventsResource.FIELD_DESCR, request, true, false));
+                    insertStmt.setLong(3, RESTUtil.checkLongField(AdminEventsResource.FIELD_STARTTIME, request, true, false));
+                    insertStmt.setLong(4, RESTUtil.checkLongField(AdminEventsResource.FIELD_ENDTIME, request, false, true));
+                    insertStmt.executeUpdate();
+                    ResultSet genKeys = insertStmt.getGeneratedKeys();
+                    if(!genKeys.next()){
+                        throw new RuntimeException("Unable to insert new event into database");
+                    }
+                    insertEventCheckStmt.setInt(1, genKeys.getInt(1));
+                    response.put("uri", "/" + uriInfo.getPath() + "/" + genKeys.getInt(1));
+                }
+                matchingCheckCount++;
+                
+                //add event to check mapping
+                insertEventCheckStmt.setInt(2, matchingChecks.getInt(1));
+                insertEventCheckStmt.execute();
+            }
+            
+            //throw error if no checks matched
+            if(matchingCheckCount == 0){
+                throw new RuntimeException("No checks matched search filter. Event was not created.");
+            }
+        }catch(Exception e){
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.end("maddash.ResourceManager.createEvent"));
+            log.error("Error handling request: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+        
+        netlogger.info(netLog.end("maddash.ResourceManager.createEvent"));
+        return response;
+    }
+
+    public JSONObject getEvents(List<String> gridName, List<String> rowName,
+            List<String> colName, List<String> checkName, List<String> dimensionName, UriInfo uriInfo) {
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        JSONObject response = new JSONObject();
+        String selectSQL = "SELECT DISTINCT events.id, events.name, events.description, events.startTime, events.endTime FROM events";
+        
+        netlogger.info(netLog.start("maddash.ResourceManager.getEvents"));
+        try{
+            ArrayList<String> sqlParams = new ArrayList<String>();
+            String whereClause = RESTUtil.buildWhereClauseFromGet(gridName, rowName, colName, checkName, dimensionName, sqlParams);
+            
+            if(!"".equals(whereClause)){
+                selectSQL += " INNER JOIN eventChecks ON events.id = eventChecks.eventId INNER JOIN checks ON checks.id=eventChecks.checkId";
+                selectSQL += " WHERE " + whereClause;
+            }
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            PreparedStatement stmt = conn.prepareStatement(selectSQL);
+            for(int i = 0; i < sqlParams.size(); i++){
+                stmt.setString(i+1, sqlParams.get(i));
+            }
+            ResultSet queryResults = stmt.executeQuery();
+            ArrayList<JSONObject> eventList = new ArrayList<JSONObject>();
+            while(queryResults.next()){
+                JSONObject eventObj = new JSONObject();
+                eventObj.put("uri", "/" + uriInfo.getPath() + "/" + queryResults.getInt(1));
+                eventObj.put("name", queryResults.getString(2));
+                eventObj.put("description", queryResults.getString(3));
+                eventObj.put("startTime", queryResults.getLong(4));
+                eventObj.put("endTime", queryResults.getLong(5));
+                eventList.add(eventObj);
+            }
+            response.put("events", eventList);
+        }catch(Exception e){
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.end("maddash.ResourceManager.getEvents"));
+            log.error("Error handling request: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+        
+        netlogger.info(netLog.end("maddash.ResourceManager.getEvents"));
         return response;
     }
     

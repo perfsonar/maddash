@@ -21,6 +21,7 @@ import net.es.maddash.jobs.CheckSchedulerJob;
 import net.es.maddash.jobs.CleanDBJob;
 import net.es.maddash.utils.URIUtil;
 import net.es.maddash.www.WebServer;
+import net.es.maddash.www.rest.AdminEventsResource;
 import net.es.maddash.www.rest.AdminSchedule;
 import net.es.maddash.www.rest.CellResource;
 import net.es.maddash.www.rest.CheckResource;
@@ -272,7 +273,8 @@ public class MaDDashGlobals {
                 RowResource.class.getName(),
                 CellResource.class.getName(),
                 CheckResource.class.getName(),
-                AdminSchedule.class.getName()
+                AdminSchedule.class.getName(),
+                AdminEventsResource.class.getName()
         };
         ResourceConfig rc = new ClassNamesResourceConfig(services);
 
@@ -519,6 +521,10 @@ public class MaDDashGlobals {
                         "unknownLabel VARCHAR(2000) NOT NULL, notRunLabel VARCHAR(2000) NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE dimensions (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "configIdent VARCHAR(2000) NOT NULL, keyName VARCHAR(2000) NOT NULL, value VARCHAR(2000) NOT NULL )", conn);
+                this.execSQLCreate("CREATE TABLE events (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        "name VARCHAR(2000) NOT NULL, description VARCHAR(2000) NOT NULL, startTime BIGINT NOT NULL, endTime BIGINT )", conn);
+                this.execSQLCreate("CREATE TABLE eventChecks (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        "eventId INTEGER NOT NULL, checkId INTEGER NOT NULL )", conn);
                 
                 //Create indexes - always rebuilds indexes which can help performance.
                 //    checks indexes
@@ -546,6 +552,16 @@ public class MaDDashGlobals {
                 //dimensions
                 this.execSQLCreate("DROP INDEX dimensionsConfigIdent", conn);
                 this.execSQLCreate("CREATE INDEX dimensionsConfigIdent ON dimensions(configIdent)", conn);
+                //events
+                this.execSQLCreate("DROP INDEX eventsStart", conn);
+                this.execSQLCreate("CREATE INDEX eventsStart ON events(startTime)", conn);
+                this.execSQLCreate("DROP INDEX eventsEnd", conn);
+                this.execSQLCreate("CREATE INDEX eventsEnd ON events(endTime)", conn);
+                //eventChecks
+                this.execSQLCreate("DROP INDEX eventChecksEventId", conn);
+                this.execSQLCreate("CREATE INDEX eventChecksEventId ON eventChecks(eventId)", conn);
+                this.execSQLCreate("DROP INDEX eventChecksCheckId", conn);
+                this.execSQLCreate("CREATE INDEX eventChecksCheckId ON eventChecks(checkId)", conn);
                 }
             
             conn.close();
