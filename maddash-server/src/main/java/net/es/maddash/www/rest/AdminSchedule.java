@@ -17,10 +17,13 @@ import net.sf.json.JSONObject;
 
 @Path("/maddash/admin/schedule")
 public class AdminSchedule {
-    Logger log = Logger.getLogger(DashboardsResource.class);
+    Logger log = Logger.getLogger(AdminSchedule.class);
     Logger netLogger = Logger.getLogger("netLogger");
     @Context UriInfo uriInfo;
     final private String POST_EVENT = "maddash.www.rest.AdminSchedule.post";
+    
+    final public static String FIELD_NEXTCHECKTIME = "nextCheckTime";
+    final public static String FIELD_CHECKFILTERS = "checkFilters";
     
     @Produces("application/json")
     @Consumes("application/json")
