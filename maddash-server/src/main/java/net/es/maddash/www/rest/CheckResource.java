@@ -27,6 +27,7 @@ public class CheckResource {
     @DefaultValue("0") @QueryParam("page") int page;
     
     final private String GET_EVENT = "maddash.www.rest.CheckResource.get";
+    final public static String rootPath = "/maddash/grids";//must match @Path
     
     @Produces("application/json")
     @GET

@@ -22,6 +22,7 @@ import net.es.maddash.utils.RESTUtil;
 import net.es.maddash.utils.URIUtil;
 import net.es.maddash.www.rest.AdminEventsResource;
 import net.es.maddash.www.rest.AdminScheduleResource;
+import net.es.maddash.www.rest.CheckResource;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -678,6 +679,102 @@ public class ResourceManager {
         }
         
         netlogger.info(netLog.end("maddash.ResourceManager.getEvents"));
+        return response;
+    }
+
+    public JSONObject getEvent(int eventId, UriInfo uriInfo) {
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        JSONObject response = new JSONObject();
+        String eventSQL = "SELECT name, description, startTime, endTime FROM events WHERE id=?"; 
+        String checkSQL = "SELECT checks.gridName, checks.rowName, checks.colName, checks.checkName " +
+                            "FROM checks INNER JOIN eventChecks ON eventChecks.checkId = checks.id " +
+                            "WHERE eventChecks.eventId=?"; 
+        netlogger.info(netLog.start("maddash.ResourceManager.getEvent"));
+        try{
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            
+            //get the event
+            PreparedStatement eventStmt = conn.prepareStatement(eventSQL);
+            eventStmt.setInt(1, eventId);
+            ResultSet eventResults = eventStmt.executeQuery();
+            if(eventResults.next()){
+                response.put("uri", "/" + uriInfo.getPath());
+                response.put("name", eventResults.getString(1));
+                response.put("description", eventResults.getString(2));
+                response.put("startTime", eventResults.getLong(3));
+                response.put("endTime", eventResults.getLong(4));
+            }else{
+                return null;
+            }
+            
+            //get the checks
+            ArrayList<String> checkList = new ArrayList<String>();
+            PreparedStatement checkStmt = conn.prepareStatement(checkSQL);
+            checkStmt.setInt(1, eventId);
+            ResultSet checkResults = checkStmt.executeQuery();
+            while(checkResults.next()){
+                checkList.add(CheckResource.rootPath + //i know this isn't pretty
+                        "/" + URIUtil.normalizeURIPart(checkResults.getString(1)) +
+                        "/" + URIUtil.normalizeURIPart(checkResults.getString(2)) +
+                        "/" + URIUtil.normalizeURIPart(checkResults.getString(3)) +
+                        "/" + URIUtil.normalizeURIPart(checkResults.getString(4)));
+            }
+            response.put("checks", checkList);
+        }catch(Exception e){
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.end("maddash.ResourceManager.getEvent"));
+            log.error("Error handling request: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+        netlogger.info(netLog.end("maddash.ResourceManager.getEvent"));
+        return response;
+    }
+    
+    public JSONObject deleteEvent(int eventId) {
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        JSONObject response = new JSONObject();
+        String eventChecksSQL = "DELETE FROM eventChecks WHERE eventId=?"; 
+        String eventSQL = "DELETE FROM events WHERE id=?"; 
+        
+        netlogger.info(netLog.start("maddash.ResourceManager.deleteEvent"));
+        try{
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            
+            //delete the event
+            PreparedStatement eventStmt = conn.prepareStatement(eventSQL);
+            eventStmt.setInt(1, eventId);
+            int rowCount = eventStmt.executeUpdate();
+            //build JSON response
+            if(rowCount == 0){
+                return null;
+            }else{
+                response.put("status", 0);
+                response.put("message", "Successfully deleted event");
+            }
+            
+            //delete the eventChecks
+            PreparedStatement eventChecksStmt = conn.prepareStatement(eventChecksSQL);
+            eventChecksStmt.setInt(1, eventId);
+            eventChecksStmt.executeUpdate();
+        }catch(Exception e){
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.end("maddash.ResourceManager.deleteEvent"));
+            log.error("Error handling request: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+        netlogger.info(netLog.end("maddash.ResourceManager.deleteEvent"));
         return response;
     }
     
