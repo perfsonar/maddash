@@ -49,6 +49,9 @@ cp -r %{package_name}/web/images %{buildroot}/%{install_base}/images
 cp -r %{package_name}/web/etc %{buildroot}/%{install_base}/etc
 
 %post
+#create empty directory for config files. apache user files can go here
+mkdir -p /etc/maddash/maddash-webui
+
 #restart apache so config changes are applied
 /etc/init.d/httpd restart
 
