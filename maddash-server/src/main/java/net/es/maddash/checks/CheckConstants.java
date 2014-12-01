@@ -14,5 +14,6 @@ public class CheckConstants {
     final static public int RESULT_NOTRUN = 4;
     final static public int RESULT_MAINTENANCE = 5;
     final static public String EMPTY_PARAMS = "EMPTY";
+    final static public String[] RESULT_SHORT_NAMES = {"OK", "WARNING", "CRITICAL", "UNKNOWN", "NOT RUN", "MAINTENANCE"};
     
 }

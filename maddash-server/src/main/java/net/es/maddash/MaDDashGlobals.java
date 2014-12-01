@@ -533,6 +533,8 @@ public class MaDDashGlobals {
                         "name VARCHAR(2000) NOT NULL, description VARCHAR(2000) NOT NULL, startTime BIGINT NOT NULL, endTime BIGINT, changeStatus INTEGER NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE eventChecks (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "eventId INTEGER NOT NULL, checkId INTEGER NOT NULL )", conn);
+                this.execSQLCreate("CREATE TABLE checkStateDefs (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        " gridName VARCHAR(500) NOT NULL, stateValue INTEGER NOT NULL,  shortName VARCHAR(500) NOT NULL, description VARCHAR(2000) NOT NULL)", conn);
                 
                 //Create indexes - always rebuilds indexes which can help performance.
                 //    checks indexes
@@ -570,6 +572,9 @@ public class MaDDashGlobals {
                 this.execSQLCreate("CREATE INDEX eventChecksEventId ON eventChecks(eventId)", conn);
                 this.execSQLCreate("DROP INDEX eventChecksCheckId", conn);
                 this.execSQLCreate("CREATE INDEX eventChecksCheckId ON eventChecks(checkId)", conn);
+                //checkStateDefs
+                this.execSQLCreate("DROP INDEX checkStateDefsGridName", conn);
+                this.execSQLCreate("CREATE INDEX checkStateDefsGridName ON checkStateDefs(gridName)", conn);
                 }
             
             conn.close();

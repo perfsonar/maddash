@@ -110,18 +110,30 @@ public class ResourceManager {
             		"criticalLabel, unknownLabel, notRunLabel FROM grids WHERE gridName=?");
             selGridStmt.setString(1, gridName);
             ResultSet gridResult = selGridStmt.executeQuery();
+            JSONArray statusLabels = new JSONArray();
             if(gridResult.next()){
-                JSONArray statusLabels = new JSONArray();
                 statusLabels.add("".equals(gridResult.getString(1)) ? null : gridResult.getString(1));
                 statusLabels.add("".equals(gridResult.getString(2)) ? null : gridResult.getString(2));
                 statusLabels.add("".equals(gridResult.getString(3)) ? null : gridResult.getString(3));
                 statusLabels.add("".equals(gridResult.getString(4)) ? null : gridResult.getString(4));
                 statusLabels.add("".equals(gridResult.getString(5)) ? null : gridResult.getString(5));
-                json.put("statusLabels", statusLabels);
             }else{
                 //grid not found
                 return null;
             }
+            
+            //get custom states
+            PreparedStatement selCheckStateDefsStmt = conn.prepareStatement("SELECT stateValue, description FROM checkStateDefs WHERE gridName=? ORDER BY stateValue ASC");
+            selCheckStateDefsStmt.setString(1, gridName);
+            ResultSet checkStateDefsResult = selCheckStateDefsStmt.executeQuery();
+            if(checkStateDefsResult.next()){
+                //add empty values until reach next state
+                while(statusLabels.size() < checkStateDefsResult.getInt(1)){
+                    statusLabels.add(null);
+                }
+                statusLabels.add(checkStateDefsResult.getString(2));
+            }
+            json.put("statusLabels", statusLabels);
             
             //get row and column labels
             HashMap<String, String> dimesnionLabelMap = new HashMap<String, String>();
@@ -441,6 +453,21 @@ public class ResourceManager {
             if(checkIds.size() == 0){
                 netlogger.info(netLog.end("maddash.ResourceManager.getCheck"));
                 return null;
+            }
+            
+            //get custom states
+            if(checkJson.getInt("status") < CheckConstants.RESULT_SHORT_NAMES.length){
+                checkJson.put("statusShortName", CheckConstants.RESULT_SHORT_NAMES[checkJson.getInt("status")]);
+            }else{
+                PreparedStatement selCheckStateDefsStmt = conn.prepareStatement("SELECT shortName FROM checkStateDefs WHERE gridName=? AND stateValue=?");
+                selCheckStateDefsStmt.setString(1, gridName);
+                selCheckStateDefsStmt.setInt(2, checkJson.getInt("status"));
+                ResultSet selCheckStateDefsResult = selCheckStateDefsStmt.executeQuery();
+                if(selCheckStateDefsResult.next()){
+                    checkJson.put("statusShortName", selCheckStateDefsResult.getString(1));
+                }else{
+                    checkJson.put("statusShortName", "CUSTOM");
+                }
             }
             
             //get history

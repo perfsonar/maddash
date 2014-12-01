@@ -66,7 +66,11 @@ public class ConfigLoader {
     static final public String PROP_GRIDS_STATUS_LABELS_CRITICAL = "critical";
     static final public String PROP_GRIDS_STATUS_LABELS_UNKNOWN = "unknown";
     static final public String PROP_GRIDS_STATUS_LABELS_NOTRUN = "notrun";
-
+    static final public String PROP_GRIDS_STATUS_LABELS_EXTRA = "extra";
+    static final public String PROP_GRIDS_STATUS_LABELS_EXTRA_VALUE = "value";
+    static final public String PROP_GRIDS_STATUS_LABELS_EXTRA_SHORT_NAME = "shortName";
+    static final public String PROP_GRIDS_STATUS_LABELS_EXTRA_DESCR = "description";
+    
     static final public String ALG_AFTER = "afterself";
     static final public String ALG_BEFORE = "beforeself";
     static final public String ALG_ALL = "all";
@@ -193,6 +197,7 @@ public class ConfigLoader {
             //remove all grids
             //NOTE: Remove this if ever have foreign keys to this value
             conn.createStatement().executeUpdate("DELETE FROM grids");
+            conn.createStatement().executeUpdate("DELETE FROM checkStateDefs");
 
             //parse grids and update database
             PreparedStatement insertGridStmt = conn.prepareStatement("INSERT INTO grids VALUES(DEFAULT, ?, ?, ?, ?, ?, ?)");            
@@ -200,6 +205,7 @@ public class ConfigLoader {
                     "gridName=? AND rowName=? AND colName =? AND checkName=? AND checkTemplateId=?");
             PreparedStatement updateCheckStmt = conn.prepareStatement("UPDATE checks SET description=?, rowOrder=?, colOrder=?, active=1 WHERE id=?");
             PreparedStatement insertCheckStmt = conn.prepareStatement("INSERT INTO checks VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, " + CheckConstants.RESULT_NOTRUN  + "," + CheckConstants.RESULT_NOTRUN  + ", 'Check has not run', 0, 1)");
+            PreparedStatement insertCheckStateDefsStmt = conn.prepareStatement("INSERT INTO checkStateDefs VALUES(DEFAULT, ?, ?, ?, ?)");
             for(Map gridMap : gridList){
                 String rowOrder = (String) gridMap.get(PROP_GRIDS_ROW_ORDER);
                 String colOrder = (String) gridMap.get(PROP_GRIDS_COL_ORDER);
@@ -251,7 +257,7 @@ public class ConfigLoader {
                 }
 
                 //load up grids table
-                Map<String,String> statusLabelMap = (Map<String, String>) gridMap.get(PROP_GRIDS_STATUS_LABELS);
+                Map<String,Object> statusLabelMap = (Map<String, Object>) gridMap.get(PROP_GRIDS_STATUS_LABELS);
                 insertGridStmt.setString(1, (String)gridMap.get(PROP_GRIDS_NAME));
                 insertGridStmt.setString(2, ConfigLoader.genStatusLabel(statusLabelMap, PROP_GRIDS_STATUS_LABELS_OK));
                 insertGridStmt.setString(3, ConfigLoader.genStatusLabel(statusLabelMap, PROP_GRIDS_STATUS_LABELS_WARNING));
@@ -259,7 +265,21 @@ public class ConfigLoader {
                 insertGridStmt.setString(5, ConfigLoader.genStatusLabel(statusLabelMap, PROP_GRIDS_STATUS_LABELS_UNKNOWN));
                 insertGridStmt.setString(6, ConfigLoader.genStatusLabel(statusLabelMap, PROP_GRIDS_STATUS_LABELS_NOTRUN));
                 insertGridStmt.executeUpdate();
-
+                
+                //load up custom states
+                if(statusLabelMap.containsKey(PROP_GRIDS_STATUS_LABELS_EXTRA) && statusLabelMap.get(PROP_GRIDS_STATUS_LABELS_EXTRA) != null){
+                    List<Map<String,Object>> extraStatusDefs = (List<Map<String,Object>>) statusLabelMap.get(PROP_GRIDS_STATUS_LABELS_EXTRA);
+                    for(Map<String, Object> extraStatusDef: extraStatusDefs){
+                        insertCheckStateDefsStmt.setString(1, (String) gridMap.get(PROP_GRIDS_NAME));
+                        //support quoted and unquoted integer
+                        insertCheckStateDefsStmt.setInt(2, Integer.parseInt(extraStatusDef.get(PROP_GRIDS_STATUS_LABELS_EXTRA_VALUE)+""));
+                        insertCheckStateDefsStmt.setString(3, (String)extraStatusDef.get(PROP_GRIDS_STATUS_LABELS_EXTRA_SHORT_NAME));
+                        insertCheckStateDefsStmt.setString(4, (String)extraStatusDef.get(PROP_GRIDS_STATUS_LABELS_EXTRA_DESCR));
+                        insertCheckStateDefsStmt.executeUpdate();
+                    }
+                }
+                
+                
                 //load up check database table
                 selCheckStmt.setString(1, (String)gridMap.get(PROP_GRIDS_NAME));
                 for(int ri = 0; ri < rows.size(); ri++){
@@ -374,11 +394,11 @@ public class ConfigLoader {
         return tmpMapKeys;
     }
 
-    private static String genStatusLabel(Map<String, String> statusLabelMap, String label) {
+    private static String genStatusLabel(Map<String, Object> statusLabelMap, String label) {
         if(!statusLabelMap.containsKey(label) || statusLabelMap.get(label) == null){
             return "";
         }
-        return statusLabelMap.get(label);
+        return statusLabelMap.get(label)+"";
     }
 
     private static String formatCheckDescription(String description, String rowName, String colName) {
