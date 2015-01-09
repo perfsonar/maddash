@@ -1,0 +1,187 @@
+#maddashAdminContent {
+	margin-left: 215px;
+}
+
+.maddashAdminContentHeading {
+    font-size: 24px;
+	color: #0066CC;
+	font-weight: bolder;
+	width: 800px;
+    margin: 10px auto 0px auto;
+}
+
+.maddashRowEven {
+	margin: 0px auto 0px auto;
+	width: 794px;
+	padding: 0px 3px 0px 3px;
+	background: #DDDDDD;
+    background: -moz-linear-gradient(#B1B1B1 0%, #DDDDDD 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #B1B1B1), color-stop(100%, #DDDDDD));
+    background: -webkit-linear-gradient(#B1B1B1 0%, #DDDDDD 100%);
+}
+
+.maddashRowOdd {
+	margin: 0px auto 0px auto;
+	width: 794px;
+	padding: 0px 3px 0px 3px;
+	background: #DDDDDD;
+    background: -moz-linear-gradient(#B1B1B1 0%, #DDDDDD 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #B1B1B1), color-stop(100%, #DDDDDD));
+    background: -webkit-linear-gradient(#B1B1B1 0%, #DDDDDD 100%);
+}
+
+.mdAdminAndLabel {
+    padding: 10px auto 10px auto;
+	width: 100%;
+	text-align: center;
+	background: #FFFFFF;
+}
+
+.maddashAdminFilters {
+    border: 1px solid #DDDDDD;
+    width: 800px;
+    margin: 0px auto 0px auto;
+}
+
+.maddashAdminFiltersLabel{
+    width: 800px;
+    margin: 10px auto 0px auto;
+}
+
+.maddashAdminRowColCheckBox{
+    margin-left: 100px;
+}
+
+.maddashAdminActionsLabel{
+    width: 800px;
+    margin: 25px auto 0px auto;
+}
+
+.maddashAdminActions {
+    border: 1px solid;
+    width: 792px;
+    margin: 0px auto 0px auto;
+    padding: 6px 6px 6px 6px;
+    background: #0066CC;
+    background: -moz-linear-gradient(#00478E 0%, #0066CC 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #00478E), color-stop(100%, #0066CC));
+    background: -webkit-linear-gradient(#00478E 0%, #0066CC 100%);
+    background: linear-gradient(#00478E 0%, #0066CC 100%);
+    color: #FFFFFF;
+}
+
+.success, .error {
+border: 1px solid;
+width: 740px;
+margin: 10px auto 10px auto;
+padding:15px 10px 15px 50px;
+background-repeat: no-repeat;
+background-position: 10px center;
+}
+
+.success {
+color: #4F8A10;
+background-color: #DFF2BF;
+background-image:url('../images/success.png');
+
+}
+
+.error {
+color: #D8000C;
+background-color: #FFBABA;
+background-image: url('../images/error.png');to;
+}
+
+/* Base Styles */
+#maddashAdminMenu,
+#maddashAdminMenu ul,
+#maddashAdminMenu li,
+#maddashAdminMenu a {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+  font-weight: normal;
+  text-decoration: none;
+  line-height: 1;
+  font-family: sans-serif;
+  font-size: 14px;
+  position: relative;
+}
+#maddashAdminMenu a {
+  line-height: 1.3;
+  padding: 6px 15px;
+}
+#maddashAdminMenu {
+  width: 200px;
+  float: left;
+  margin: 10px 10px 10px 5px;
+}
+#maddashAdminMenu > ul > li {
+  cursor: pointer;
+  background: #000;
+  border-bottom: 1px solid #4c4e53;
+}
+#maddashAdminMenu > ul > li:last-child {
+  border-bottom: 1px solid #3e3d3c;
+}
+#maddashAdminMenu > ul > li > a {
+  font-size: 13px;
+  display: block;
+  color: #ffffff;
+  text-shadow: 0 1px 1px #000;
+  background: #64676e;
+  background: -moz-linear-gradient(#64676e 0%, #4c4e53 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #64676e), color-stop(100%, #4c4e53));
+  background: -webkit-linear-gradient(#64676e 0%, #4c4e53 100%);
+  background: linear-gradient(#64676e 0%, #4c4e53 100%);
+}
+#maddashAdminMenu > ul > li > a:hover {
+  text-decoration: none;
+}
+#maddashAdminMenu > ul > li.active {
+  border-bottom: none;
+}
+#maddashAdminMenu > ul > li.active > a {
+  background: #CCCCCC;
+  background: -moz-linear-gradient(#CCCCCC 0%, #0066CC 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #CCCCCC), color-stop(100%, #0066CC));
+  background: -webkit-linear-gradient(#CCCCCC 0%, #0066CC 100%);
+  background: linear-gradient(#CCCCCC 0%, #0066CC 100%);
+  color: #FFFFFF;
+  text-shadow: 0 1px 1px #555555;
+}
+#maddashAdminMenu > ul > li.has-sub > a:after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 5px solid transparent;
+  border-left: 5px solid #ffffff;
+}
+#maddashAdminMenu > ul > li.has-sub.active > a:after {
+  right: 14px;
+  top: 12px;
+  border: 5px solid transparent;
+  border-top: 5px solid #4e5800;
+}
+/* Sub menu */
+#maddashAdminMenu ul ul {
+  padding: 0;
+  display: none;
+}
+#maddashAdminMenu ul ul a {
+  background: #efefef;
+  display: block;
+  color: #797979;
+  font-size: 13px;
+}
+#maddashAdminMenu ul ul li {
+  border-bottom: 1px solid #c9c9c9;
+}
+#maddashAdminMenu ul ul li.odd a {
+  background: #e5e5e5;
+}
+#maddashAdminMenu ul ul li:last-child {
+  border: none;
+}

@@ -29,8 +29,11 @@ dependencies ={
             "dijit._base.window",
             "dijit.form.DropDownButton",
             "dijit.form.ComboButton",
+            "dijit.form.DateTextBox",
+            "dijit.form.TimeTextBox",
             "dojo.fx.Toggler",
             "dijit.CheckedMenuItem",
+            "dijit.form.FilteringSelect",
         ]
         }
     ],

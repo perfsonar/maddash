@@ -46,6 +46,19 @@ function maddashCreateStatusSpan(status){
 }
 
 /**
+ * Function: updateTimezoneSpan
+ * Description: Set text in given span to browser timezone
+ *   Parameters:
+ *      spanId: Id of span to update
+ *   Returns: nothing
+ */
+function updateTimezoneSpan(spanId){
+    var tz = dojo.date.getTimezoneName(new Date())
+    var span = document.getElementById(spanId);
+    span.appendChild(document.createTextNode(tz));
+}
+
+/**
  * Function: _maddashSetParent
  * Description: Utility function for setting the parent element of a widget
  *   Parameters:
