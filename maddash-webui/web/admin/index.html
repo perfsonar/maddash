@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>MaDDash - Monitoring and Debugging Dashboard Administrative Interface</title>
+		<link rel="stylesheet" href="../lib/dojo/dijit/themes/claro/claro.css" media="screen">
+		<link rel="stylesheet" href="../style/maddash-webui.css" media="screen">
+		<link rel="stylesheet" href="../style/maddash.css" media="screen">
+		<link rel="stylesheet" href="../style/maddash-admin.css" media="screen">
+		<link rel="stylesheet" href="../style/tipsy.css" />
+        <link rel="stylesheet" href="../style/jquery.fancybox-1.3.4.css" />
+	
+	    <script src="../lib/jquery.min.js"></script>
+        <script src="../lib/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="../lib/jquery.tipsy.js"></script>
+		<script src="../lib/dojo/dojo/dojo.js" data-dojo-config="parseOnLoad: true"></script>
+		<script src="../lib/dojo/dojo/dojo-maddash.js"></script>
+		<script src="../lib/d3.v2.js"></script>
+		<script type="text/javascript" src="../lib/maddash.js"></script>
+		<script type="text/javascript" src="../lib/maddash-webui.js"></script>
+        <script type="text/javascript" src="../lib/maddash-admin.js"></script>
+        
+        <script>
+            ( function( $ ) {
+                $( document ).ready(function() {
+                $('#maddashAdminMenu ul ul li:odd').addClass('odd');
+
+                $('#maddashAdminMenu ul ul li:even').addClass('even');
+
+                $('#maddashAdminMenu > ul > li > a').click(function() {
+
+                  $('#maddashAdminMenu li').removeClass('active');
+
+                  $(this).closest('li').addClass('active');	
+
+                  var checkElement = $(this).next();
+
+                  if((checkElement.is('ul')) && (checkElement.is(':visible'))) {
+
+                    $(this).closest('li').removeClass('active');
+
+                    checkElement.slideUp('normal');
+
+                  }
+
+                  if((checkElement.is('ul')) && (!checkElement.is(':visible'))) {
+
+                    $('#maddashAdminMenu ul ul:visible').slideUp('normal');
+
+                    checkElement.slideDown('normal');
+
+                  }
+
+                  if($(this).closest('li').find('ul').children().length == 0) {
+
+                    return true;
+
+                  } else {
+
+                    return false;	
+
+                  }		
+
+                });
+                });
+                } )( jQuery );
+        </script>
+	</head>
+	<body class="claro" style="font-family:sans-serif" marginheight="0" marginwidth="0">
+		<div id="maddashTitle" class="maddashTitle">MaDDash Administration</div>
+		
+		<div id='maddashAdminMenu'>
+            <ul>
+               <li class="active"><a href='#'><span>Home</span></a></li>
+               <li class='has-sub'><a href='#'><span>Checks</span></a>
+                  <ul>
+                     <li class='last'><a href='#' onclick='loadContent("maddashAdminContent", "widgets/checkReschedule.html", renderCheckReschedule)'><span>Re-schedule Check</span></a></li>
+                  </ul>
+               </li>
+               <li class='has-sub last'><a href='#'><span>Events</span></a>
+                  <ul>
+                     <li><a href='#' onclick='loadContent("maddashAdminContent", "widgets/eventSchedule.html", renderEventSchedule)'><span>Schedule Event</span></a></li>
+                     <li class='last'><a href='#'><span>View/Delete Events</span></a></li>
+                  </ul>
+               </li>
+            </ul>
+        </div>
+
+		<div id="maddashAdminContent" data-dojo-type="dijit.layout.ContentPane"></div>
+        
+		<!-- add space for mouseover -->
+	    <div id="footer" class="maddashFooter"></div>
+        <div class="maddashFooterMoreInfo">
+          <br>
+          <hr width="90%">
+          More information on MaDDash available <a target="newwindow" href="http://software.es.net/maddash">here</a>
+        </div>
+	</body>
+</html>

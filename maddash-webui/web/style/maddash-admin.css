@@ -30,6 +30,20 @@
     background: -webkit-linear-gradient(#B1B1B1 0%, #DDDDDD 100%);
 }
 
+.maddashAdminFormRow {
+    width: 100%;
+    margin: 5px 5px 5px 5px;
+}
+
+.maddashAdminFormLabel {
+    width: 100px;
+    margin-right: 10px;
+    float: left;
+}
+
+.maddashAdminFormHeading {
+    font-weight: bolder;
+}
 .mdAdminAndLabel {
     padding: 10px auto 10px auto;
 	width: 100%;

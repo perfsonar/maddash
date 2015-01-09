@@ -1,0 +1,15 @@
+<div class="maddashAdminContentHeading">Schedule Event</div>
+<div id="eventSchedStatus" style="display: none"></div>
+<div class="maddashAdminFiltersLabel">
+  <span>Select checks that match the following filters: </span>
+</div>
+<div id="maddashAdminFilters" class="maddashAdminFilters"></div>
+<div id="maddashAdminActions" class="maddashAdminActions">
+    <div class="maddashAdminFormHeading">Event Details</div>
+    <div class="maddashAdminFormRow"><label class="maddashAdminFormLabel" for="eventName">Name:</label></div><div><input style="width: 200px" type="text" name="eventName" id="eventName" data-dojo-type="dijit.form.ValidationTextBox" data-dojo-props="required:true"></div>
+    <div class="maddashAdminFormRow"><label class="maddashAdminFormLabel for="eventDescription">Description:</label><textarea style="width: 200px" id="eventDescription" name="eventDescription" data-dojo-type="dijit.form.Textarea"></textarea></div>
+    <div class="maddashAdminFormRow"><label class="maddashAdminFormLabel for="eventStartDate">Start Time:</label><input type="text" name="eventStartDate" id="eventStartDate" value="now" data-dojo-type="dijit.form.DateTextBox" required="true" /> <input type="text" name="eventStartTime" id="eventStartTime" value="now" data-dojo-type="dijit.form.TimeTextBox" required="true" data-dojo-props="constraints: {timePattern: 'HH:mm', clickableIncrement: 'T00:01:00', visibleIncrement: 'T00:01:00'}"/> <span id="startTZ"></span> </div>
+    <div class="maddashAdminFormRow"><label class="maddashAdminFormLabel for="eventEndDate">End Time:</label><input type="text" name="eventEndDate" id="eventEndDate"   value="now" data-dojo-type="dijit.form.DateTextBox" required="true" /> <input type="text" name="eventEndTime"   id="eventEndTime"   value="now" data-dojo-type="dijit.form.TimeTextBox" required="true" data-dojo-props="constraints: {timePattern: 'HH:mm', clickableIncrement: 'T00:01:00', visibleIncrement: 'T00:01:00'}"/> <span id="endTZ"></span> </div>
+    <div class="maddashAdminFormRow"><input id="eventIsDown" name="eventIsDown" data-dojo-type="dijit.form.CheckBox" value="down" checked> <label for="mycheck">Mark checks as down during event</label></div>
+    <div class="maddashAdminFormRow"><button data-dojo-type="dijit.form.Button" type="button" id="eventSchedButton">Schedule <script type="dojo/method" data-dojo-event="onClick" data-dojo-args="evt">(new MadDashAdminEvents()).schedule();</script></button><img src="../images/loader.gif" height="20" width="20" id="eventSchedLoader" class="loader" style="display: none"/></div>
+</div>

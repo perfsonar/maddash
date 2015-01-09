@@ -1,0 +1,10 @@
+<div class="maddashAdminContentHeading">Re-schedule Checks</div>
+<div id="reschedStatus" style="display: none"></div>
+<div class="maddashAdminFiltersLabel">
+  <span>Select checks that match the following filters: </span>
+</div>
+<div id="maddashAdminFilters" class="maddashAdminFilters"></div>
+<div id="maddashAdminActions" class="maddashAdminActions">
+Re-schedule checks to run at <input type="text" name="reschedDate" id="reschedDate" value="now" data-dojo-type="dijit.form.DateTextBox" required="true" /> <input type="text" name="reschedTime" id="reschedTime" value="now" data-dojo-type="dijit.form.TimeTextBox" required="true" data-dojo-props="constraints: {timePattern: 'HH:mm', clickableIncrement: 'T00:01:00', visibleIncrement: 'T00:01:00'}"/> <span id="reschedTZ"></span> <button data-dojo-type="dijit.form.Button" type="button" id="reschedButton">Schedule <script type="dojo/method" data-dojo-event="onClick" data-dojo-args="evt">(new MadDashRescheduler()).reschedule();</script></button>
+<img src="../images/loader.gif" height="20" width="20" id="reschedLoader" class="loader" style="display: none"/>
+</div>

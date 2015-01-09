@@ -7,7 +7,7 @@
  *
  * Authors: Andy Lake <andy@es.net>
  */
-require(["dijit/form/FilteringSelect", "dijit/form/CheckBox", "dijit/form/ComboBox", "dojo/store/Memory", "dijit/form/Button", "dijit/form/DateTextBox", "dijit/form/TimeTextBox", "dojo/date", "dojo/_base/json", "dijit/layout/ContentPane"]);
+require(["dijit/form/FilteringSelect", "dijit/form/CheckBox", "dijit/form/ComboBox", "dojo/store/Memory", "dijit/form/Button", "dijit/form/DateTextBox", "dijit/form/TimeTextBox", "dojo/date", "dojo/_base/json", "dijit/layout/ContentPane", "dijit/form/ValidationTextBox", "dijit/form/TextArea"]);
 
 
 /**
@@ -222,7 +222,6 @@ var MadDashRescheduler = function(){
         
         var json = dojo.toJson({"checkFilters": filters, "nextCheckTime": nextCheckTime});
         
-        console.log(document.getElementById('reschedLoader'));
         document.getElementById('reschedLoader').style.display = "inherit";
         document.getElementById('reschedButton').style.display = "none";
         document.getElementById("reschedButton").style.visibility = "hidden";
@@ -259,6 +258,61 @@ var MadDashRescheduler = function(){
                 }
             }
         });
+    }
+
+}
+
+
+var MadDashAdminEvents = function(){
+    var instance = this;
+    
+    this.schedule = function(){
+        var filters = buildFilters();
+        var name = dijit.byId("eventName").value;
+        var description = dijit.byId("eventDescription").value;
+        var startTime = buildDateTime("eventStartDate", "eventStartTime");
+        var endTime   = buildDateTime("eventEndDate", "eventEndTime");
+        var changeStatus = dijit.byId("eventIsDown").checked;
+        var json = dojo.toJson({
+            "checkFilters": filters, 
+            "name": name,
+            "description": description,
+            "startTime": startTime,
+            "endTime": endTime,
+            "changeStatus": changeStatus,});
+        
+        document.getElementById('eventSchedLoader').style.display = "inherit";
+        document.getElementById('eventSchedButton').style.display = "none";
+        document.getElementById("eventSchedButton").style.visibility = "hidden";
+        dojo.xhrPost({
+            url: '/maddash/admin/events',
+            postData: json,
+            timeout: 30000,
+            handleAs: 'json',
+            headers: {'Content-Type': 'application/json'},
+            load: function(data){
+                console.log(data);
+                document.getElementById('eventSchedLoader').style.display = "none";
+                document.getElementById('eventSchedButton').style.display = "inherit";
+                document.getElementById("eventSchedButton").style.visibility = "visible";
+                document.getElementById('eventSchedStatus').className= "success";
+                document.getElementById('eventSchedStatus').innerHTML = "Successfully created event";
+                document.getElementById('eventSchedStatus').style.display = "inherit";
+            },
+            error: function(error){
+                console.log(error);
+                document.getElementById('eventSchedLoader').style.display = "none";
+                document.getElementById('eventSchedButton').style.display = "inherit";
+                document.getElementById("eventSchedButton").style.visibility = "visible";
+                document.getElementById('eventSchedStatus').className= "error";
+                document.getElementById('eventSchedStatus').style.display = "inherit";
+                if(error.status == 503){
+                    document.getElementById('eventSchedStatus').innerHTML = "Unable to reach MaDDash server. If the server does not return within a few minutes have the server administrator restart MaDDash and Apache.";
+                }else{
+                    document.getElementById('eventSchedStatus').innerHTML = error.message;
+                }
+            }
+        });
         console.log(json);
     }
 
@@ -284,7 +338,8 @@ function renderCheckReschedule(){
 function renderEventSchedule(){
     var filters = new MadDashAdminCheckFilters("maddashAdminFilters");
     filters.render();
-    updateTimezoneSpan('reschedTZ');
+    updateTimezoneSpan('startTZ');
+    updateTimezoneSpan('endTZ');
 }
 
 
