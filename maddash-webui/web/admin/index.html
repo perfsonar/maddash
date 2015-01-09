@@ -71,7 +71,7 @@
 		
 		<div id='maddashAdminMenu'>
             <ul>
-               <li class="active"><a href='#'><span>Home</span></a></li>
+               <li class="active"><a href='#' onclick='loadContent("maddashAdminContent", "widgets/home.html",null)'><span>Home</span></a></li>
                <li class='has-sub'><a href='#'><span>Checks</span></a>
                   <ul>
                      <li class='last'><a href='#' onclick='loadContent("maddashAdminContent", "widgets/checkReschedule.html", renderCheckReschedule)'><span>Re-schedule Check</span></a></li>
@@ -86,7 +86,7 @@
             </ul>
         </div>
 
-		<div id="maddashAdminContent" data-dojo-type="dijit.layout.ContentPane"></div>
+		<div id="maddashAdminContent" data-dojo-type="dijit.layout.ContentPane" href="widgets/home.html"></div>
         
 		<!-- add space for mouseover -->
 	    <div id="footer" class="maddashFooter"></div>

@@ -106,6 +106,41 @@ background-color: #FFBABA;
 background-image: url('../images/error.png');to;
 }
 
+.maddashAdminHomeHeading {
+    font-size: 24px;
+    font-family: sans-serif;
+    font-weight: bolder;
+    color: #B1B1B1;
+    border-bottom: 1px solid #B1B1B1;
+}
+
+.maddashAdminHomeSection {
+    width: 800px;
+    margin: 25px auto 10px auto;
+}
+
+
+.maddashAdminHomeIcon {
+    width: 150px;
+    margin: 10px 10px 10px 10px;
+    text-align: center;
+    cursor: pointer;
+    display:inline-block
+}
+
+.maddashAdminHomeImg {
+     margin: 2px auto 2px auto;
+}
+
+.maddashAdminHomeLabel {
+     margin: 2px auto 2px auto;
+     width: 100%;
+     text-align: center;
+     font-size 12px;
+     font-family: sans-serif; 
+}
+
+
 /* Base Styles */
 #maddashAdminMenu,
 #maddashAdminMenu ul,
