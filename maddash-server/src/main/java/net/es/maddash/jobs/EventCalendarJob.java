@@ -66,6 +66,7 @@ public class EventCalendarJob extends Thread{
             netLogParams.put("eventsExpired", expireEventsStmt.executeUpdate()+"");
             netLogParams.put("checksDowned", updateChecksStmt.executeUpdate()+"");
             netLogParams.put("checksReset", resetChecksStmt.executeUpdate()+"");
+            conn.close();
             //System.out.println(netLog.end("maddash.EventCalendarJob.execute", null, null, netLogParams));
             netlogger.debug(netLog.end("maddash.EventCalendarJob.execute", null, null, netLogParams));
         }catch(Exception e){
