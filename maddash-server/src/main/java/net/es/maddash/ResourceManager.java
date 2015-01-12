@@ -523,10 +523,10 @@ public class ResourceManager {
                 resultJson.put("status", historyResults.getInt(6));
                 historyJson.add(resultJson);
             }
-            conn.close();
-            
             //output result
             checkJson.put("history", historyJson);
+            
+            conn.close();
         }catch(Exception e){
             if(conn != null){
                 try {
@@ -578,6 +578,7 @@ public class ResourceManager {
                 response.put("checkUpdateCount", rowCount);
                 response.put("message", "Successfully updated " + rowCount + " checks.");
             }
+            conn.close();
         }catch(Exception e){
             if(conn != null){
                 try {
@@ -645,6 +646,8 @@ public class ResourceManager {
             if(matchingCheckCount == 0){
                 throw new RuntimeException("No checks matched search filter. Event was not created.");
             }
+            
+            conn.close();
         }catch(Exception e){
             if(conn != null){
                 try {
@@ -695,6 +698,7 @@ public class ResourceManager {
                 eventList.add(eventObj);
             }
             response.put("events", eventList);
+            conn.close();
         }catch(Exception e){
             if(conn != null){
                 try {
@@ -751,6 +755,7 @@ public class ResourceManager {
                         "/" + URIUtil.normalizeURIPart(checkResults.getString(4)));
             }
             response.put("checks", checkList);
+            conn.close();
         }catch(Exception e){
             if(conn != null){
                 try {
@@ -793,6 +798,7 @@ public class ResourceManager {
             PreparedStatement eventChecksStmt = conn.prepareStatement(eventChecksSQL);
             eventChecksStmt.setInt(1, eventId);
             eventChecksStmt.executeUpdate();
+            conn.close();
         }catch(Exception e){
             if(conn != null){
                 try {
