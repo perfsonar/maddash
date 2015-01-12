@@ -24,9 +24,6 @@ var MadDashAdminCheckFilters = function(parent){
 
 	this.render = function(data){
 		this.parent.innerHTML = "";
-		if (data == null) {
-			return;
-		}
 		
 		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Grid", "grid"));
 		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Row", "row"));
@@ -80,9 +77,6 @@ var MadDashAdminCheckFilter = function(parent){
 	this.parent = _maddashSetParent(parent);
 	
 	this.render = function(data, n){
-		if (data == null) {
-			return;
-		}
 		var name = this.parent.name;
 		var label = this.parent.label;
 	    

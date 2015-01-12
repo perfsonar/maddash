@@ -103,7 +103,7 @@ background-image:url('../images/success.png');
 .error {
 color: #D8000C;
 background-color: #FFBABA;
-background-image: url('../images/error.png');to;
+background-image: url('../images/error.png');
 }
 
 .maddashAdminHomeHeading {
@@ -136,7 +136,7 @@ background-image: url('../images/error.png');to;
      margin: 2px auto 2px auto;
      width: 100%;
      text-align: center;
-     font-size 12px;
+     font-size: 12px;
      font-family: sans-serif; 
 }
 
