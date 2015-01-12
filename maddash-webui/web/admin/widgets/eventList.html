@@ -1,0 +1,14 @@
+<div class="maddashAdminContentHeading">Events</div>
+<div id="eventListStatus" style="display: none"></div>
+<div id="maddashAdminEventList" class="maddashAdminEventList"></div>
+<div id="removeDialog" data-dojo-type="dijit.Dialog" title="Do you want to remove this event?">
+   <div class="maddashAdminDialogText">Are you sure you want to delete this event?</div>
+   <div class="maddashAdminDialogButtonRow">
+        <button id="cancelButton" data-dojo-type="dijit.form.Button">No
+            <script type="dojo/method" data-dojo-event="onClick">
+                dijit.byId("removeDialog").hide();
+            </script>
+        </button>
+        <button id="removeDialogButton" data-dojo-type="dijit.form.Button">Yes</button>
+   </div>
+</div>

@@ -46,6 +46,21 @@ function maddashCreateStatusSpan(status){
 }
 
 /**
+ * Function: maddashCreateDiv
+ * Description: Utility function for creating a div with text
+ *   Parameters:
+ *       className: The name of the css class to assign the div
+ *       text: The text to include in the div
+ *   Returns: Div element with given class and containing given text
+ */
+function maddashCreateDiv(className, text){
+	var div = document.createElement("div");
+	div.className = className;
+	div.appendChild(document.createTextNode(text));
+	return div;
+}
+
+/**
  * Function: updateTimezoneSpan
  * Description: Set text in given span to browser timezone
  *   Parameters:

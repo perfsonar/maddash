@@ -140,6 +140,27 @@ background-image: url('../images/error.png');to;
      font-family: sans-serif; 
 }
 
+.maddashAdminEventListCol {
+    display:inline-block;
+    width: 16%;
+}
+
+.maddashAdminEventListRow {
+    width: 800px;
+    margin: 5px auto 0px auto;
+    border-bottom: 1px solid;
+}
+
+.maddashAdminEventListRowHeading {
+    width: 800px;
+    margin: 5px auto 0px auto;
+    background: #DDDDDD;
+    background: -moz-linear-gradient(#B1B1B1 0%, #DDDDDD 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #B1B1B1), color-stop(100%, #DDDDDD));
+    background: -webkit-linear-gradient(#B1B1B1 0%, #DDDDDD 100%);
+    padding: 2px 2px 2px 2px;
+    
+}
 
 /* Base Styles */
 #maddashAdminMenu,

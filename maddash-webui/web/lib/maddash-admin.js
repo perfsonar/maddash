@@ -7,7 +7,7 @@
  *
  * Authors: Andy Lake <andy@es.net>
  */
-require(["dijit/form/FilteringSelect", "dijit/form/CheckBox", "dijit/form/ComboBox", "dojo/store/Memory", "dijit/form/Button", "dijit/form/DateTextBox", "dijit/form/TimeTextBox", "dojo/date", "dojo/_base/json", "dijit/layout/ContentPane", "dijit/form/ValidationTextBox", "dijit/form/TextArea"]);
+require(["dojo/date/locale", "dijit/Dialog", "dijit/form/FilteringSelect", "dijit/form/CheckBox", "dijit/form/ComboBox", "dojo/store/Memory", "dijit/form/Button", "dijit/form/DateTextBox", "dijit/form/TimeTextBox", "dojo/date", "dojo/_base/json", "dijit/layout/ContentPane", "dijit/form/ValidationTextBox", "dijit/form/TextArea"]);
 
 
 /**
@@ -25,8 +25,7 @@ var MadDashAdminCheckFilters = function(parent){
 	this.render = function(data){
 		this.parent.innerHTML = "";
 		if (data == null) {
-			console.log("data is null");
-			//return;
+			return;
 		}
 		
 		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Grid", "grid"));
@@ -82,13 +81,10 @@ var MadDashAdminCheckFilter = function(parent){
 	
 	this.render = function(data, n){
 		if (data == null) {
-			console.log("data is null");
-			//return;
+			return;
 		}
 		var name = this.parent.name;
 		var label = this.parent.label;
-		console.log("name=" + name);
-	    console.log("label=" + label);
 	    
 	    var filterCondRow = document.createElement("div");
         filterCondRow.appendChild(maddashCreateSpan("mdAdminFilterLabel", name + " name is "));
@@ -232,7 +228,6 @@ var MadDashRescheduler = function(){
             handleAs: 'json',
             headers: {'Content-Type': 'application/json'},
             load: function(data){
-                console.log(data);
                 document.getElementById('reschedLoader').style.display = "none";
                 document.getElementById('reschedButton').style.display = "inherit";
                 document.getElementById("reschedButton").style.visibility = "visible";
@@ -245,7 +240,6 @@ var MadDashRescheduler = function(){
                 document.getElementById('reschedStatus').style.display = "inherit";
             },
             error: function(error){
-                console.log(error);
                 document.getElementById('reschedLoader').style.display = "none";
                 document.getElementById('reschedButton').style.display = "inherit";
                 document.getElementById("reschedButton").style.visibility = "visible";
@@ -263,13 +257,37 @@ var MadDashRescheduler = function(){
 }
 
 
+function formatEventTime(timestamp){
+    if(timestamp == undefined || timestamp == null){
+        return "N/A";
+    }else if(timestamp < 0){
+        return "None";
+    }
+    var date = new Date(timestamp * 1000);
+    var fmt="MMM dd, yyyy HH:mm a z";
+
+    return dojo.date.locale.format( date, {selector:"date", datePattern:fmt } );
+}
+	
 var MadDashAdminEvents = function(){
     var instance = this;
     
     this.schedule = function(){
         var filters = buildFilters();
         var name = dijit.byId("eventName").value;
+        if(!name){
+            document.getElementById('eventSchedStatus').className= "error";
+            document.getElementById('eventSchedStatus').style.display = "inherit";
+            document.getElementById('eventSchedStatus').innerHTML = "Missing required field 'name'";
+            return;
+        }
         var description = dijit.byId("eventDescription").value;
+        if(!description){
+            document.getElementById('eventSchedStatus').className= "error";
+            document.getElementById('eventSchedStatus').style.display = "inherit";
+            document.getElementById('eventSchedStatus').innerHTML = "Missing required field 'description'";
+            return;
+        }
         var startTime = buildDateTime("eventStartDate", "eventStartTime");
         var endTime   = buildDateTime("eventEndDate", "eventEndTime");
         var changeStatus = dijit.byId("eventIsDown").checked;
@@ -291,7 +309,6 @@ var MadDashAdminEvents = function(){
             handleAs: 'json',
             headers: {'Content-Type': 'application/json'},
             load: function(data){
-                console.log(data);
                 document.getElementById('eventSchedLoader').style.display = "none";
                 document.getElementById('eventSchedButton').style.display = "inherit";
                 document.getElementById("eventSchedButton").style.visibility = "visible";
@@ -300,7 +317,6 @@ var MadDashAdminEvents = function(){
                 document.getElementById('eventSchedStatus').style.display = "inherit";
             },
             error: function(error){
-                console.log(error);
                 document.getElementById('eventSchedLoader').style.display = "none";
                 document.getElementById('eventSchedButton').style.display = "inherit";
                 document.getElementById("eventSchedButton").style.visibility = "visible";
@@ -313,9 +329,115 @@ var MadDashAdminEvents = function(){
                 }
             }
         });
-        console.log(json);
     }
+    
+    this.list = function(){
+        dojo.xhrGet({
+            url: '/maddash/admin/events',
+            timeout: 30000,
+            handleAs: 'json',
+            load: function(data){
+                if(data.events == null){
+                    document.getElementById('eventListStatus').className= "error";
+                    document.getElementById('eventListStatus').style.display = "inherit";
+                    document.getElementById('eventListStatus').innerHTML = "";
+                }else{
+                    var heading = document.createElement("div");
+                    heading.className = "maddashAdminEventListRowHeading";
+                    heading.appendChild(maddashCreateDiv("maddashAdminEventListCol", "Name"));
+                    heading.appendChild(maddashCreateDiv("maddashAdminEventListCol", "Description"));
+                    heading.appendChild(maddashCreateDiv("maddashAdminEventListCol", "Start"));
+                    heading.appendChild(maddashCreateDiv("maddashAdminEventListCol", "End"));
+                    heading.appendChild(maddashCreateDiv("maddashAdminEventListCol", "Mark Down"));
+                    heading.appendChild(maddashCreateDiv("maddashAdminEventListCol", "Remove Event"));
+                    document.getElementById("maddashAdminEventList").appendChild(heading);
+                    if(data.events.length == 0){
+                        document.getElementById("maddashAdminEventList").appendChild(maddashCreateDiv("maddashAdminEventListRow", "No events currently scheduled."));
+                    }else{
+                        for(var i = 0; i < data.events.length; i++){
+                            var row = document.createElement("div");
+                            row.className = "maddashAdminEventListRow";
+                            row.appendChild(maddashCreateDiv("maddashAdminEventListCol", data.events[i].name));
+                            row.appendChild(maddashCreateDiv("maddashAdminEventListCol", data.events[i].description));
+                            row.appendChild(maddashCreateDiv("maddashAdminEventListCol", formatEventTime(data.events[i].startTime)));
+                            row.appendChild(maddashCreateDiv("maddashAdminEventListCol", formatEventTime(data.events[i].endTime)));
+                            row.appendChild(maddashCreateDiv("maddashAdminEventListCol", (data.events[i].changeStatus ? "Yes" : "No")));
+                            var event = new MadDashAdminEvent(data.events[i].uri);
+                            var removeCol = document.createElement("div");
+                            var removeButtonElem = document.createElement("button");
+                            removeCol.className = "maddashAdminEventListCol";
+                            removeCol.appendChild(removeButtonElem);
+                            var removeButton = new dijit.form.Button({
+                                label: "-",
+                            }, removeButtonElem);
+                            dojo.connect(removeButton, 'onClick', event, 'removeAsk');
+                            row.appendChild(removeCol);
+                            document.getElementById("maddashAdminEventList").appendChild(row);
+                        }
+                    }
+                }
+            },
+            error: function(error){
+                document.getElementById('eventListStatus').className= "error";
+                document.getElementById('eventListStatus').style.display = "inherit";
+                if(error.status == 503){
+                    document.getElementById('eventListStatus').innerHTML = "Unable to reach MaDDash server. If the server does not return within a few minutes have the server administrator restart MaDDash and Apache.";
+                }else{
+                    document.getElementById('eventListStatus').innerHTML = error.message;
+                }
+            }
+        });
+    }
+}
 
+var MadDashAdminEvent = function(uri){
+    var instance = this;
+    this.uri = uri;
+    this.removeHandle = null;
+    this.closeDialogHandle = null;
+    
+    this.removeAsk = function() {
+        if(this.removeHandle == null){
+            this.removeHandle = dojo.connect(dijit.byId("removeDialogButton"), 'onClick', this, 'remove');
+        }
+        if(this.closeDialogHandle == null){
+            this.closeDialogHandle = dojo.connect(dijit.byId("removeDialog"), 'onHide', this, 'cancelRemove');
+        }
+        dijit.byId("removeDialog").show();
+    }
+    
+    this.cancelRemove = function() {
+        if(this.removeHandle != null){
+            dojo.disconnect(this.removeHandle);
+            this.removeHandle = null;
+        }
+        if(this.closeDialogHandle != null){
+            dojo.disconnect(this.closeDialogHandle);
+            this.closeDialogHandle = null;
+        }
+    }
+    
+    this.remove = function(){
+        dojo.xhrDelete({
+            url: uri,
+            timeout: 30000,
+            handleAs: 'json',
+            load: function(data){
+                dijit.byId("removeDialog").hide();
+                loadContent("maddashAdminContent", "widgets/eventList.html", renderEventList);
+            },
+            error: function(error){
+                document.getElementById('eventListStatus').className= "error";
+                document.getElementById('eventListStatus').style.display = "inherit";
+                if(error.status == 503){
+                    document.getElementById('eventListStatus').innerHTML = "Unable to reach MaDDash server. If the server does not return within a few minutes have the server administrator restart MaDDash and Apache.";
+                }else{
+                    document.getElementById('eventListStatus').innerHTML = error.message;
+                }
+            }
+        });
+        
+    }
 }
 
 //content loading
@@ -342,4 +464,7 @@ function renderEventSchedule(){
     updateTimezoneSpan('endTZ');
 }
 
-
+function renderEventList(){
+    var events = new MadDashAdminEvents();
+    events.list();
+}
