@@ -21,14 +21,22 @@ var MadDashAdminCheckFilters = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.rows = [];
-
+    this.gridStore = new dojo.store.Memory({
+                data: [
+                    {name:"any", id:"any"},
+                ]
+            });
+    
 	this.render = function(data){
 		this.parent.innerHTML = "";
 		
-		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Grid", "grid"));
-		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Row", "row"));
-		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Column", "column"));
-		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Check", "check"));
+		//load data
+		this.loadGridStore();
+		
+		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Grid", "grid", this.gridStore));
+		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Row", "row", null));
+		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Column", "column", null));
+		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Check", "check", null));
 		for(var i = 0; i < this.rows.length; i++){
 		    if(i > 0){
 		        var andRow = document.createElement("div");
@@ -41,9 +49,32 @@ var MadDashAdminCheckFilters = function(parent){
 		    
 		}
 	}
+	
+	this.loadGridStore = function() {
+	    var gridStore = this.gridStore;
+        dojo.xhrGet({
+            url: '/maddash/grids',
+            timeout: 30000,
+            handleAs: 'json',
+            load: function(data){
+                if( data ==null || data.grids == null){
+                    return;
+                }
+                
+                for(var i = 0; i < data.grids.length; i++){
+                    gridStore.put({
+                        id: data.grids[i].name, 
+                        name: data.grids[i].name
+                        });
+                }
+                console.log("grid store:" + this.gridStore);
+            },
+            error: function(error){}
+        });
+	}
 }
 
-var MadDashAdminCheckFilterGroup = function(parent, name, label){
+var MadDashAdminCheckFilterGroup = function(parent, name, label, stateStore){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.filters = [];
@@ -51,6 +82,7 @@ var MadDashAdminCheckFilterGroup = function(parent, name, label){
 	this.name = name;
 	this.label = label;
 	this.row = null;
+	this.stateStore = stateStore;
 	
 	this.render = function(data, rowNum){
 	    
@@ -93,11 +125,15 @@ var MadDashAdminCheckFilter = function(parent){
 	    filterCondRow.appendChild(removeButtonElem);
 	    
 	    //build combo box
-	    var stateStore = new dojo.store.Memory({
-            data: [
-                {name:"any", id:"any"},
-            ]
-        });
+	    var stateStore = this.parent.stateStore;
+	    if(stateStore == null){
+	        stateStore = new dojo.store.Memory({
+                data: [
+                    {name:"any", id:"any"},
+                ]
+            });
+        }
+        
 	    var comboBox = new dijit.form.ComboBox({
             id: label + "_select"+ n,
             name: label,
