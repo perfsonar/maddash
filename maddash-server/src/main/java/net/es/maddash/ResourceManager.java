@@ -88,6 +88,135 @@ public class ResourceManager {
     }
     
     /**
+     * Returns a list of rows 
+     * 
+     * @return List of rows as JSON
+     */
+    public JSONObject getRows() {
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        try {
+            netlogger.info(netLog.start("maddash.ResourceManager.getRows"));
+            JSONObject json = new JSONObject();
+            JSONArray jsonList = new JSONArray();
+            HashMap<String,String> nameMap = new HashMap<String,String>();
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet sqlResults = stmt.executeQuery("SELECT DISTINCT c.rowName, d.value FROM checks " +
+                    "AS c INNER JOIN dimensions AS d ON d.configIdent=c.rowName WHERE d.keyName='label'");
+            while(sqlResults.next()){
+                nameMap.put(sqlResults.getString(1), sqlResults.getString(2));
+            }
+            ResultSet sqlResults2 = conn.createStatement().executeQuery("SELECT DISTINCT rowName FROM checks WHERE active=1");
+            while(sqlResults2.next()){
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("id", sqlResults2.getString(1));
+                if(nameMap.containsKey(sqlResults2.getString(1))){
+                    jsonObj.put("name", nameMap.get(sqlResults2.getString(1)));
+                }else{
+                    jsonObj.put("name", sqlResults2.getString(1));
+                }
+                jsonList.add(jsonObj);
+            }
+            conn.close(); 
+            json.put("rows", jsonList);
+            netlogger.info(netLog.end("maddash.ResourceManager.getRows"));
+            return json;
+        } catch (Exception e) {
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.error("maddash.ResourceManager.getRows", e.getMessage()));
+            log.error("Error handling request: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+    
+    /**
+     * Returns a list of columns 
+     * 
+     * @return List of columns as JSON
+     */
+    public JSONObject getColumns() {
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        try {
+            netlogger.info(netLog.start("maddash.ResourceManager.getColumns"));
+            JSONObject json = new JSONObject();
+            JSONArray jsonList = new JSONArray();
+            HashMap<String,String> nameMap = new HashMap<String,String>();
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet sqlResults = stmt.executeQuery("SELECT DISTINCT c.colName, d.value FROM checks " +
+                    "AS c INNER JOIN dimensions AS d ON d.configIdent=c.colName WHERE d.keyName='label'");
+            while(sqlResults.next()){
+                nameMap.put(sqlResults.getString(1), sqlResults.getString(2));
+            }
+            ResultSet sqlResults2 = conn.createStatement().executeQuery("SELECT DISTINCT colName FROM checks WHERE active=1");
+            while(sqlResults2.next()){
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("id", sqlResults2.getString(1));
+                if(nameMap.containsKey(sqlResults2.getString(1))){
+                    jsonObj.put("name", nameMap.get(sqlResults2.getString(1)));
+                }else{
+                    jsonObj.put("name", sqlResults2.getString(1));
+                }
+                jsonList.add(jsonObj);
+            }
+            conn.close(); 
+            json.put("columns", jsonList);
+            netlogger.info(netLog.end("maddash.ResourceManager.getColumns"));
+            return json;
+        } catch (Exception e) {
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.error("maddash.ResourceManager.getColumns", e.getMessage()));
+            log.error("Error handling request: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+    
+    /**
+     * Returns a list of checks 
+     * 
+     * @return List of checks as JSON
+     */
+    public JSONObject getChecks() {
+        Connection conn = null;
+        NetLogger netLog = NetLogger.getTlogger();
+        try {
+            netlogger.info(netLog.start("maddash.ResourceManager.getChecks"));
+            conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
+            JSONObject json = new JSONObject();
+            JSONArray jsonList = new JSONArray();
+            ResultSet sqlResults = conn.createStatement().executeQuery("SELECT DISTINCT checkName FROM checks WHERE active=1");
+            while(sqlResults.next()){
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("name", sqlResults.getString(1));
+                jsonList.add(jsonObj);
+            }
+            conn.close(); 
+            json.put("checks", jsonList);
+            netlogger.info(netLog.end("maddash.ResourceManager.getChecks"));
+            return json;
+        } catch (Exception e) {
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e1) {}
+            }
+            netlogger.error(netLog.error("maddash.ResourceManager.getChecks", e.getMessage()));
+            log.error("Error handling request: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+    
+    /**
      * Returns the full grid specified.
      * 
      * @param gridId the ID of the grid to query

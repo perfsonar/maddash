@@ -27,10 +27,13 @@ import net.es.maddash.www.rest.AdminEventsResource;
 import net.es.maddash.www.rest.AdminScheduleResource;
 import net.es.maddash.www.rest.CellResource;
 import net.es.maddash.www.rest.CheckResource;
+import net.es.maddash.www.rest.ChecksResource;
+import net.es.maddash.www.rest.ColumnsResource;
 import net.es.maddash.www.rest.DashboardsResource;
 import net.es.maddash.www.rest.GridResource;
 import net.es.maddash.www.rest.GridsResource;
 import net.es.maddash.www.rest.RowResource;
+import net.es.maddash.www.rest.RowsResource;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -278,8 +281,11 @@ public class MaDDashGlobals {
                 GridsResource.class.getName(),
                 GridResource.class.getName(),
                 RowResource.class.getName(),
+                RowsResource.class.getName(),
                 CellResource.class.getName(),
                 CheckResource.class.getName(),
+                ChecksResource.class.getName(),
+                ColumnsResource.class.getName(),
                 AdminScheduleResource.class.getName(),
                 AdminEventsResource.class.getName(),
                 AdminEventResource.class.getName()

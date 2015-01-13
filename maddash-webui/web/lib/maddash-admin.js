@@ -21,22 +21,24 @@ var MadDashAdminCheckFilters = function(parent){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.rows = [];
-    this.gridStore = new dojo.store.Memory({
-                data: [
-                    {name:"any", id:"any"},
-                ]
-            });
+    this.gridStore = new dojo.store.Memory({data: [{name:"any", id:"any"}]});
+    this.rowStore = new dojo.store.Memory({data: [{name:"any", id:"any"}]});
+    this.colStore = new dojo.store.Memory({data: [{name:"any", id:"any"}]});
+    this.checkStore = new dojo.store.Memory({data: [{name:"any", id:"any"}]});
     
 	this.render = function(data){
 		this.parent.innerHTML = "";
 		
 		//load data
 		this.loadGridStore();
+		this.loadRowStore();
+		this.loadColStore();
+		this.loadCheckStore();
 		
 		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Grid", "grid", this.gridStore));
-		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Row", "row", null));
-		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Column", "column", null));
-		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Check", "check", null));
+		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Row", "row", this.rowStore));
+		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Column", "column", this.colStore));
+		this.rows.push(new MadDashAdminCheckFilterGroup(this.parent, "Check", "check", this.checkStore));
 		for(var i = 0; i < this.rows.length; i++){
 		    if(i > 0){
 		        var andRow = document.createElement("div");
@@ -46,7 +48,6 @@ var MadDashAdminCheckFilters = function(parent){
 		        this.parent.appendChild(andRow);
 		    }
 		    this.rows[i].render(null, i);
-		    
 		}
 	}
 	
@@ -67,7 +68,74 @@ var MadDashAdminCheckFilters = function(parent){
                         name: data.grids[i].name
                         });
                 }
-                console.log("grid store:" + this.gridStore);
+            },
+            error: function(error){}
+        });
+	}
+	
+	this.loadRowStore = function() {
+	    var rowStore = this.rowStore;
+        dojo.xhrGet({
+            url: '/maddash/rows',
+            timeout: 30000,
+            handleAs: 'json',
+            load: function(data){
+                if( data == null || data.rows == null){
+                    return;
+                }
+                
+                for(var i = 0; i < data.rows.length; i++){
+                    var formattedName = (data.rows[i].id == data.rows[i].name ? data.rows[i].id : data.rows[i].name + " (" + data.rows[i].id + ")");
+                    rowStore.put({
+                        id: data.rows[i].id, 
+                        name: formattedName
+                        });
+                }
+            },
+            error: function(error){}
+        });
+	}
+	
+	this.loadColStore = function() {
+	    var colStore = this.colStore;
+        dojo.xhrGet({
+            url: '/maddash/columns',
+            timeout: 30000,
+            handleAs: 'json',
+            load: function(data){
+                if( data == null || data.columns == null){
+                    return;
+                }
+                
+                for(var i = 0; i < data.columns.length; i++){
+                    var formattedName = (data.columns[i].id == data.columns[i].name ? data.columns[i].id : data.columns[i].name + " (" + data.columns[i].id + ")");
+                    colStore.put({
+                        id: data.columns[i].id, 
+                        name: formattedName
+                        });
+                }
+            },
+            error: function(error){}
+        });
+	}
+	
+	this.loadCheckStore = function() {
+	    var checkStore = this.checkStore;
+        dojo.xhrGet({
+            url: '/maddash/checks',
+            timeout: 30000,
+            handleAs: 'json',
+            load: function(data){
+                if( data == null || data.checks == null){
+                    return;
+                }
+                
+                for(var i = 0; i < data.checks.length; i++){
+                    checkStore.put({
+                        id: data.checks[i].name, 
+                        name: data.checks[i].name
+                        });
+                }
             },
             error: function(error){}
         });
@@ -139,7 +207,8 @@ var MadDashAdminCheckFilter = function(parent){
             name: label,
             value: "any",
             store: stateStore,
-            searchAttr: "name"
+            searchAttr: "name",
+            fetchProperties: { sort: [{attribute:"name"}], queryOptions: {ignoreCase: true, deep: false} }
         }, comboElem);
         
         //add buttons
@@ -217,7 +286,11 @@ function buildFilters(){
                 filters[filterKey] = '*';
                 break;
             }
-            filters[filterKey].push(dojo.byId(filterTypes[i] + '_select' + j).value);
+            if(dijit.byId(filterTypes[i] + '_select' + j).item == null){
+                filters[filterKey].push(dijit.byId(filterTypes[i] + '_select' + j).value);
+            }else{
+                filters[filterKey].push(dijit.byId(filterTypes[i] + '_select' + j).item.id);
+            }
         }
     }
     
