@@ -18,9 +18,13 @@ Installation is currently supported via an RPM distribution through yum. We need
 
     wget http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.4-2.noarch.rpm
 
+You will also need to point at the `EPEL <http://fedoraproject.org/wiki/EPEL>`_ repository to satisfy some package dependencies. Download it as follows::
+
+    wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+
 Next we install that new RPM::
 
-    yum install Internet2-repo-0.4-2.noarch.rpm
+    yum localinstall Internet2-repo-0.4-2.noarch.rpm epel-release-6-8.noarch.rpm
 
 Finally we refresh our yum cache so it uses the new repository immediately::
 
