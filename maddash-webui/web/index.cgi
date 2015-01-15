@@ -67,12 +67,19 @@ print <<EOF;
                 }
 			    var gs = new MaDDashDataSource("/maddash/grids"); 
 				var ds = new MaDDashDataSource("/maddash/dashboards"); 
+				var mnuds = new MaDDashDataSource("/maddash/dashboards"); 
+				var refreshSource = null;
 				if($type == "grid"){
 				    gs.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, handleClick));
+				    refreshSource = gs;
 				}else{
 				    ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, handleClick));
+				    refreshSource = ds;
 				}
-				ds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", gs));
+				mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", gs, refreshSource));
+				refreshSource.connect(new MaDDashRefreshLabel("maddashRefreshStatus"));
+				
+				mnuds.render();
 				ds.render();
 			}
 		</script>
@@ -80,6 +87,7 @@ print <<EOF;
 	<body class="claro" style="font-family:sans-serif" marginheight="0" marginwidth="0" onload="loadDashWidgets()">
 		<div id="maddashTitle" class="maddashTitle"></div>
 		<div id="maddashMenuBar"></div>
+		<div id="maddashRefreshStatus"></div>
 		<div id="maddashDashboardPane">
 		    <img style='position:relative;left:49%;top:49%' height='20' width='20' class='loader' src='images/loader.gif'/>
 		</div>

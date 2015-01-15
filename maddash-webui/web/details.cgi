@@ -35,10 +35,7 @@ print <<EOF;
 			    var titlePane = new MadDashTitleSpan("maddashTitle", "index.cgi");
 			    titlePane.render(config.data);
 			    
-			    var mnugs = new MaDDashDataSource("/maddash/grids"); 
-                var mnuds = new MaDDashDataSource("/maddash/dashboards"); 
-                mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", mnugs));
-                mnuds.render();
+			    
                 
                 var ds = new MaDDashDataSource("$uri");
                 //ds.connect(new MaDDashCheckNav("maddashCheckNav", "/maddash-webui", ""));
@@ -49,6 +46,13 @@ print <<EOF;
                 ds.connect(new MaDDashCheckDetails("maddashCheckDetails"));
                 ds.connect(new MadDashHistory("maddashHistory"));
                 ds.connect(new MaDDashGraphPane("maddashGraph"));
+                ds.connect(new MaDDashRefreshLabel("maddashRefreshStatus"));
+                
+                var mnugs = new MaDDashDataSource("/maddash/grids"); 
+                var mnuds = new MaDDashDataSource("/maddash/dashboards"); 
+                mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", mnugs, ds));
+
+                mnuds.render();
                 ds.render();
             }
         </script>
@@ -56,6 +60,7 @@ print <<EOF;
     <body class="claro" style="font-family:sans-serif" onload="loadDashWidgets()" marginheight="0" marginwidth="0">
         <div id="maddashTitle" class="maddashTitle"></div>
         <div id="maddashMenuBar"></div>
+        <div id="maddashRefreshStatus"></div>
         <div id="maddashCheckTitle" class="maddashCheckTitleDiv"></div>
         <div id="maddashQuickStatus" class="maddashQuickStatus"></div>
         <div style="width:95%;height:1200px;margin-left:auto;margin-right:auto;margin-bottom:20px">

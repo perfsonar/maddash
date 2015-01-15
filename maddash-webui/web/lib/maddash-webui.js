@@ -7,7 +7,7 @@
  *
  * Authors: Andy Lake <andy@es.net>
  */
-require(["dojo/date/locale","dijit/MenuBar","dijit/PopupMenuBarItem","dijit/MenuSeparator","dijit/DropDownMenu","dijit/MenuItem","dijit/TitlePane","dijit/form/Slider","dojo/_base/connect"]);
+require(["dojox/timing", "dojo/date/locale", "dijit/CheckedMenuItem", "dijit/MenuBar","dijit/PopupMenuBarItem","dijit/MenuSeparator","dijit/DropDownMenu","dijit/MenuItem","dijit/TitlePane","dijit/form/Slider","dojo/_base/connect"]);
 
 
 /**
@@ -143,17 +143,47 @@ var MadDashTitleSpan = function(parent, link){
  *      gridSource: MaDDashDataSource that points to grids list URL(e.g. /maddash/grids)
  *
  */
-var MadDashNavMenu = function(parent, link, gridSource){
+var MadDashNavMenu = function(parent, link, gridSource, refreshSource){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.link = link;
 	this.gridSource = gridSource;
+	this.refreshSource = refreshSource;
+	this.refreshBoxes = [];
+	this.refreshTime = 0;
+	this.refreshTimer = null;
 	
 	this._followLink = function(href){
 		window.location = href;	
 	}	
 	
+	this.setPageRefresh = function(refreshTime){
+	    this.refreshTime = refreshTime;
+	    console.log("refresh time " + this.refreshTime);
+	    
+	    //uncheck boxes
+	    for(var i = 0; i < this.refreshBoxes.length; i++){
+	        if(this.refreshTime != this.refreshBoxes[i].value){
+	            this.refreshBoxes[i].set("checked", false);
+	        }
+	    }
+	    
+	    //stop old timer
+	    if(this.refreshTimer != null){
+	        this.refreshTimer.stop();
+	    }
+	    
+	    //create new timer
+	    if(this.refreshTime > 0){
+	        this.refreshTimer = new dojox.timing.Timer(this.refreshTime * 1000);
+	        console.log(this.refreshTimer);
+	        dojo.connect(this.refreshTimer, "onTick", this.refreshSource, 'render');
+	        this.refreshTimer.start();
+	    }
+	}
+	
 	this.render = function(data){
+	    console.log("dojoConfig " + dojo.dojoConfig.locale);
 		this.parent.innerHTML = "";
 		if(data == null){
 			console.log("data is null");
@@ -171,6 +201,26 @@ var MadDashNavMenu = function(parent, link, gridSource){
 		}
 		dashDropMenu.addChild(new dijit.MenuSeparator({}));
 		
+		var settingsDropMenu = new dijit.DropDownMenu({});
+		var autoRefreshDropMenu = new dijit.DropDownMenu({});
+		settingsDropMenu.addChild(new dijit.PopupMenuItem({
+				label: "Auto Refresh",
+				popup: autoRefreshDropMenu
+			}));
+        var refreshTimes= [60, 300, 600, 1800, 3600];
+        for(var i = 0; i < refreshTimes.length; i++){
+            var timeLabel = refreshTimes[i]/60 + " minute" +(refreshTimes[i] > 60 ? "s" : "");
+            var checkMenuItem = new dijit.CheckedMenuItem({
+                label: timeLabel, 
+                value: refreshTimes[i],
+                checked:false,
+                onChange: function(checked){
+                    instance.setPageRefresh(checked ? this.value : 0);
+                }});
+            this.refreshBoxes.push(checkMenuItem);
+            autoRefreshDropMenu.addChild(checkMenuItem);
+        }
+		
 		var gridDropMenu = new dijit.DropDownMenu({});
 		var mdGridDropMenu = new MadDashGridDropMenu(gridDropMenu, link);
 		this.gridSource.connect(mdGridDropMenu); 
@@ -181,8 +231,12 @@ var MadDashNavMenu = function(parent, link, gridSource){
 				popup: gridDropMenu
 			}));
 		menuBar.addChild(new dijit.PopupMenuBarItem({
-				label: "Dashboards",
+				label: "&#9776; Dashboards",
 				popup: dashDropMenu
+			}));
+		menuBar.addChild(new dijit.PopupMenuBarItem({
+				label: "&#9881; Settings",
+				popup: settingsDropMenu
 			}));
 		menuBar.placeAt(this.parent.id);
 		menuBar.startup();
@@ -356,6 +410,7 @@ var MaDDashGraphPane = function(parent){
 	
 	this.render = function(data){
 		this.parent.innerHTML = "";
+		
 		if (data == null) {
 			console.log("data is null");
 			return;
@@ -463,7 +518,6 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
             var ds = new MaDDashDataSource(gridList[i].uri);
             var mdGrid = new MaDDashGrid(grid_id, legend_id);
             if(this.clickHandler != undefined && this.clickHandler != null){
-                console.log(this.clickHandler);
                 mdGrid.setClickHandler(this.clickHandler);
             }
             ds.connect(mdGrid);
@@ -707,7 +761,21 @@ var MadDashCheckList = function(parent){
 		var date = new Date(timestamp * 1000);
 		var fmt="MMMM dd, yyy HH:mm:ss a z";
 		
-		return dojo.date.locale.format( date, {selector:"date", datePattern:fmt } );;
+		return dojo.date.locale.format( date, {selector:"date", datePattern:fmt } );
+	}
+}
+
+var MaDDashRefreshLabel = function(parent){
+	var instance = this;
+	this.parent = _maddashSetParent(parent);
+    
+	this.render = function(data){
+        var date = new Date();
+		var fmt="MMMM dd, yyy HH:mm:ss a z";
+		var dateString = dojo.date.locale.format( date, {selector:"date", datePattern:fmt } );
+		
+		this.parent.innerHTML = "";
+		this.parent.appendChild(maddashCreateSpan("maddashRefreshLabel", "Last page refresh time: " + dateString));
 	}
 }
 
