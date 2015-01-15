@@ -231,7 +231,12 @@ var MadDashNavMenu = function(parent, link, gridSource, refreshSource){
             this.refreshBoxes.push(checkMenuItem);
             autoRefreshDropMenu.addChild(checkMenuItem);
         }
-		
+        settingsDropMenu.addChild(new dijit.MenuSeparator({}));
+        settingsDropMenu.addChild(new dijit.MenuItem({
+				label: "Server Settings...",
+				onClick: function(){window.location = "/maddash-webui/admin";}
+			}));
+			
 		var gridDropMenu = new dijit.DropDownMenu({});
 		var mdGridDropMenu = new MadDashGridDropMenu(gridDropMenu, link);
 		this.gridSource.connect(mdGridDropMenu); 
