@@ -436,7 +436,7 @@ var MadDashAdminEvents = function(){
     
     this.list = function(){
         dojo.xhrGet({
-            url: '/maddash/admin/events',
+            url: '/maddash/events',
             timeout: 30000,
             handleAs: 'json',
             load: function(data){

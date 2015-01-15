@@ -143,6 +143,7 @@ background-image: url('../images/error.png');
 .maddashAdminEventListCol {
     display:inline-block;
     width: 16%;
+    vertical-align: text-top;
 }
 
 .maddashAdminEventListRow {

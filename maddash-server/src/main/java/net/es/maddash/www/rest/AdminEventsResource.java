@@ -54,27 +54,4 @@ public class AdminEventsResource {
         this.netLogger.info(netLog.end(POST_EVENT));
         return Response.ok().entity(response.toString()).build();
     }
-    
-    @Produces("application/json")
-    @GET
-    public Response get(@QueryParam(value = "gridName") List<String> gridName, 
-            @QueryParam(value = "rowName") List<String> rowName,
-            @QueryParam(value = "columnName") List<String> colName,
-            @QueryParam(value = "checkName") List<String> checkName,
-            @QueryParam(value = "dimensionName") List<String> dimensionName,
-            @Context HttpHeaders httpHeaders){
-        NetLogger netLog = NetLogger.getTlogger();
-        this.netLogger.info(netLog.start(GET_EVENT));
-        
-        JSONObject json = null;
-        try{
-            json = MaDDashGlobals.getInstance().getResourceManager().getEvents(gridName, rowName, colName, checkName, dimensionName, uriInfo);
-        }catch(Exception e){
-            this.netLogger.error(netLog.error(GET_EVENT, e.getMessage()));
-            return Response.serverError().entity(e.getMessage()).build();
-        }
-        
-        this.netLogger.info(netLog.end(GET_EVENT));
-        return Response.ok().entity(json.toString()).build();
-    }
 }

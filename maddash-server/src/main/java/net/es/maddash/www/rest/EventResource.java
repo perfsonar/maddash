@@ -17,34 +17,34 @@ import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
-@Path("/maddash/admin/events/{eventId}")
-public class AdminEventResource {
-    Logger log = Logger.getLogger(AdminEventResource.class);
+@Path("/maddash/events/{eventId}")
+public class EventResource {
+    Logger log = Logger.getLogger(EventResource.class);
     Logger netLogger = Logger.getLogger("netLogger");
     @Context UriInfo uriInfo;
     
-    final private String DELETE_EVENT = "maddash.www.rest.AdminEventResource.delete";
+    final private String GET_EVENT = "maddash.www.rest.EventResource.get";
     
     @Produces("application/json")
-    @DELETE
-    public Response delete(@PathParam("eventId") int eventId, @Context HttpHeaders httpHeaders){
+    @GET
+    public Response get(@PathParam("eventId") int eventId, @Context HttpHeaders httpHeaders){
         NetLogger netLog = NetLogger.getTlogger();
-        this.netLogger.info(netLog.start(DELETE_EVENT));
+        this.netLogger.info(netLog.start(GET_EVENT));
         
         JSONObject json = null;
         try{
-            json = MaDDashGlobals.getInstance().getResourceManager().deleteEvent(eventId);
+            json = MaDDashGlobals.getInstance().getResourceManager().getEvent(eventId, uriInfo);
         }catch(Exception e){
-            this.netLogger.error(netLog.error(DELETE_EVENT, e.getMessage()));
+            this.netLogger.error(netLog.error(GET_EVENT, e.getMessage()));
             return Response.serverError().entity(e.getMessage()).build();
         }
         //detect if not found
         if(json == null){
-            this.netLogger.error(netLog.error(DELETE_EVENT, "Event resource not found"));
+            this.netLogger.error(netLog.error(GET_EVENT, "Event resource not found"));
             return Response.status(Status.NOT_FOUND).entity("Event resource not found").build();
         }
         
-        this.netLogger.info(netLog.end(DELETE_EVENT));
+        this.netLogger.info(netLog.end(GET_EVENT));
         return Response.ok().entity(json.toString()).build();
     }
 

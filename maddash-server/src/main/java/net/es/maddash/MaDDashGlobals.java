@@ -30,6 +30,8 @@ import net.es.maddash.www.rest.CheckResource;
 import net.es.maddash.www.rest.ChecksResource;
 import net.es.maddash.www.rest.ColumnsResource;
 import net.es.maddash.www.rest.DashboardsResource;
+import net.es.maddash.www.rest.EventResource;
+import net.es.maddash.www.rest.EventsResource;
 import net.es.maddash.www.rest.GridResource;
 import net.es.maddash.www.rest.GridsResource;
 import net.es.maddash.www.rest.RowResource;
@@ -288,7 +290,9 @@ public class MaDDashGlobals {
                 ColumnsResource.class.getName(),
                 AdminScheduleResource.class.getName(),
                 AdminEventsResource.class.getName(),
-                AdminEventResource.class.getName()
+                AdminEventResource.class.getName(),
+                EventsResource.class.getName(),
+                EventResource.class.getName()
         };
         ResourceConfig rc = new ClassNamesResourceConfig(services);
 
