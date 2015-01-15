@@ -82,13 +82,24 @@ var MaDDashDataSource = function(url, async){
 
 var MaDDashGrid =function(parentId, legendId){
     var instance = this;
-    var colorscale = d3.scale.category10().range(["green", "yellow", "red", "orange", "gray"]);
+    var colorscale = {
+        0: "green", 
+        1: "yellow", 
+        2: "red", 
+        3: "orange", 
+        4: "gray",
+        5: "black"
+        };
     this.parent = parentId;
     this.legend = legendId;
     this.cellSize = 13;
     this.cellPadding = 2;
     this.textBlockSize = 130;
-      
+    
+    this.setColorScale = function(colorscale){
+        this.colorscale = colorscale;
+    }
+    
     this.render = function (data){
         //TODO: Set title
         //d3.select("#dashboard_name").html(dashboard.name + " Dashboard");
@@ -99,9 +110,8 @@ var MaDDashGrid =function(parentId, legendId){
       
     this.displaygrid = function (data, canvas){
       //Display legends
-      colorscale.domain(d3.range(0,data.statusLabels.length));
       var legendsdata = data.statusLabels
-      .map(function(d,i){ return {label:d, color:colorscale(i)} })
+      .map(function(d,i){ return {label:d, color:colorscale[i]} })
       //.filter(function(d,i){return d.label === null ? false : true})
       d3.select("#"+this.legend).html("")
       var legends = d3.select("#"+this.legend)
@@ -285,7 +295,7 @@ var MaDDashGrid =function(parentId, legendId){
       temp
         .style("height", cellsize/2 +"px")              
         .style("background", function(d,i){
-          return colorscale(parseInt(d.status));
+          return colorscale[parseInt(d.status)];
         })
         .on("click", function(d,i){ //CHANGE FROM PORTAL
             var that = this;
