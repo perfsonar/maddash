@@ -33,20 +33,30 @@ function maddashCreateSpan(className, text){
  *   Returns: A span with string representation of status 
  *       belonging to preset CSS class based on status
  */
-function maddashCreateStatusSpan(status){
+function maddashCreateStatusSpan(status, config){
+    var span = null;
 	if(status == 0){
-		return maddashCreateSpan("maddashStatusOK", "OK");
+		span = maddashCreateSpan("maddashStatusSummary", "OK");
 	}else if(status == 1){
-		return maddashCreateSpan("maddashStatusWarning", "WARNING");
+		span = maddashCreateSpan("maddashStatusSummary", "WARNING");
 	}else if(status == 2){
-		return maddashCreateSpan("maddashStatusCritical", "CRITICAL");
+		span = maddashCreateSpan("maddashStatusSummary", "CRITICAL");
+	}else if(status == 3){
+		span = maddashCreateSpan("maddashStatusSummary", "UNKNOWN");
 	}else if(status == 4){
-		return maddashCreateSpan("maddashStatusNotRun", "NOT RUN");
+		span = maddashCreateSpan("maddashStatusSummary", "NOT RUN");
 	}else if(status == 5){
-		return maddashCreateSpan("maddashStatusMaintenance", "MAINTENANCE");
+		span = maddashCreateSpan("maddashStatusSummary", "MAINTENANCE");
+	}else {
+	    span = maddashCreateSpan("maddashStatusSummary", "CUSTOM");
 	}
 	
-	return maddashCreateSpan("maddashStatusUnknown", "UNKNOWN");	
+	if(config != undefined && config.colors != undefined){
+	    span.style.color = config.colors[status];
+	}else{
+	    span.style.color = (new MaDDashGrid()).getColorScale()[status]
+	}
+	return span;	
 }
 
 /**
@@ -163,7 +173,6 @@ var MadDashNavMenu = function(parent, link, gridSource, refreshSource){
 	
 	this.setPageRefresh = function(refreshTime){
 	    this.refreshTime = refreshTime;
-	    console.log("refresh time " + this.refreshTime);
 	    
 	    //uncheck boxes
 	    for(var i = 0; i < this.refreshBoxes.length; i++){
@@ -180,7 +189,6 @@ var MadDashNavMenu = function(parent, link, gridSource, refreshSource){
 	    //create new timer
 	    if(this.refreshTime > 0){
 	        this.refreshTimer = new dojox.timing.Timer(this.refreshTime * 1000);
-	        console.log(this.refreshTimer);
 	        dojo.connect(this.refreshTimer, "onTick", this.refreshSource, 'render');
 	        this.refreshTimer.start();
 	    }
@@ -296,9 +304,10 @@ var MaDDashCheckTitle = function(parent){
  *  Parameters:
  *      parent: a string or object representing a container element
  */
-var MaDDashQuickStatus = function(parent){
+var MaDDashQuickStatus = function(parent, config){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
+	this.config = config;
 	
 	this.render = function(data){
 		this.parent.innerHTML = "";
@@ -308,7 +317,7 @@ var MaDDashQuickStatus = function(parent){
 		}
 		
 		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Status: "));		
-		this.parent.appendChild(maddashCreateStatusSpan(data.status));
+		this.parent.appendChild(maddashCreateStatusSpan(data.status, this.config));
 		this.parent.appendChild(maddashCreateSpan("maddashQuickStatusCol", "Last Checked: "));	
 		this.parent.appendChild(maddashCreateSpan("maddashFieldValue", this._formatTime(data.prevCheckTime)));
 		this.parent.appendChild(maddashCreateSpan("maddashQuickStatusCol", "Next Check: "));
@@ -332,9 +341,10 @@ var MaDDashQuickStatus = function(parent){
  *  Parameters:
  *      parent: a string or object representing a container element
  */
-var MaDDashCheckSummary = function(parent){
+var MaDDashCheckSummary = function(parent, config){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
+	this.config = config;
 	
 	this.render = function(data){
 		this.parent.innerHTML = "";
@@ -344,10 +354,10 @@ var MaDDashCheckSummary = function(parent){
 		}
 		
 		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Current Status: "));		
-		this.parent.appendChild(maddashCreateStatusSpan(data.status));
+		this.parent.appendChild(maddashCreateStatusSpan(data.status, this.config));
 		this.parent.appendChild(document.createElement("br"));
 		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Result of last check: "));		
-		this.parent.appendChild(maddashCreateStatusSpan(data.returnCode));
+		this.parent.appendChild(maddashCreateStatusSpan(data.returnCode, this.config));
 		if(data.returnCode != data.status){
 			this.parent.appendChild(document.createTextNode("(seen " + 
 				data.returnCodeCount + "/" + data.retryAttempts + 
@@ -689,9 +699,10 @@ var MaDDashCheckDetails = function(parent){
  *  Parameters:
  *      parent: a string or object representing a container element
  */
-var MadDashHistory = function(parent){
+var MadDashHistory = function(parent, config){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
+	this.config = config;
 	
 	this.render = function(data, uri){
 		this.parent.innerHTML = "";
@@ -711,7 +722,7 @@ var MadDashHistory = function(parent){
 		botPageNumSpan.className = "maddashFieldValue";
 		botPageNumSpan.appendChild(document.createTextNode("1"));
 		var historyListDiv = document.createElement("div");
-		var historyListItems = new MadDashCheckList(historyListDiv);
+		var historyListItems = new MadDashCheckList(historyListDiv, this.config);
 		historyListItems.render(data);
 		this.parent.appendChild(topSliderDiv);
 		this.parent.appendChild(this._createPageNumDiv(topPageNumSpan));
@@ -777,9 +788,10 @@ var MadDashHistory = function(parent){
  *  Parameters:
  *      parent: a string or object representing a container element
  */
-var MadDashCheckList = function(parent){
+var MadDashCheckList = function(parent, config){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
+	this.config = config;
 	
 	this.render = function(data){
 		this.parent.innerHTML = "";
@@ -795,10 +807,10 @@ var MadDashCheckList = function(parent){
 			historyItem.appendChild(maddashCreateSpan("maddashFieldValue", this._formatTime(data.history[i].time)));
 			historyItem.appendChild(document.createElement("br"));
 			historyItem.appendChild(maddashCreateSpan("maddashFieldLabel", "Status: "));		
-			historyItem.appendChild(maddashCreateStatusSpan(data.history[i].status));
+			historyItem.appendChild(maddashCreateStatusSpan(data.history[i].status, this.config));
 			historyItem.appendChild(document.createElement("br"));
 			historyItem.appendChild(maddashCreateSpan("maddashFieldLabel", "Check result: "));		
-			historyItem.appendChild(maddashCreateStatusSpan(data.history[i].returnCode));
+			historyItem.appendChild(maddashCreateStatusSpan(data.history[i].returnCode, this.config));
 			if(data.history[i].returnCode != data.history[i].status){
 				historyItem.appendChild(document.createTextNode("(" + data.history[i].returnCodeCount + 
 					"/" + data.retryAttempts + " times before state change)"));

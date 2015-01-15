@@ -80,7 +80,7 @@ var MaDDashDataSource = function(url, async){
  *      legendId: id string of the legend element
  */
 
-var MaDDashGrid =function(parentId, legendId){
+var MaDDashGrid = function(parentId, legendId){
     var instance = this;
     var colorscale = {
         0: "green", 
@@ -96,8 +96,12 @@ var MaDDashGrid =function(parentId, legendId){
     this.cellPadding = 2;
     this.textBlockSize = 130;
     
-    this.setColorScale = function(colorscale){
-        this.colorscale = colorscale;
+    this.setColorScale = function(colors){
+        colorscale = colors;
+    }
+    
+    this.getColorScale = function(){
+        return colorscale;
     }
     
     this.render = function (data){

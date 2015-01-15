@@ -74,6 +74,10 @@ td.maddashFieldLabel {
 	margin: 0px 0px 0px 10px;
 }
 
+.maddashStatusSummary {
+	font-weight:bolder;
+}
+
 .maddashStatusOK {
 	color:green;
 	font-weight:bolder;

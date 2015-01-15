@@ -40,11 +40,11 @@ print <<EOF;
                 var ds = new MaDDashDataSource("$uri");
                 //ds.connect(new MaDDashCheckNav("maddashCheckNav", "/maddash-webui", ""));
                 ds.connect(new MaDDashCheckTitle("maddashCheckTitle"));
-                ds.connect(new MaDDashQuickStatus("maddashQuickStatus"));
-                ds.connect(new MaDDashCheckSummary("maddashCheckSummary"));
+                ds.connect(new MaDDashQuickStatus("maddashQuickStatus", config.data));
+                ds.connect(new MaDDashCheckSummary("maddashCheckSummary", config.data));
                 ds.connect(new MaDDashCheckStatistics("maddashCheckStats"));
                 ds.connect(new MaDDashCheckDetails("maddashCheckDetails"));
-                ds.connect(new MadDashHistory("maddashHistory"));
+                ds.connect(new MadDashHistory("maddashHistory", config.data));
                 ds.connect(new MaDDashGraphPane("maddashGraph"));
                 ds.connect(new MaDDashRefreshLabel("maddashRefreshStatus"));
                 
