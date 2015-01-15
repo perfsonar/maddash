@@ -40,6 +40,10 @@ function maddashCreateStatusSpan(status){
 		return maddashCreateSpan("maddashStatusWarning", "WARNING");
 	}else if(status == 2){
 		return maddashCreateSpan("maddashStatusCritical", "CRITICAL");
+	}else if(status == 4){
+		return maddashCreateSpan("maddashStatusNotRun", "NOT RUN");
+	}else if(status == 5){
+		return maddashCreateSpan("maddashStatusMaintenance", "MAINTENANCE");
 	}
 	
 	return maddashCreateSpan("maddashStatusUnknown", "UNKNOWN");	
@@ -183,7 +187,6 @@ var MadDashNavMenu = function(parent, link, gridSource, refreshSource){
 	}
 	
 	this.render = function(data){
-	    console.log("dojoConfig " + dojo.dojoConfig.locale);
 		this.parent.innerHTML = "";
 		if(data == null){
 			console.log("data is null");
@@ -354,6 +357,63 @@ var MaDDashCheckSummary = function(parent){
 		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Message For Current Status: "));
 		this.parent.appendChild(maddashCreateSpan("maddashFieldValue", data.message));
 		this.parent.appendChild(document.createElement("br"));
+		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Events: "));
+		var eventsDiv = document.createElement("div");
+		eventsDiv.className = "maddashSummaryEventsDiv";
+		this.parent.appendChild(eventsDiv);
+		
+		//get events
+		var mdEventsList = new MaDDashEventsSummary(eventsDiv);
+		var eventsURI = "/maddash/events?gridName=" + data.gridName + "&rowName=" + data.rowName + 
+		    "&columnName=" + data.colName + "&checkName=" + data.checkName;
+		var eventsSource = new MaDDashDataSource(eventsURI);
+		eventsSource.connect(mdEventsList);
+		eventsSource.render();
+	}
+}
+
+var MaDDashEventsSummary = function(parent){
+	var instance = this;
+	this.parent = _maddashSetParent(parent);
+	
+	this.render = function(data){
+        if(data == null || data.events == null){
+            console.log("data is null");
+			return;
+        }else{
+            var heading = document.createElement("div");
+            heading.className = "maddashEventListRowHeading";
+            heading.appendChild(maddashCreateDiv("maddashEventListCol", "Name"));
+            heading.appendChild(maddashCreateDiv("maddashEventListCol", "Description"));
+            heading.appendChild(maddashCreateDiv("maddashEventListCol", "Start"));
+            heading.appendChild(maddashCreateDiv("maddashEventListCol", "End"));
+            heading.appendChild(maddashCreateDiv("maddashEventListCol", "Check Down"));
+            this.parent.appendChild(heading);
+            if(data.events.length == 0){
+                this.parent.appendChild(maddashCreateDiv("maddashAdminEventListRow", "No events currently scheduled."));
+            }else{
+                for(var i = 0; i < data.events.length; i++){
+                    var row = document.createElement("div");
+                    row.className = "maddashEventListRow";
+                    row.appendChild(maddashCreateDiv("maddashEventListCol", data.events[i].name));
+                    row.appendChild(maddashCreateDiv("maddashEventListCol", data.events[i].description));
+                    row.appendChild(maddashCreateDiv("maddashEventListCol", this._formatTime(data.events[i].startTime)));
+                    row.appendChild(maddashCreateDiv("maddashEventListCol", this._formatTime(data.events[i].endTime)));
+                    row.appendChild(maddashCreateDiv("maddashEventListCol", (data.events[i].changeStatus ? "Yes" : "No")));
+                    this.parent.appendChild(row);
+                }
+            }
+        }
+    }
+    
+    this._formatTime = function(timestamp){
+		if(timestamp == undefined || timestamp == null){
+			return "N/A";
+		}
+		var date = new Date(timestamp * 1000);
+		var fmt="MMMM dd, yyy HH:mm:ss a z";
+		
+		return dojo.date.locale.format( date, {selector:"date", datePattern:fmt } );
 	}
 }
 
@@ -517,6 +577,9 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
             
             var ds = new MaDDashDataSource(gridList[i].uri);
             var mdGrid = new MaDDashGrid(grid_id, legend_id);
+            if(config.colors != undefined){
+                mdGrid.setColorScale(config.colors);
+            }
             if(this.clickHandler != undefined && this.clickHandler != null){
                 mdGrid.setClickHandler(this.clickHandler);
             }
