@@ -3,7 +3,7 @@ dependencies ={
         {
         name: "dojo-maddash.js",
         dependencies: [
-            //NOTE: Do NOT include dojo.date.locale or date formatting breaks
+            //NOTE: Do NOT include dojo.date.locale, DateTextBox, or TimeTextBox because date formatting breaks
             //direct dependencies
             "dojo._base.connect",
             "dojo.parser",
@@ -16,6 +16,7 @@ dependencies ={
             "dijit.form.Slider",
             "dijit.layout.TabContainer", 
             "dijit.TitlePane",
+            "dijit.form.Textarea",
             //indirect dependencies 
             "dijit._base",
             "dijit.WidgetSet",
@@ -29,8 +30,6 @@ dependencies ={
             "dijit._base.window",
             "dijit.form.DropDownButton",
             "dijit.form.ComboButton",
-            "dijit.form.DateTextBox",
-            "dijit.form.TimeTextBox",
             "dojo.fx.Toggler",
             "dijit.CheckedMenuItem",
             "dijit.form.FilteringSelect",
