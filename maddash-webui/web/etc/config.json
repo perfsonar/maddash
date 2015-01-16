@@ -1,6 +1,7 @@
 {
     "title":"My perfSONAR Dashboard",
     "defaultDashboard": "My Sites",
+    "enableAdminUI": true,
     "grids":{
         "OWAMP":{
             "cellSize": 13,
