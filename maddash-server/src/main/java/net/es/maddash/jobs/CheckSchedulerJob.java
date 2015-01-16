@@ -76,7 +76,7 @@ public class CheckSchedulerJob extends Thread{
                 "c.rowName, c.colName, t.checkType, t.checkParams, t.checkInterval, " +
                 "t.retryInterval, t.retryAttempts, t.timeout, c.statusMessage FROM checkTemplates AS t, " +
                 "checks AS c WHERE c.active = 1 AND t.id = c.checkTemplateId AND " +
-                "c.nextCheckTime <= ? AND c.status != ? ORDER BY c.nextCheckTime ASC");
+                "c.nextCheckTime <= ? AND c.checkStatus != ? ORDER BY c.nextCheckTime ASC");
             selStmt.setLong(1, time);
             selStmt.setInt(2, CheckConstants.RESULT_MAINTENANCE);
             selStmt.setMaxRows(globals.getJobBatchSize());
