@@ -76,7 +76,7 @@ print <<EOF;
 				    ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, handleClick));
 				    refreshSource = ds;
 				}
-				mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", gs, refreshSource));
+				mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", config, gs, refreshSource));
 				refreshSource.connect(new MaDDashRefreshLabel("maddashRefreshStatus"));
 				
 				mnuds.render();

@@ -7,7 +7,7 @@
  *
  * Authors: Andy Lake <andy@es.net>
  */
-require(["dojox/timing", "dojo/date/locale", "dijit/CheckedMenuItem", "dijit/MenuBar","dijit/PopupMenuBarItem","dijit/MenuSeparator","dijit/DropDownMenu","dijit/MenuItem","dijit/TitlePane","dijit/form/Slider","dojo/_base/connect"]);
+require(["dijit/MenuBarItem", "dojox/timing", "dojo/date/locale", "dijit/CheckedMenuItem", "dijit/MenuBar","dijit/PopupMenuBarItem","dijit/MenuSeparator","dijit/DropDownMenu","dijit/MenuItem","dijit/TitlePane","dijit/form/Slider","dojo/_base/connect"]);
 
 
 /**
@@ -157,7 +157,7 @@ var MadDashTitleSpan = function(parent, link){
  *      gridSource: MaDDashDataSource that points to grids list URL(e.g. /maddash/grids)
  *
  */
-var MadDashNavMenu = function(parent, link, gridSource, refreshSource){
+var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.link = link;
@@ -250,6 +250,12 @@ var MadDashNavMenu = function(parent, link, gridSource, refreshSource){
 				label: "&#9776; Dashboards",
 				popup: dashDropMenu
 			}));
+		if(config != undefined && config.data != undefined && config.data.addNodeURL != undefined){
+            menuBar.addChild(new dijit.MenuBarItem({
+                    label: "&#9998; Add Your Node",
+                    onClick: function(){window.location = config.data.addNodeURL;}
+                }));
+        }
 		menuBar.addChild(new dijit.PopupMenuBarItem({
 				label: "&#9881; Settings",
 				popup: settingsDropMenu

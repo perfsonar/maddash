@@ -50,7 +50,7 @@ print <<EOF;
                 
                 var mnugs = new MaDDashDataSource("/maddash/grids"); 
                 var mnuds = new MaDDashDataSource("/maddash/dashboards"); 
-                mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", mnugs, ds));
+                mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", config, mnugs, ds));
 
                 mnuds.render();
                 ds.render();
