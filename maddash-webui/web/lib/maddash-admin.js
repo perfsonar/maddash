@@ -7,7 +7,7 @@
  *
  * Authors: Andy Lake <andy@es.net>
  */
-require(["dojo/date/locale", "dijit/Dialog", "dijit/form/FilteringSelect", "dijit/form/CheckBox", "dijit/form/ComboBox", "dojo/store/Memory", "dijit/form/Button", "dijit/form/DateTextBox", "dijit/form/TimeTextBox", "dojo/date", "dojo/_base/json", "dijit/layout/ContentPane", "dijit/form/ValidationTextBox", "dijit/form/TextArea"]);
+require(["dojo/date/locale", "dijit/Dialog", "dijit/form/FilteringSelect", "dijit/form/CheckBox", "dijit/form/ComboBox", "dojo/store/Memory", "dijit/form/Button", "dijit/form/DateTextBox", "dijit/form/TimeTextBox", "dojo/date", "dojo/_base/json", "dijit/layout/ContentPane", "dijit/form/ValidationTextBox", "dijit/form/Textarea"]);
 
 
 /**
