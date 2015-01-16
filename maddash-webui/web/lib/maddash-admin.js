@@ -465,7 +465,7 @@ var MadDashAdminEvents = function(){
                             row.appendChild(maddashCreateDiv("maddashAdminEventListCol", formatEventTime(data.events[i].startTime)));
                             row.appendChild(maddashCreateDiv("maddashAdminEventListCol", formatEventTime(data.events[i].endTime)));
                             row.appendChild(maddashCreateDiv("maddashAdminEventListCol", (data.events[i].changeStatus ? "Yes" : "No")));
-                            var event = new MadDashAdminEvent(data.events[i].uri);
+                            var event = new MadDashAdminEvent(data.events[i].uri.replace("/maddash", "/maddash/admin"));
                             var removeCol = document.createElement("div");
                             var removeButtonElem = document.createElement("button");
                             removeCol.className = "maddashAdminEventListCol";
