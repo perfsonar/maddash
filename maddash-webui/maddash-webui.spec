@@ -14,6 +14,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 Requires:       perl
 Requires:       httpd 
+Requires:       mod_ssl
 
 %description
 MaDDash is a framework for scheduling service checks and displaying results in a grid. 
