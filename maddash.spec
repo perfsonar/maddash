@@ -2,7 +2,7 @@
 %define relnum 1 
 
 Name:           maddash
-Version:        1.1
+Version:        1.2
 Release:        %{relnum}
 Summary:        MaDDash  
 License:        distributable, see LICENSE
