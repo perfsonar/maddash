@@ -13,15 +13,52 @@ Visual Customizations
 =====================
 The interface provides some customization options in the JSON config file */opt/maddash/maddash-webui/etc/config.json*. It provides the following options:
 
-+------------------+-------------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Name             | Type        | Required | Description                                                                                                                                                      |
-+==================+=============+==========+==================================================================================================================================================================+ 
-| title            | String      | Yes      | The title displayed at the very top of the web page                                                                                                              |
-+------------------+-------------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
-| defaultDashboard | String      | Yes      | The name of the default dashboard to display when someone visits /maddash-webui. It MUST match the name of a dashboard defined in your maddash-server.yaml file. | 
-+------------------+-------------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| grids            | JSON object | No       | Custom layout features for individual grids. See :ref:`grids-props` section.                                                                                     | 
-+------------------+-------------+----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Name             | Type        | Required | Description                                                                                                                                                                                                               |
++==================+=============+==========+===========================================================================================================================================================================================================================+ 
+| title            | String      | Yes      | The title displayed at the very top of the web page                                                                                                                                                                       |
++------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| defaultDashboard | String      | Yes      | The name of the default dashboard to display when someone visits /maddash-webui. It MUST match the name of a dashboard defined in your maddash-server.yaml file.                                                          | 
++------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| colors           | JSON object | No       | See :ref:`config-webui-vizcustom-colors`                                                                                                                                                                                  |
++------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| enableAdminUI    | Boolean     | No       | A 'true' or 'false' value indicating you want *Server Settings...* to appear in the *Settings* menu of the web interface. Note this does NOT disable direct access to the administrator UI, just removes it from the menu.|
++------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| addNodeURL       | String      | No       | A URL where users may find more information about adding a node to your dashboard(s). If populated an extra item will be added to the menu bar displayed for users.                                                       |
++------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| grids            | JSON object | No       | Custom layout features for individual grids. See :ref:`grids-props` section.                                                                                                                                              | 
++------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _config-webui-vizcustom-colors:
+
+Customizing Dashboard Colors
+----------------------------
+.. note:: Color customization was added in version 1.2 of MaDDash and not supported in previous versions.
+
+You may customize the colors used by the dashboards for each check state using the *colors* option. This option takes the form of an object consisting of key/value pairs. The key is the state value and the value is the color to be displayed for that state value.  See :ref:`status-codes` for a complete listing of status codes and their meanings.  The value is the color as a CSS color name (e.g. black) or hexadecimal (e.g. #000000). For example, the default value look like the following::
+
+    "colors": {
+        0: "green",
+        1: "yellow",
+        2: "red",
+        3: "orange",
+        4: "gray",
+        5: "black"
+     }
+
+If you wanted to change everything in the OK state to be blue instead of green you could provide something like the following::
+
+    "colors": {
+        0: "blue",
+        1: "yellow",
+        2: "red",
+        3: "orange",
+        4: "gray",
+        5: "black"
+     }
+
+.. note:: It should be noted you must define states 0-5 every time you provide the colors. It is not enough to just define the subset you want to change. In addition, some checks may have custom states greater than 5. You may optionally include any states greater than five  in the configuration, but 0-5 are always required. See documentation for a specific check if you are unsure if it has any custom states.
+
 
 .. _grids-props:
 
