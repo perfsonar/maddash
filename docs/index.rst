@@ -20,7 +20,9 @@ Deploying
    config_server
    config_webui
    running
+   admin_ui
    mesh_config
+   release_notes
    
 API
 ----------------
