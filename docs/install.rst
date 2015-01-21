@@ -46,5 +46,34 @@ The following packages are installed by the current default installation:
 
 Updating 
 ========
-As new versions of MaDDash are released you may update by running ``yum update``
+As new versions of MaDDash are released you may update by running ``yum update``. Below are version specific update notes that highlight additional tasks that may need to be performed by the administrator.
+
+Version 1.2
+-----------
+For upgraders coming from a previous version of the software no additional action is *required* for your installation to operate as it did prior to update, BUT you may need to make some additional changes if you wish to use some of the new features in version 1.2. Specifically:
+ 
+* If you have previously edited */etc/httpd/conf.d/apache-maddash.conf* then you will need to add directives for the administrator interface. If you have never touched this file, then no further work will be required. Specifically the following directives need to be added to */etc/httpd/conf.d/apache-maddash.conf*::
+ 
+    RewriteEngine On
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/maddash/admin/.* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+    RewriteRule ^/maddash-webui/admin/.* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+
+    <Location /maddash/admin>
+        AuthType Basic
+        AuthName "MaDDash Administrative API"
+        AuthBasicProvider file
+        AuthUserFile /etc/maddash/maddash-webui/admin-users
+        Require valid-user
+    </Location>
+
+    <Location /maddash-webui/admin>
+        AuthType Basic
+        AuthName "MaDDash Administrative API"
+        AuthBasicProvider file
+        AuthUserFile /etc/maddash/maddash-webui/admin-users
+        Require valid-user
+    </Location>
+* If you have not previously configured Apache to use HTTPS then a self-signed certificate will be generated for you during the update by Apache's mod_ssl. If you wish to replace this certificate with your own please see the `Apache SSL <http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html>`_ page for more details.
+* If *Server Settings...* does not apear in the *Settings* menu of the MaDDash web page, you may need to open */opt/maddash/maddash-webui/web/etc/config.json* and add the option *enableAdminUI: true*
 
