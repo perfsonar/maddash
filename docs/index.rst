@@ -35,8 +35,10 @@ API
    api_rows
    api_cells
    api_checks
+   api_events
    api_type_params
-    
+   api_misc
+   
 Links
 =====
 * `Project Homepage <http://software.es.net/maddash/>`_
