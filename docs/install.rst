@@ -51,7 +51,8 @@ As new versions of MaDDash are released you may update by running ``yum update``
 Version 1.2
 -----------
 For upgraders coming from a previous version of the software no additional action is *required* for your installation to operate as it did prior to update, BUT you may need to make some additional changes if you wish to use some of the new features in version 1.2. Specifically:
- 
+
+* You will need to add an administrative user to access the Administrator Interface. See :ref:`adminui-adduser` for details.
 * If you have previously edited */etc/httpd/conf.d/apache-maddash.conf* then you will need to add directives for the administrator interface. If you have never touched this file, then no further work will be required. Specifically the following directives need to be added to */etc/httpd/conf.d/apache-maddash.conf*::
  
     RewriteEngine On
