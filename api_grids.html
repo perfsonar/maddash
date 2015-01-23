@@ -72,7 +72,9 @@
 <li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
@@ -81,7 +83,9 @@
 <li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
 </ul>
 </li>
@@ -413,6 +417,12 @@
 </tr>
 <tr class="row-even"><td><em>4</em></td>
 <td>The check has not yet run</td>
+</tr>
+<tr class="row-odd"><td><em>5</em></td>
+<td>The check is down due to a scheduled event such as a maintenance window</td>
+</tr>
+<tr class="row-even"><td><em>&gt;5</em></td>
+<td>Custom states that may be defined by an individual check</td>
 </tr>
 </tbody>
 </table>

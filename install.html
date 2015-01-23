@@ -72,7 +72,9 @@
 <li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
@@ -81,7 +83,9 @@
 <li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
 </ul>
 </li>
@@ -140,7 +144,10 @@
 <li><a class="reference internal" href="#system-requirements">System Requirements</a></li>
 <li><a class="reference internal" href="#yum-repository-setup">Yum Repository Setup</a></li>
 <li><a class="reference internal" href="#installing-maddash">Installing MaDDash</a></li>
-<li><a class="reference internal" href="#updating">Updating</a></li>
+<li><a class="reference internal" href="#updating">Updating</a><ul>
+<li><a class="reference internal" href="#version-1-2">Version 1.2</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -196,7 +203,43 @@
 </div>
 <div class="section" id="updating">
 <h2>Updating<a class="headerlink" href="#updating" title="Permalink to this headline">¶</a></h2>
-<p>As new versions of MaDDash are released you may update by running <tt class="docutils literal"><span class="pre">yum</span> <span class="pre">update</span></tt></p>
+<p>As new versions of MaDDash are released you may update by running <tt class="docutils literal"><span class="pre">yum</span> <span class="pre">update</span></tt>. Below are version specific update notes that highlight additional tasks that may need to be performed by the administrator.</p>
+<div class="section" id="version-1-2">
+<h3>Version 1.2<a class="headerlink" href="#version-1-2" title="Permalink to this headline">¶</a></h3>
+<p>For upgraders coming from a previous version of the software no additional action is <em>required</em> for your installation to operate as it did prior to update, BUT you may need to make some additional changes if you wish to use some of the new features in version 1.2. Specifically:</p>
+<ul>
+<li><p class="first">You will need to add an administrative user to access the Administrator Interface. See <a class="reference internal" href="admin_ui.html#adminui-adduser"><em>Adding/Removing Administrative Users</em></a> for details.</p>
+</li>
+<li><p class="first">If you have previously edited <em>/etc/httpd/conf.d/apache-maddash.conf</em> then you will need to add directives for the administrator interface. If you have never touched this file, then no further work will be required. Specifically the following directives need to be added to <em>/etc/httpd/conf.d/apache-maddash.conf</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^/maddash/admin/.* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+RewriteRule ^/maddash-webui/admin/.* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+
+&lt;Location /maddash/admin&gt;
+    AuthType Basic
+    AuthName &quot;MaDDash Administrative API&quot;
+    AuthBasicProvider file
+    AuthUserFile /etc/maddash/maddash-webui/admin-users
+    Require valid-user
+&lt;/Location&gt;
+
+&lt;Location /maddash-webui/admin&gt;
+    AuthType Basic
+    AuthName &quot;MaDDash Administrative API&quot;
+    AuthBasicProvider file
+    AuthUserFile /etc/maddash/maddash-webui/admin-users
+    Require valid-user
+&lt;/Location&gt;
+</pre></div>
+</div>
+</li>
+<li><p class="first">If you have not previously configured Apache to use HTTPS then a self-signed certificate will be generated for you during the update by Apache&#8217;s mod_ssl. If you wish to replace this certificate with your own please see the <a class="reference external" href="http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html">Apache SSL</a> page for more details.</p>
+</li>
+<li><p class="first">If <em>Server Settings...</em> does not apear in the <em>Settings</em> menu of the MaDDash web page, you may need to open <em>/opt/maddash/maddash-webui/web/etc/config.json</em> and add the option <em>enableAdminUI: true</em></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 

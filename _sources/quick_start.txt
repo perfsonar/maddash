@@ -15,7 +15,7 @@ This document is intended to get you started as quickly as possible with a basic
 
     yum install maddash
 
-#. Open the file */etc/maddash/maddash-server/maddash.yaml* and change the following properties (*Note: Use spaces and not tabs in this file. YAML does not allow tabs.*)
+#. Open the file */etc/maddash/maddash-server/maddash.yaml* (*Note: Use spaces and not tabs in this file. YAML does not allow tabs.*)
 
 #. Under the *groups* section, change the *myOwampHosts* list and the *myBwctlHosts* list to the list of OWAMP and BWCTL hosts you wish to check, respectively. *NOTE: If you comment out one of the groups because you don't want any BWCTL or OWAMP checks, then also remove the corresponding entry under the "grids" section of the file*
  

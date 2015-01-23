@@ -72,7 +72,9 @@
 <li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Customizing the Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
@@ -81,7 +83,9 @@
 <li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
 </ul>
 </li>
@@ -139,6 +143,7 @@
 <li><a class="reference internal" href="#">Customizing the Web Interface</a><ul>
 <li><a class="reference internal" href="#web-server">Web Server</a></li>
 <li><a class="reference internal" href="#visual-customizations">Visual Customizations</a><ul>
+<li><a class="reference internal" href="#customizing-dashboard-colors">Customizing Dashboard Colors</a></li>
 <li><a class="reference internal" href="#grids-properties">grids properties</a></li>
 </ul>
 </li>
@@ -157,14 +162,14 @@
 <p>The maddash-webui is a web application that runs under Apache. The web scripts and resources are installed in <em>/opt/maddash/maddash-webui</em>. In addition, an Apache configuration file is installed at <em>/etc/httpd/conf.d/apache-maddash.conf</em> that sets-up the <em>/maddash-webui</em> URL. It also creates a reverse proxy for request to the URL <em>/maddash</em> to localhost port 8881. If you modify the server port for maddash, you will also need to update this configuration.</p>
 </div>
 <div class="section" id="visual-customizations">
-<h2>Visual Customizations<a class="headerlink" href="#visual-customizations" title="Permalink to this headline">¶</a></h2>
+<span id="config-webui-vizcustom"></span><h2>Visual Customizations<a class="headerlink" href="#visual-customizations" title="Permalink to this headline">¶</a></h2>
 <p>The interface provides some customization options in the JSON config file <em>/opt/maddash/maddash-webui/etc/config.json</em>. It provides the following options:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="9%" />
-<col width="6%" />
+<col width="7%" />
 <col width="5%" />
-<col width="80%" />
+<col width="4%" />
+<col width="84%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -184,13 +189,61 @@
 <td>Yes</td>
 <td>The name of the default dashboard to display when someone visits /maddash-webui. It MUST match the name of a dashboard defined in your maddash-server.yaml file.</td>
 </tr>
-<tr class="row-even"><td>grids</td>
+<tr class="row-even"><td>colors</td>
+<td>JSON object</td>
+<td>No</td>
+<td>See <a class="reference internal" href="#config-webui-vizcustom-colors"><em>Customizing Dashboard Colors</em></a></td>
+</tr>
+<tr class="row-odd"><td>enableAdminUI</td>
+<td>Boolean</td>
+<td>No</td>
+<td>A &#8216;true&#8217; or &#8216;false&#8217; value indicating you want <em>Server Settings...</em> to appear in the <em>Settings</em> menu of the web interface. Note this does NOT disable direct access to the administrator UI, just removes it from the menu.</td>
+</tr>
+<tr class="row-even"><td>addNodeURL</td>
+<td>String</td>
+<td>No</td>
+<td>A URL where users may find more information about adding a node to your dashboard(s). If populated an extra item will be added to the menu bar displayed for users.</td>
+</tr>
+<tr class="row-odd"><td>grids</td>
 <td>JSON object</td>
 <td>No</td>
 <td>Custom layout features for individual grids. See <a class="reference internal" href="#grids-props"><em>grids properties</em></a> section.</td>
 </tr>
 </tbody>
 </table>
+<div class="section" id="customizing-dashboard-colors">
+<span id="config-webui-vizcustom-colors"></span><h3>Customizing Dashboard Colors<a class="headerlink" href="#customizing-dashboard-colors" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Color customization was added in version 1.2 of MaDDash and not supported in previous versions.</p>
+</div>
+<p>You may customize the colors used by the dashboards for each check state using the <em>colors</em> option. This option takes the form of an object consisting of key/value pairs. The key is the state value and the value is the color to be displayed for that state value.  See <a class="reference internal" href="api_grids.html#status-codes"><em>Status-Codes</em></a> for a complete listing of status codes and their meanings.  The value is the color as a CSS color name (e.g. black) or hexadecimal (e.g. #000000). For example, the default value look like the following:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;colors&quot;: {
+    0: &quot;green&quot;,
+    1: &quot;yellow&quot;,
+    2: &quot;red&quot;,
+    3: &quot;orange&quot;,
+    4: &quot;gray&quot;,
+    5: &quot;black&quot;
+ }
+</pre></div>
+</div>
+<p>If you wanted to change everything in the OK state to be blue instead of green you could provide something like the following:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;colors&quot;: {
+    0: &quot;blue&quot;,
+    1: &quot;yellow&quot;,
+    2: &quot;red&quot;,
+    3: &quot;orange&quot;,
+    4: &quot;gray&quot;,
+    5: &quot;black&quot;
+ }
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It should be noted you must define states 0-5 every time you provide the colors. It is not enough to just define the subset you want to change. In addition, some checks may have custom states greater than 5. You may optionally include any states greater than five  in the configuration, but 0-5 are always required. See documentation for a specific check if you are unsure if it has any custom states.</p>
+</div>
+</div>
 <div class="section" id="grids-properties">
 <span id="grids-props"></span><h3>grids properties<a class="headerlink" href="#grids-properties" title="Permalink to this headline">¶</a></h3>
 <p>grids are specified as follows (where <em>gridName</em> is the name of the grid you want to adjust):</p>

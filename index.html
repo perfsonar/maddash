@@ -71,7 +71,9 @@
 <li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
@@ -80,7 +82,9 @@
 <li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
 </ul>
 </li>
@@ -167,12 +171,27 @@
 <li class="toctree-l2"><a class="reference internal" href="running.html#logs">Logs</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#adding-removing-administrative-users">Adding/Removing Administrative Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#configuring-https">Configuring HTTPS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#accessing-the-administrator-web-interface">Accessing the Administrator Web Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#rescheduling-checks">Rescheduling Checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#scheduling-events">Scheduling Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#viewing-existing-events">Viewing Existing Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#canceling-events">Canceling Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#selecting-checks">Selecting Checks</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="mesh_config.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_config.html#quick-start">Quick Start</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_config.html#installing-the-package">Installing the package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_config.html#configuration-guide">Configuration Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_config.html#log-files">Log Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#version-1-2">Version 1.2</a></li>
 </ul>
 </li>
 </ul>
@@ -202,11 +221,25 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api_checks.html#retrieving-a-single-check">Retrieving a single check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_checks.html#rescheduling-checks">Rescheduling checks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_events.html#retrieving-a-list-of-events">Retrieving a list of events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_events.html#retrieving-a-single-event">Retrieving a single event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_events.html#creating-an-event">Creating an Event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_events.html#deleting-an-event">Deleting an Event</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api_type_params.html#nagios-check">Nagios Check</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_type_params.html#perfsonar-nagios-check">perfSONAR Nagios Check</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_misc.html#listing-all-the-unique-row-names">Listing all the unique row names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_misc.html#listing-all-the-unique-column-names">Listing all the unique column names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_misc.html#listing-all-the-unique-check-names">Listing all the unique check names</a></li>
 </ul>
 </li>
 </ul>

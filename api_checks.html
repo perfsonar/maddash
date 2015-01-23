@@ -31,7 +31,7 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="top" title="MaDDash 1.1 documentation" href="index.html" />
-    <link rel="next" title="Appendix: Check Type Specific Parameters" href="api_type_params.html" />
+    <link rel="next" title="Events" href="api_events.html" />
     <link rel="prev" title="Cells" href="api_cells.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -72,7 +72,9 @@
 <li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
@@ -81,7 +83,9 @@
 <li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
 </ul>
 </li>
@@ -99,9 +103,9 @@
     </a>
   </li>
   <li>
-    <a href="api_type_params.html" title="Next Chapter: Appendix: Check Type Specific Parameters">
+    <a href="api_events.html" title="Next Chapter: Events">
       <span class="hidden-sm">
-        Appendix: Check ...
+        Events
       </span>
       <span class="glyphicon glyphicon-chevron-right"></span>
     </a>
@@ -141,6 +145,17 @@
 <li><a class="reference internal" href="#request">Request</a></li>
 <li><a class="reference internal" href="#response">Response</a><ul>
 <li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rescheduling-checks">Rescheduling checks</a><ul>
+<li><a class="reference internal" href="#id1">Request</a><ul>
+<li><a class="reference internal" href="#id2">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">Response</a><ul>
+<li><a class="reference internal" href="#id4">Example</a></li>
 </ul>
 </li>
 </ul>
@@ -530,6 +545,139 @@
          <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span>
       <span class="p">}</span>
    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="rescheduling-checks">
+<h2>Rescheduling checks<a class="headerlink" href="#rescheduling-checks" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Request<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The request is a HTTP POST that must be authenticated using HTTP BASIC authentication:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><em>URL</em></td>
+<td>/maddash/admin/schedule</td>
+</tr>
+<tr class="row-even"><td><em>HTTP Method</em></td>
+<td>POST</td>
+</tr>
+</tbody>
+</table>
+<p><em>JSON Parameters</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="11%" />
+<col width="6%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head" colspan="2">Type                 | Required</th>
+<th class="head">Value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>checkFilters</em></td>
+<td>JSON Object</td>
+<td>Yes</td>
+<td>A JSON object with filters that select which  checks will be rescheduled</td>
+</tr>
+<tr class="row-odd"><td><em>checkFilters.gridName</em></td>
+<td>JSON Array or String</td>
+<td>No</td>
+<td>A JSON array with the list of grids to select. Undefined or the string <cite>*</cite> means to match every thing.</td>
+</tr>
+<tr class="row-even"><td><em>checkFilters.rowName</em></td>
+<td>JSON Array or String</td>
+<td>No</td>
+<td>A JSON array with the list of rows to select. Undefined or the string <cite>*</cite> means to match every thing.</td>
+</tr>
+<tr class="row-odd"><td><em>checkFilters.columnName</em></td>
+<td>JSON Array or String</td>
+<td>No</td>
+<td>A JSON array with the list of columns to select. Undefined or the string <cite>*</cite> means to match every thing.</td>
+</tr>
+<tr class="row-even"><td><em>checkFilters.checkName</em></td>
+<td>JSON Array or String</td>
+<td>No</td>
+<td>A JSON array with the list of checks to select. Undefined or the string <cite>*</cite> means to match every thing.</td>
+</tr>
+<tr class="row-odd"><td><em>checkFilters.dimensionName</em></td>
+<td>JSON Array or String</td>
+<td>No</td>
+<td>A JSON array with the list of columns or rows to select. Undefined or the string <cite>*</cite> means to match every thing.</td>
+</tr>
+<tr class="row-even"><td><em>nextCheckTime</em></td>
+<td>UNIX timestamp</td>
+<td>No</td>
+<td>A UNIX timestamp indicating when the check should next run</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id2">
+<h4>Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;checkFilters&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;gridName&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;BWCTL&quot;</span><span class="p">],</span>
+        <span class="s">&quot;rowName&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;chic-pt1.es.net&quot;</span><span class="p">],</span>
+        <span class="s">&quot;columnName&quot;</span><span class="p">:</span> <span class="s">&quot;*&quot;</span><span class="p">,</span>
+        <span class="s">&quot;checkName&quot;</span><span class="p">:</span> <span class="s">&quot;*&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s">&quot;nextCheckTime&quot;</span><span class="p">:</span> <span class="mi">1421864236</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3>Response<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p><em>Type:</em> application/json</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="11%" />
+<col width="5%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>status</em></td>
+<td>integer</td>
+<td>Yes</td>
+<td>A value of 0 means the operation succeeded. Non-zero means an error occurred.</td>
+</tr>
+<tr class="row-odd"><td><em>checkUpdateCount</em></td>
+<td>integer</td>
+<td>Yes</td>
+<td>The number of checks updated by this operation</td>
+</tr>
+<tr class="row-even"><td><em>message</em></td>
+<td>string</td>
+<td>Yes</td>
+<td>A message describing the result of the operation</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id4">
+<h4>Example<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s">&quot;checkUpdateCount&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="s">&quot;message&quot;</span><span class="p">:</span> <span class="s">&quot;Successfully updated 12 checks&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
