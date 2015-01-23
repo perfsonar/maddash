@@ -1,6 +1,6 @@
 ##
 # Set the directory where the database will be stored
-database: /Users/alake/Programming/Java/maddash/maddash-server/data
+database: /var/lib/maddash/ 
 
 ##
 # Set the number of jobs that can run in parallel. Default is 20.
