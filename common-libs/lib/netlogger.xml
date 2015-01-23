@@ -2,5 +2,5 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>netlogger</artifactId>
     <groupId>gov.lbl</groupId>
-    <version>4.1.2</version>
+    <version>4.1.3</version>
 </project>
