@@ -301,6 +301,7 @@ function buildDateTime(dateId, timeId){
     var dateObj = dijit.byId(dateId).value;
     var dateObjNew = new Date(0); //cancel out any time info that sneaks its way into widget
     dateObjNew.setFullYear(dateObj.getFullYear());
+    dateObjNew.setDate(2); //set to 2 so month with < 31 days does not jump ahead
     dateObjNew.setMonth(dateObj.getMonth());
     dateObjNew.setDate(dateObj.getDate());
     
