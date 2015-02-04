@@ -93,11 +93,17 @@ chown maddash:maddash %{install_base}/target/%{package_name}.jar
 
 #Configure service to start when machine boots
 /sbin/chkconfig --add %{package_name}
+/sbin/chkconfig %{package_name} on
 
-##Upgrade database
-#if [ "$1" = "2" ]; then
-#  %{install_base}/bin/update_db.sh -d %{data_dir} -f %{install_base}/sql/upgrade-1.0rc1-tables.sql
-#fi
+if [ "$1" = "2" ]; then
+    ##Upgrade database
+    # %{install_base}/bin/update_db.sh -d %{data_dir} -f %{install_base}/sql/upgrade-1.0rc1-tables.sql
+
+    #restart service on update
+    /sbin/service %{package_name} restart
+fi
+
+
 
 %files
 %defattr(-,maddash,maddash,-)
