@@ -282,7 +282,15 @@ var MaDDashGrid = function(parentId, legendId){
       $("#"+canvas).find(".gcell").each(function(i,d){
         var data = d3.select(this).data()[0];
         if(data.celldata!=null){
-          var html = "<div class='tooltip'><div class='top-tip'>" + (data.celldata[0]? data.celldata[0].message : "") + "</div><div class='bottom-tip'>" + (data.celldata[1]? data.celldata[1].message : "") + "</div></div>";
+          var topMsg = (data.celldata[0]? data.celldata[0].message : "");
+          var bottomMsg = (data.celldata[1]? data.celldata[1].message : "");
+          if(topMsg && data.celldata[0].status == 5){
+            topMsg = "Scheduled downtime. Click box for details.";
+          }
+          if(bottomMsg && data.celldata[1].status == 5){
+            bottomMsg = "Scheduled downtime. Click box for details.";
+          }
+          var html = "<div class='tooltip'><div class='top-tip'>" + topMsg + "</div><div class='bottom-tip'>" + bottomMsg + "</div></div>";
           $(this).tipsy({
             html :true,
             opacity: 0.9,
