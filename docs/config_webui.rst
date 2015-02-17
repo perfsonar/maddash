@@ -26,7 +26,7 @@ The interface provides some customization options in the JSON config file */opt/
 +------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | addNodeURL       | String      | No       | A URL where users may find more information about adding a node to your dashboard(s). If populated an extra item will be added to the menu bar displayed for users.                                                       |
 +------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| externalLinksMenu| JSON object | No       | See :ref:`config-webui-extlinks`                                                                                                                                                                                  |
+| externalLinksMenu| JSON object | No       | See :ref:`config-webui-vizcustom-extlinks`                                                                                                                                                                                |
 +------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | grids            | JSON object | No       | Custom layout features for individual grids. See :ref:`grids-props` section.                                                                                                                                              | 
 +------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -60,6 +60,8 @@ If you wanted to change everything in the OK state to be blue instead of green y
      }
 
 .. note:: It should be noted you must define states 0-5 every time you provide the colors. It is not enough to just define the subset you want to change. In addition, some checks may have custom states greater than 5. You may optionally include any states greater than five  in the configuration, but 0-5 are always required. See documentation for a specific check if you are unsure if it has any custom states.
+
+.. _config-webui-vizcustom-extlinks:
 
 Adding a Custom List of External Links
 ---------------------------------------

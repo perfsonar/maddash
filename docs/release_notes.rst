@@ -28,6 +28,7 @@ Enhanced Customization Options
 * You can now customize the colors displayed by maddash. See :ref:`config-webui-vizcustom-colors` for more details.
 * You may now define custom links that get applied to row and column labels. See *pstoolkiturl* under :ref:`group-member-props` for more information.
 * You may add a special link to the menu where users may get more information on how to get added to their dashboard. See *addNodeURL* under :ref:`config-webui-vizcustom` for more details.
+* You may now create a custom pull down menu containing a list of links to external pages such as organization homepages, other dashboards or monitoring systems. See :ref:`config-webui-vizcustom-extlinks` for more details.
 * An option was added to include a link to the new administrator interface in the *Settings* menu. This option will be on by default for new users. See *enableAdminUI* under :ref:`config-webui-vizcustom` for more details.
 
 New API Calls
