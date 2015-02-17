@@ -58,6 +58,7 @@ For upgraders coming from a previous version of the software no additional actio
     RewriteEngine On
     RewriteCond %{HTTPS} !=on
     RewriteRule ^/maddash/admin/.* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+    RewriteCond %{HTTPS} !=on
     RewriteRule ^/maddash-webui/admin/.* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
 
     <Location /maddash/admin>
