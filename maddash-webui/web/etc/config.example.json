@@ -1,0 +1,33 @@
+{
+    "title":"My perfSONAR Dashboard",
+    "defaultDashboard": "My Sites",
+    "enableAdminUI": true,
+    "grids":{
+        "OWAMP":{
+            "cellSize": 13,
+            "cellPadding": 3,
+            "textBlockSize": 130,
+        },
+    },
+    "externalLinksMenu": {
+        "menuLinks": [
+            { 
+               "label": "ESnet",
+                "url": "http://www.es.net"
+            },
+            {
+               "label": "perfSONAR",
+               "url": "http://www.perfsonar.net"
+            }
+        ]
+    },
+    "colors": {
+        0: "green", 
+        1: "yellow", 
+        2: "red", 
+        3: "#990000", 
+        4: "gray",
+        5: "black"
+        }
+}
+

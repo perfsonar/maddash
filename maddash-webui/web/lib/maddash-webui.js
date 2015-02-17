@@ -239,6 +239,7 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
                     onClick: function(){window.location = "/maddash-webui/admin";}
                 }));
         }
+        
 			
 		var gridDropMenu = new dijit.DropDownMenu({});
 		var mdGridDropMenu = new MadDashGridDropMenu(gridDropMenu, link);
@@ -263,6 +264,36 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 				label: "&#9881; Settings",
 				popup: settingsDropMenu
 			}));
+			
+		//add external links menu if configured
+		if(config != undefined && config.data != undefined && config.data.externalLinksMenu){
+		    var extLinksLabel = "External Resources";
+		    if(config.data.externalLinksMenu.menuLabel){
+		         extLinksLabel = config.data.externalLinksMenu.menuLabel;
+		    }
+            var extLinksDropMenu = new dijit.DropDownMenu({});
+            for(var linki = 0; linki < config.data.externalLinksMenu.menuLinks.length; linki++){
+                var currLink = config.data.externalLinksMenu.menuLinks[linki];
+                if(!currLink.label){
+                    console.log("Configuration error: External link missing label");
+                    continue;
+                }
+                if(!currLink.url){
+                    console.log("Configuration error: External link missing URL");
+                    continue;
+                }
+                extLinksDropMenu.addChild(new dijit.MenuItem({
+                    label: currLink.label,
+                    extUrl: currLink.url, //custom prop
+                    onClick: function(){window.open(this.extUrl)}
+                }));
+            }
+            menuBar.addChild(new dijit.PopupMenuBarItem({
+				label: "&#8689; " + extLinksLabel,
+				popup: extLinksDropMenu
+			}));
+        }
+        
 		menuBar.placeAt(this.parent.id);
 		menuBar.startup();
 	}
