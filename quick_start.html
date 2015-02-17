@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quick Start &mdash; MaDDash 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/esnet/esnet.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="MaDDash 1.1 documentation" href="index.html" />
+    <link rel="next" title="Installation" href="install.html" />
+    <link rel="prev" title="MaDDash: Monitoring and Debugging Dashboard" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          <!-- LOGO: logo-esnet-ball-sm.png _static/logo-esnet-ball-sm.png --><img src="_static/logo-esnet-ball-sm.png">
+          MaDDash</a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Section <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_dashboards.html">Dashboards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="index.html" title="Previous Chapter: MaDDash: Monitoring and Debugging Dashboard">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      <span class="hidden-sm">
+        MaDDash: Monitor...
+      </span>
+    </a>
+  </li>
+  <li>
+    <a href="install.html" title="Next Chapter: Installation">
+      <span class="hidden-sm">
+        Installation
+      </span>
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+  </li>
+              
+            
+            <li class="divider-vertical"></li>
+            
+                <li><a href="genindex.html">Index</a></li>
+                <li><a href="https://www.es.net">ESnet</a></li>
+            
+            <li><a href="https://github.com/esnet/maddash"><img src="_static/esnet/icon-github.png" height="20" width="20"></a></li>
+            
+            
+            
+          </ul>
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Quick Start</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="col-md-9">
+      
+  <div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>This document is intended to get you started as quickly as possible with a basic setup. See other sections of the documentation for more details on the steps performed here.</p>
+<ol class="arabic">
+<li><p class="first">Login to a CentOS 6 or later host and setup your yum environment (move to step 2 if you are on a host running the perfSONAR Toolkit 3.3 or later, your yum is already setup!):</p>
+<div class="highlight-python"><div class="highlight"><pre>wget http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.4-2.noarch.rpm
+wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+yum localinstall Internet2-repo-0.4-2.noarch.rpm epel-release-6-8.noarch.rpm
+yum clean all
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the following command as a privileged user to install the software:</p>
+<div class="highlight-python"><div class="highlight"><pre>yum install maddash
+</pre></div>
+</div>
+</li>
+<li><p class="first">Open the file <em>/etc/maddash/maddash-server/maddash.yaml</em> (<em>Note: Use spaces and not tabs in this file. YAML does not allow tabs.</em>)</p>
+</li>
+<li><p class="first">Under the <em>groups</em> section, change the <em>myOwampHosts</em> list and the <em>myBwctlHosts</em> list to the list of OWAMP and BWCTL hosts you wish to check, respectively. <em>NOTE: If you comment out one of the groups because you don&#8217;t want any BWCTL or OWAMP checks, then also remove the corresponding entry under the &#8220;grids&#8221; section of the file</em></p>
+</li>
+<li><p class="first">Do a search and replace for <em>example.mydomain.local</em> and change it to the hostname of the toolkit host on which the software is installed. This information will be used to generate the graphs.</p>
+</li>
+<li><p class="first">Restart the server:</p>
+<div class="highlight-python"><div class="highlight"><pre>/etc/init.d/maddash-server restart
+</pre></div>
+</div>
+</li>
+<li><p class="first">Open the maddash web page in your browser at the following URL (replace MYHOST with the name of your host): <a class="reference external" href="http://MYHOST/maddash-webui">http://MYHOST/maddash-webui</a></p>
+</li>
+<li><p class="first">You should now be able to view the results of the checks being run. See the remainder of this document for more detailed customization features.</p>
+</li>
+</ol>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1">
+        <a href="http://www.es.net/"><img src="_static/esnet/logo-esnet.png" alt="[ESnet]"></a>
+      </div>
+      <div class="col-md-11">
+        <p class="pull-right">
+        <a href="#">Back to top</a>
+        
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/quick_start.txt"
+     rel="nofollow">Source</a>
+</div>
+        
+        </p>
+        <p>
+            &copy; Copyright 2014, Andy Lake.<br/>
+          Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Basics &mdash; MaDDash 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/esnet/esnet.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="MaDDash 1.1 documentation" href="index.html" />
+    <link rel="next" title="Dashboards" href="api_dashboards.html" />
+    <link rel="prev" title="Release Notes" href="release_notes.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          <!-- LOGO: logo-esnet-ball-sm.png _static/logo-esnet-ball-sm.png --><img src="_static/logo-esnet-ball-sm.png">
+          MaDDash</a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Section <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_dashboards.html">Dashboards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="release_notes.html" title="Previous Chapter: Release Notes">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      <span class="hidden-sm">
+        Release Notes
+      </span>
+    </a>
+  </li>
+  <li>
+    <a href="api_dashboards.html" title="Next Chapter: Dashboards">
+      <span class="hidden-sm">
+        Dashboards
+      </span>
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+  </li>
+              
+            
+            <li class="divider-vertical"></li>
+            
+                <li><a href="genindex.html">Index</a></li>
+                <li><a href="https://www.es.net">ESnet</a></li>
+            
+            <li><a href="https://github.com/esnet/maddash"><img src="_static/esnet/icon-github.png" height="20" width="20"></a></li>
+            
+            
+            
+          </ul>
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">The Basics</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="col-md-9">
+      
+  <div class="section" id="the-basics">
+<h1>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h1>
+<p>This page describes the Monitoring and Debugging Dashboard (MaDDash) API. The API uses a JSON data format and attempts to adhere closely to principles of REST. The interface provides access to the following types of resources:</p>
+<ul class="simple">
+<li><em>Dashboard:</em> A collection of one or more <em>grid</em> resources. The grouping of <em>grids</em> into a dashboard as defined by the creator of the <em>dashboard</em> resource.</li>
+<li><em>Grid:</em> A two-dimensional representation of one or more <em>rows</em> and <em>columns</em> of <em>checks</em> that measure some value between entities represented by the column value (x) and row value (y).</li>
+<li><em>Check:</em> The output of a task performed using the column value (x) and the row value (y) as input.</li>
+<li><em>Column:</em> A collection of checks that share a common x value.</li>
+<li><em>Row:</em> A collection of checks that share a common y value</li>
+<li><em>Cell:</em> A collection of checks that share a common x and y value</li>
+</ul>
+<p>A visual representation of these resources is provided in the figure below:</p>
+<img alt="_images/maddash-resources.png" src="_images/maddash-resources.png" />
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1">
+        <a href="http://www.es.net/"><img src="_static/esnet/logo-esnet.png" alt="[ESnet]"></a>
+      </div>
+      <div class="col-md-11">
+        <p class="pull-right">
+        <a href="#">Back to top</a>
+        
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/api_intro.txt"
+     rel="nofollow">Source</a>
+</div>
+        
+        </p>
+        <p>
+            &copy; Copyright 2014, Andy Lake.<br/>
+          Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>
