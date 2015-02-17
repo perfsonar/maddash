@@ -26,6 +26,8 @@ The interface provides some customization options in the JSON config file */opt/
 +------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | addNodeURL       | String      | No       | A URL where users may find more information about adding a node to your dashboard(s). If populated an extra item will be added to the menu bar displayed for users.                                                       |
 +------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| externalLinksMenu| JSON object | No       | See :ref:`config-webui-extlinks`                                                                                                                                                                                  |
++------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | grids            | JSON object | No       | Custom layout features for individual grids. See :ref:`grids-props` section.                                                                                                                                              | 
 +------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
@@ -59,6 +61,54 @@ If you wanted to change everything in the OK state to be blue instead of green y
 
 .. note:: It should be noted you must define states 0-5 every time you provide the colors. It is not enough to just define the subset you want to change. In addition, some checks may have custom states greater than 5. You may optionally include any states greater than five  in the configuration, but 0-5 are always required. See documentation for a specific check if you are unsure if it has any custom states.
 
+Adding a Custom List of External Links
+---------------------------------------
+.. note:: The External Links menu was added in version 1.2 of MaDDash and not supported in previous versions.
+
+You may define a list of links that will appear in the top navigation menu of all MaDDash pages. You may add links to anything with a URL including items such as your organization's homepage, links to other MaDDash instances or other monitoring tools. The block contains a list of objects with a label and a URL. The label is the text displayed in the drop-down menu and the URL is the hyperlink to be opened when that text is clicked. An example of the configuration block is below::
+    
+    "externalLinksMenu": {
+        "menuLinks": [
+            { 
+               "label": "ESnet",
+                "url": "http://www.es.net"
+            },
+            {
+               "label": "perfSONAR",
+               "url": "http://www.perfsonar.net"
+            }
+        ]
+    }
+    
+By default the dopdown appear as *External Links" in the top menu. If you would like to change this you can customize the label with the **menuLabel** property::
+
+    "externalLinksMenu": {
+        "menuLabel": "Other Resources",
+        "menuLinks": [
+            { 
+               "label": "ESnet",
+                "url": "http://www.es.net"
+            },
+            {
+               "label": "perfSONAR",
+               "url": "http://www.perfsonar.net"
+            }
+        ]
+    }
+
+A table with a full listing of the properties detailed above can be seen below:
+
++--------------------+---------+----------+----------------------------------------------------------------------------------------------+
+| Name               | Type    | Required | Description                                                                                  | 
++====================+=========+==========+==============================================================================================+
+| menuLabel          | String  | No       | Optional label that appears in menu bar for external links menu. Default is "External Links" | 
++--------------------+---------+----------+----------------------------------------------------------------------------------------------+
+| menuLinks          | Array   | Yes      | Array of objects describing each link you want displayed in the menu.                        |
++--------------------+---------+----------+----------------------------------------------------------------------------------------------+ 
+| menuLinks[n].label | String  | Yes      | The text to appear in the menu for an individual link                                        |
++--------------------+---------+----------+----------------------------------------------------------------------------------------------+
+| menuLinks[n].url   | String  | Yes      | The URL to open when a link is clicked                                                       |
++--------------------+---------+----------+----------------------------------------------------------------------------------------------+
 
 .. _grids-props:
 
