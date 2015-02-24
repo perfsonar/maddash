@@ -59,8 +59,7 @@ public class NagiosCheck implements Check{
                 int resultCode = process.exitValue();
                 String outputLine = null;
                 Map returnParams = null;
-                if(resultCode < CheckConstants.RESULT_SUCCESS || 
-                        resultCode > CheckConstants.RESULT_UNKNOWN){
+                if(resultCode < CheckConstants.RESULT_SUCCESS){
                     outputLine = "Unknown return status " + resultCode + " from command. Verify that it is a valid Nagios plug-in";
                     resultCode = CheckConstants.RESULT_UNKNOWN;
                 }else{
