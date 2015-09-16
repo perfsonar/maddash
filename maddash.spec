@@ -1,5 +1,5 @@
 %define install_base /opt/maddash
-%define relnum 1 
+%define relnum 2 
 
 Name:           maddash
 Version:        1.2
