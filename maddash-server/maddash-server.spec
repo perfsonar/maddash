@@ -8,7 +8,7 @@
 %define relnum 1 
 
 Name:           %{package_name}
-Version:        1.2.0.5
+Version:        1.2.0.6
 Release:        %{relnum}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE

@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.es.maddash</groupId>
   <artifactId>maddash-server</artifactId>
-  <version>1.2</version>
+  <version>1.2.0.6</version>
   <name>maddash-server</name>
   <url>http://maven.apache.org</url>
   
