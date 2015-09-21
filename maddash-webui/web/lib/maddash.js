@@ -279,18 +279,22 @@ var MaDDashGrid = function(parentId, legendId){
             }
           }) */
       
+      var subcell_count = 1;
       $("#"+canvas).find(".gcell").each(function(i,d){
         var data = d3.select(this).data()[0];
+        
+        var html = "<div class='tooltip'>";
         if(data.celldata!=null){
-          var topMsg = (data.celldata[0]? data.celldata[0].message : "");
-          var bottomMsg = (data.celldata[1]? data.celldata[1].message : "");
-          if(topMsg && data.celldata[0].status == 5){
-            topMsg = "Scheduled downtime. Click box for details.";
+          subcell_count = data.celldata.length;
+          for(var msgi = 0; msgi < subcell_count; msgi++){
+              var msg = (data.celldata[msgi]? data.celldata[msgi].message : "");
+              if(msg && data.celldata[msgi].status == 5){
+                msg = "Scheduled downtime. Click box for details.";
+              }
+              html += "<div class='" + (msgi == 0 ? "top-tip" : "bottom-tip") + "'>" + msg + "</div>";
           }
-          if(bottomMsg && data.celldata[1].status == 5){
-            bottomMsg = "Scheduled downtime. Click box for details.";
-          }
-          var html = "<div class='tooltip'><div class='top-tip'>" + topMsg + "</div><div class='bottom-tip'>" + bottomMsg + "</div></div>";
+          html += "</div>";
+          
           $(this).tipsy({
             html :true,
             opacity: 0.9,
@@ -305,7 +309,7 @@ var MaDDashGrid = function(parentId, legendId){
         .enter()
           .append("div");
       temp
-        .style("height", cellsize/2 +"px")              
+        .style("height", cellsize/subcell_count +"px")              
         .style("background", function(d,i){
           return colorscale[parseInt(d.status)];
         })

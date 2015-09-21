@@ -20,8 +20,8 @@
 .gsubcell{float:left;}
 rect{fill:none;}
 .tooltip{text-align:left;font-size:12px;}
-.tooltip .top-tip{padding-bottom:2px;border-bottom:1px solid #fff}
-.tooltip .bottom-tip{padding-top:2px;}  
+.tooltip .top-tip{padding-bottom:2px;}
+.tooltip .bottom-tip{padding-top:2px;border-top:1px solid #fff}  
 .legends{
         background-color:#fff7fb;
         border:1px solid #d0d1e6;
