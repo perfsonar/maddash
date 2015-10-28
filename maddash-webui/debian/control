@@ -1,0 +1,18 @@
+Source: maddash-webui
+Section: net
+Priority: optional
+Maintainer: Valentin Vidic <Valentin.Vidic@CARNet.hr>
+Build-Depends: debhelper (>= 9), default-jre-headless, wget
+Standards-Version: 3.9.5
+Homepage: http://software.es.net/maddash/
+Vcs-Git: git://github.com/esnet/maddash
+Vcs-Browser: https://github.com/esnet/maddash
+
+Package: maddash-webui
+Architecture: all
+Depends: apache2-mpm-worker | httpd, perl, ${shlibs:Depends}, ${misc:Depends}
+Description: MaDDash Web Interface
+ MaDDash is a framework for scheduling service checks and displaying results in
+ a grid.
+ .
+ This package provides a web interface to display check results.
