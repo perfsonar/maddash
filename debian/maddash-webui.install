@@ -1,0 +1,8 @@
+maddash-webui/etc/apache-maddash.conf etc/maddash/maddash-webui
+maddash-webui/web/etc/config.json etc/maddash/maddash-webui
+maddash-webui/web/etc/config.example.json usr/share/maddash/maddash-webui/etc
+maddash-webui/web/*.cgi usr/share/maddash/maddash-webui
+maddash-webui/web/admin usr/share/maddash/maddash-webui
+maddash-webui/web/lib usr/share/maddash/maddash-webui
+maddash-webui/web/style usr/share/maddash/maddash-webui
+maddash-webui/web/images usr/share/maddash/maddash-webui

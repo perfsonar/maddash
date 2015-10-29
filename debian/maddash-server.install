@@ -1,0 +1,5 @@
+maddash-server/target/*.jar usr/share/maddash/maddash-server/target
+maddash-server/bin/* usr/share/maddash/maddash-server/bin
+maddash-server/sql/* usr/share/maddash/maddash-server/sql
+maddash-server/etc/maddash.yaml etc/maddash/maddash-server
+maddash-server/etc/log4j.properties etc/maddash/maddash-server
