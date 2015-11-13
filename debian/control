@@ -2,7 +2,7 @@ Source: maddash
 Section: net
 Priority: optional
 Maintainer: Valentin Vidic <Valentin.Vidic@CARNet.hr>
-Build-Depends: debhelper (>= 9), openjdk-7-jdk | java7-jdk, maven, wget
+Build-Depends: debhelper (>= 9), openjdk-7-jdk | java7-jdk, maven, wget, dh-systemd
 Standards-Version: 3.9.6
 Homepage: http://software.es.net/maddash/
 Vcs-Git: git://github.com/esnet/maddash
