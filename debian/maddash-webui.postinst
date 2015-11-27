@@ -28,6 +28,8 @@ case "$1" in
         # reconfigure apache
         ln -sf /etc/maddash/maddash-webui/apache-maddash.conf /etc/apache2/conf-available/
         a2enconf apache-maddash.conf
+
+        a2enmod -q cgi
         a2enmod -q rewrite
         a2enmod -q proxy_http
 
