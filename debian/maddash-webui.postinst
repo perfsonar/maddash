@@ -26,7 +26,8 @@ case "$1" in
         chown www-data:www-data /etc/maddash/maddash-webui/admin-users
 
         # reconfigure apache
-        ln -sf /etc/maddash/maddash-webui/apache-maddash.conf /etc/apache2/conf.d/
+        ln -sf /etc/maddash/maddash-webui/apache-maddash.conf /etc/apache2/conf-available/
+        a2enconf apache-maddash.conf
         a2enmod -q rewrite
         a2enmod -q proxy_http
 

@@ -26,9 +26,9 @@
 -Alias /maddash-webui /opt/maddash/maddash-webui 
 -<Directory "/opt/maddash/maddash-webui/">
 -    Options Indexes +ExecCGI
-+Alias /maddash-webui /usr/share/maddash/maddash-webui 
++Alias /maddash-webui /usr/share/maddash/maddash-webui
 +<Directory "/usr/share/maddash/maddash-webui/">
-+    Options Indexes +ExecCGI +FollowSymLinks
++    Options +Indexes +ExecCGI +FollowSymLinks
      DirectoryIndex index.cgi index.html
      AddHandler cgi-script .cgi
      AllowOverride None
