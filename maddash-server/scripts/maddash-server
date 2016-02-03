@@ -15,7 +15,7 @@ LONG_NAME="MaDDash"
 
 #OSCARS variables
 HOME_PREFIX=/etc/maddash/${SHORT_NAME}
-DIST_PREFIX=/opt/maddash/${SHORT_NAME}
+DIST_PREFIX=/usr/lib/maddash/${SHORT_NAME}
 BINDIR=${DIST_PREFIX}/bin
 CONFDIR=${HOME_PREFIX}
 RUNDIR=/var/run/maddash
