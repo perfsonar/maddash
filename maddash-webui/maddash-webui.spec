@@ -68,6 +68,7 @@ if [ "$1" = "2" ]; then
     
     #update apache config
     sed -i "s:/opt/maddash:/usr/lib/maddash:g" /etc/httpd/conf.d/apache-maddash.conf
+    grep -q "FollowSymLinks" /etc/httpd/conf.d/apache-maddash.conf || sed -i "s:+ExecCGI:FollowSymLinks +ExecCGI:g" /etc/httpd/conf.d/apache-maddash.conf
 fi
 
 #create symlink to config.json
