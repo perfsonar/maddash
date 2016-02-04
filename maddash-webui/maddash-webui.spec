@@ -40,7 +40,6 @@ rm -rf %{buildroot}
 
 #Create directory structure for build root
 mkdir -p %{buildroot}/%{install_base}
-mkdir -p %{buildroot}/%{install_base}/etc
 mkdir -p %{buildroot}/%{config_base}
 mkdir -p %{buildroot}/etc/httpd/conf.d
 
@@ -54,11 +53,11 @@ cp -r %{package_name}/web/style %{buildroot}/%{install_base}/style
 cp -r %{package_name}/web/images %{buildroot}/%{install_base}/images
 
 %post
+mkdir -p %{install_base}/etc
 #create empty directory for config files. apache user files can go here
-mkdir -p /etc/maddash/maddash-webui
-touch /etc/maddash/maddash-webui/admin-users
-chown apache:apache /etc/maddash/maddash-webui/admin-users
-chmod 600 /etc/maddash/maddash-webui/admin-users
+touch %{config_base}/admin-users
+chown apache:apache %{config_base}/admin-users
+chmod 600 %{config_base}/admin-users
 
 if [ "$1" = "2" ]; then
     #Replace pre-1.3 file
