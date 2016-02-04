@@ -46,11 +46,11 @@ mkdir -p %{buildroot}/etc/httpd/conf.d
 #Copy jar files and scripts
 install -m 755 %{package_name}/web/*.cgi %{buildroot}/%{install_base}/
 install -m 644 %{package_name}/etc/apache-maddash.conf  %{buildroot}/etc/httpd/conf.d/
+install -m 644 %{package_name}/web/etc/* %{buildroot}/%{config_base}/
 cp -r %{package_name}/web/admin %{buildroot}/%{install_base}/admin
 cp -r %{package_name}/web/lib %{buildroot}/%{install_base}/lib
 cp -r %{package_name}/web/style %{buildroot}/%{install_base}/style
 cp -r %{package_name}/web/images %{buildroot}/%{install_base}/images
-cp -r %{package_name}/web/etc %{buildroot}/%{config_base}/etc
 
 %post
 #create empty directory for config files. apache user files can go here
@@ -82,6 +82,7 @@ fi
 %defattr(-,maddash,maddash,-)
 %config(noreplace) /etc/httpd/conf.d/apache-maddash.conf
 %config(noreplace) %{config_base}/config.json
+%{config_base}/config.example.json
 %{install_base}/*
 
 %preun
