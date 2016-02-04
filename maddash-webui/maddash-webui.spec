@@ -40,6 +40,7 @@ rm -rf %{buildroot}
 
 #Create directory structure for build root
 mkdir -p %{buildroot}/%{install_base}
+mkdir -p %{buildroot}/%{install_base}/etc
 mkdir -p %{buildroot}/%{config_base}
 mkdir -p %{buildroot}/etc/httpd/conf.d
 
@@ -72,7 +73,7 @@ fi
 
 #create symlink to config.json
 if [ ! -e %{install_base}/etc/config.json ]; then
-    ln -s %{config_base}/etc/config.json %{install_base}/etc/config.json
+    ln -s %{config_base}/config.json %{install_base}/etc/config.json
 fi
 
 #restart apache so config changes are applied
