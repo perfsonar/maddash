@@ -105,7 +105,7 @@ Example
        "type":"net.es.maddash.checks.PSNagiosCheck",
        "params":{
           "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=2592000",
-          "command":"/opt/perfsonar_ps/nagios/bin/check_throughput.pl -u %maUrl -w .5: -c 0: -r 86400 -s %row -d %col",
+          "command":"/usr/lib/nagios/bin/check_throughput.pl -u %maUrl -w .5: -c 0: -r 86400 -s %row -d %col",
           "metaDataKeyLookup":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.iperf&srcRaw=%row&dstRaw=%col&protocol=TCP&timeDuration=20",
           "maUrl":{
              "default":"http://%row:8085/perfSONAR_PS/services/pSB"

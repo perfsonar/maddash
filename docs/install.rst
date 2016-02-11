@@ -77,5 +77,5 @@ For upgraders coming from a previous version of the software no additional actio
         Require valid-user
     </Location>
 * If you have not previously configured Apache to use HTTPS then a self-signed certificate will be generated for you during the update by Apache's mod_ssl. If you wish to replace this certificate with your own please see the `Apache SSL <http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html>`_ page for more details.
-* If *Server Settings...* does not apear in the *Settings* menu of the MaDDash web page, you may need to open */opt/maddash/maddash-webui/web/etc/config.json* and add the option *enableAdminUI: true*
+* If *Server Settings...* does not apear in the *Settings* menu of the MaDDash web page, you may need to open */etc/maddash/maddash-webui/config.json* and add the option *enableAdminUI: true*
 
