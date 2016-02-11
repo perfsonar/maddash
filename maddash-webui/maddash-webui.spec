@@ -1,7 +1,7 @@
 %define package_name maddash-webui 
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
-%define relnum 0.0.a1
+%define relnum 0.1.rc1
 
 Name:           %{package_name}
 Version:        1.3
