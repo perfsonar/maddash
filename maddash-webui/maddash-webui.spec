@@ -1,7 +1,7 @@
 %define package_name maddash-webui 
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
-%define relnum 0.1.rc1
+%define relnum 0.2.rc1
 
 Name:           %{package_name}
 Version:        1.3
@@ -60,10 +60,15 @@ chown apache:apache %{config_base}/admin-users
 chmod 600 %{config_base}/admin-users
 
 if [ "$1" = "2" ]; then
+
     #Replace pre-1.3 file
-    if [ -e %{install_base}/etc/config.json ] && [ ! -L %{install_base}/etc/config.json ]; then
-        mv %{config_base}/etc/config.json %{config_base}/etc/config.json.bak
-        mv %{install_base}/etc/config.json %{config_base}/etc/config.json
+    if [ -e /opt/maddash/maddash-webui/etc/config.json ]; then
+        mv %{config_base}/config.json %{config_base}/config.json.bak
+        mv /opt/maddash/maddash-webui/etc/config.json %{config_base}/config.json
+        mv -f /opt/maddash/maddash-webui/etc/config.json.rpmsave /opt/maddash/maddash-webui/etc/config.json.rpmsave.bak
+    elif [ -e /opt/maddash/maddash-webui/etc/config.json.rpmsave ]; then
+        mv %{config_base}/config.json %{config_base}/config.json.bak
+        mv /opt/maddash/maddash-webui/etc/config.json.rpmsave %{config_base}/config.json
     fi
     
     #update apache config
