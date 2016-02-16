@@ -1,14 +1,14 @@
 %define package_name maddash-server 
 %define mvn_project_list common-libs,%{package_name}
-%define install_base /opt/maddash/%{package_name}
+%define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
-%define relnum 1 
+%define relnum 0.2.rc1 
 
 Name:           %{package_name}
-Version:        1.2.0.6
+Version:        1.3
 Release:        %{relnum}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
@@ -98,7 +98,17 @@ chown maddash:maddash %{install_base}/target/%{package_name}.jar
 if [ "$1" = "2" ]; then
     ##Upgrade database
     # %{install_base}/bin/update_db.sh -d %{data_dir} -f %{install_base}/sql/upgrade-1.0rc1-tables.sql
-
+    
+    #Update old nagios check paths
+    sed -i "s:/opt/perfsonar_ps/nagios/bin:/usr/lib/nagios/plugins:g" %{config_base}/maddash.yaml
+    #Correct paths on x86_64 hosts
+    if [ -d "/usr/lib64/nagios/plugins" ]; then
+        sed -i "s:/usr/lib/nagios/plugins:/usr/lib64/nagios/plugins:g" %{config_base}/maddash.yaml
+    fi
+    
+    #fix graph URL
+    sed -i "s:/serviceTest:/perfsonar-graphs:g" %{config_base}/maddash.yaml
+    
     #restart service on update
     /sbin/service %{package_name} restart
 fi
