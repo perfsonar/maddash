@@ -27,13 +27,15 @@ case "$1" in
 
         # reconfigure apache
         ln -sf /etc/maddash/maddash-webui/apache-maddash.conf /etc/apache2/conf.d/
+
+        a2enmod -q cgi
         a2enmod -q rewrite
         a2enmod -q proxy_http
 
         if which invoke-rc.d > /dev/null; then
-            invoke-rc.d apache2 reload
+            invoke-rc.d apache2 restart
         else
-            /etc/init.d/apache2 reload
+            /etc/init.d/apache2 restart
         fi
     ;;
 
