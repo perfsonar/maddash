@@ -104,11 +104,10 @@ Example
        "returnCodeCount":0,
        "type":"net.es.maddash.checks.PSNagiosCheck",
        "params":{
-          "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=%maUrl&key=%maKeyF&keyR=%maKeyR&dstIP=%dstIP&srcIP=%srcIP&dst=%dstName&src=%srcName&type=TCP&length=2592000",
+          "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=%maUrl&dest=%dest&source=%source&dst=%dstName&src=%srcName&protocol=tcp",
           "command":"/usr/lib/nagios/bin/check_throughput.pl -u %maUrl -w .5: -c 0: -r 86400 -s %row -d %col",
-          "metaDataKeyLookup":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.iperf&srcRaw=%row&dstRaw=%col&protocol=TCP&timeDuration=20",
           "maUrl":{
-             "default":"http://%row:8085/perfSONAR_PS/services/pSB"
+             "default":"http://%row:8085/perfsonar/esmond/archive"
           }
        },
        "checkInterval":3600,
@@ -123,11 +122,11 @@ Example
              "message":" Average throughput is 7.871965Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"1.1697349988637Gbps",
                 "Average":"7.871965Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"6.13474Gbps"
              },
              "returnCodeCount":0,
@@ -139,11 +138,11 @@ Example
              "message":" Average throughput is 7.871965Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"1.1697349988637Gbps",
                 "Average":"7.871965Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"6.13474Gbps"
              },
              "returnCodeCount":0,
@@ -155,11 +154,11 @@ Example
              "message":" Average throughput is 7.871965Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"1.1697349988637Gbps",
                 "Average":"7.871965Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"6.13474Gbps"
              },
              "returnCodeCount":0,
@@ -171,11 +170,11 @@ Example
              "message":" Average throughput is 7.871965Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"1.1697349988637Gbps",
                 "Average":"7.871965Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"6.13474Gbps"
              },
              "returnCodeCount":0,
@@ -187,11 +186,11 @@ Example
              "message":" Average throughput is 7.871965Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"1.1697349988637Gbps",
                 "Average":"7.871965Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"6.13474Gbps"
              },
              "returnCodeCount":0,
@@ -203,11 +202,11 @@ Example
              "message":" Average throughput is 7.871965Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"1.1697349988637Gbps",
                 "Average":"7.871965Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"6.13474Gbps"
              },
              "returnCodeCount":0,
@@ -219,11 +218,11 @@ Example
              "message":" Average throughput is 7.871965Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"1.1697349988637Gbps",
                 "Average":"7.871965Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"6.13474Gbps"
              },
              "returnCodeCount":0,
@@ -235,11 +234,11 @@ Example
              "message":" Average throughput is 7.871965Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"1.1697349988637Gbps",
                 "Average":"7.871965Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"6.13474Gbps"
              },
              "returnCodeCount":0,
@@ -251,11 +250,11 @@ Example
              "message":" Average throughput is 8.4896975Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"0.181510755305758Gbps",
                 "Average":"8.4896975Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"8.2796Gbps"
              },
              "returnCodeCount":0,
@@ -267,11 +266,11 @@ Example
              "message":" Average throughput is 8.4896975Gbps ",
              "returnParams":{
                 "Count":"4",
-                "graphUrl":"https://stats.es.net/perfsonar/serviceTest/cgi-bin/bandwidthGraph.cgi?url=http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB&key=4ff548de812ae554da5b954e97753749&keyR=b96477f01d57138e1cf4334914d222c0&dstIP=198.124.252.141&srcIP=198.124.252.121&dst=chic-pt1.es.net&src=star-pt1.es.net&type=TCP&length=2592000",
+                "graphUrl":"/perfsonar-graphs/graphWidget.cgi?url=http://star-pt1.es.net:8085/perfsonar/esmond/archive&dest=198.124.252.141&source=198.124.252.121&protocol=tcp",
                 "Max":"8.67244Gbps",
                 "Standard_Deviation":"0.181510755305758Gbps",
                 "Average":"8.4896975Gbps",
-                "maUrl":"http://star-pt1.es.net:8085/perfSONAR_PS/services/pSB",
+                "maUrl":"http://star-pt1.es.net:8085/perfsonar/esmond/archive",
                 "Min":"8.2796Gbps"
              },
              "returnCodeCount":0,
