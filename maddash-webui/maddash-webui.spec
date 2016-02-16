@@ -1,9 +1,10 @@
 %define package_name maddash-webui 
-%define install_base /opt/maddash/%{package_name}
-%define relnum 1 
+%define install_base /usr/lib/maddash/%{package_name}
+%define config_base /etc/maddash/%{package_name}
+%define relnum 0.1.rc1
 
 Name:           %{package_name}
-Version:        1.2.0.4
+Version:        1.3
 Release:        %{relnum}
 Summary:        MaDDash Web Interface 
 License:        distributable, see LICENSE
@@ -39,23 +40,41 @@ rm -rf %{buildroot}
 
 #Create directory structure for build root
 mkdir -p %{buildroot}/%{install_base}
+mkdir -p %{buildroot}/%{config_base}
 mkdir -p %{buildroot}/etc/httpd/conf.d
 
 #Copy jar files and scripts
 install -m 755 %{package_name}/web/*.cgi %{buildroot}/%{install_base}/
 install -m 644 %{package_name}/etc/apache-maddash.conf  %{buildroot}/etc/httpd/conf.d/
+install -m 644 %{package_name}/web/etc/* %{buildroot}/%{config_base}/
 cp -r %{package_name}/web/admin %{buildroot}/%{install_base}/admin
 cp -r %{package_name}/web/lib %{buildroot}/%{install_base}/lib
 cp -r %{package_name}/web/style %{buildroot}/%{install_base}/style
 cp -r %{package_name}/web/images %{buildroot}/%{install_base}/images
-cp -r %{package_name}/web/etc %{buildroot}/%{install_base}/etc
 
 %post
+mkdir -p %{install_base}/etc
 #create empty directory for config files. apache user files can go here
-mkdir -p /etc/maddash/maddash-webui
-touch /etc/maddash/maddash-webui/admin-users
-chown apache:apache /etc/maddash/maddash-webui/admin-users
-chmod 600 /etc/maddash/maddash-webui/admin-users
+touch %{config_base}/admin-users
+chown apache:apache %{config_base}/admin-users
+chmod 600 %{config_base}/admin-users
+
+if [ "$1" = "2" ]; then
+    #Replace pre-1.3 file
+    if [ -e %{install_base}/etc/config.json ] && [ ! -L %{install_base}/etc/config.json ]; then
+        mv %{config_base}/etc/config.json %{config_base}/etc/config.json.bak
+        mv %{install_base}/etc/config.json %{config_base}/etc/config.json
+    fi
+    
+    #update apache config
+    sed -i "s:/opt/maddash:/usr/lib/maddash:g" /etc/httpd/conf.d/apache-maddash.conf
+    grep -q "FollowSymLinks" /etc/httpd/conf.d/apache-maddash.conf || sed -i "s:+ExecCGI:FollowSymLinks +ExecCGI:g" /etc/httpd/conf.d/apache-maddash.conf
+fi
+
+#create symlink to config.json
+if [ ! -e %{install_base}/etc/config.json ]; then
+    ln -s %{config_base}/config.json %{install_base}/etc/config.json
+fi
 
 #restart apache so config changes are applied
 /etc/init.d/httpd restart
@@ -63,7 +82,8 @@ chmod 600 /etc/maddash/maddash-webui/admin-users
 %files
 %defattr(-,maddash,maddash,-)
 %config(noreplace) /etc/httpd/conf.d/apache-maddash.conf
-%config(noreplace) %{install_base}/etc/config.json
+%config(noreplace) %{config_base}/config.json
+%{config_base}/config.example.json
 %{install_base}/*
 
 %preun

@@ -41,8 +41,8 @@ The following packages are installed by the current default installation:
 * *maddash* - Container package that has dependencies on the *maddash-server*, *maddash-webui*, and perl-perfSONAR_PS-Nagios packages. The package itself does not install any additional software, it simply pulls in the aforementioned packages.
 * *maddash-server* - The backend server that schedules checks and makes results available via a REST/JSON interface running on an embedded web server. This package has a dependency on java which will also be installed during the yum installation process.
 * *maddash-webui* - The web pages that display the dashboard. It consists of a set of CGI scripts that run under Apache. The server contacts the REST server run by the maddash-server package and then presents the data on the web page.
-* *perl-perfSONAR_PS-Nagios* - Installs the perfSONAR Nagios checks that can alarm based on throughput, loss and other data returned by perfSONAR services.
-* *perl-perfSONAR_PS-serviceTest* - Provides the performance graphs used by the maddash-webui package for perfSONAR checks.
+* *nagios-plugins-perfsonar* - Installs the perfSONAR Nagios checks that can alarm based on throughput, loss and other data returned by perfSONAR services.
+* *perfsonar-graphs* - Provides the performance graphs used by the maddash-webui package for perfSONAR checks.
 
 Updating 
 ========
@@ -77,5 +77,5 @@ For upgraders coming from a previous version of the software no additional actio
         Require valid-user
     </Location>
 * If you have not previously configured Apache to use HTTPS then a self-signed certificate will be generated for you during the update by Apache's mod_ssl. If you wish to replace this certificate with your own please see the `Apache SSL <http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html>`_ page for more details.
-* If *Server Settings...* does not apear in the *Settings* menu of the MaDDash web page, you may need to open */opt/maddash/maddash-webui/web/etc/config.json* and add the option *enableAdminUI: true*
+* If *Server Settings...* does not apear in the *Settings* menu of the MaDDash web page, you may need to open */etc/maddash/maddash-webui/config.json* and add the option *enableAdminUI: true*
 

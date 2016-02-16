@@ -4,14 +4,14 @@ Customizing the Web Interface
 
 Web Server
 ==========
-The maddash-webui is a web application that runs under Apache. The web scripts and resources are installed in */opt/maddash/maddash-webui*. In addition, an Apache configuration file is installed at */etc/httpd/conf.d/apache-maddash.conf* that sets-up the */maddash-webui* URL. It also creates a reverse proxy for request to the URL */maddash* to localhost port 8881. If you modify the server port for maddash, you will also need to update this configuration.
+The maddash-webui is a web application that runs under Apache. The web scripts and resources are installed in */usr/lib/maddash/maddash-webui*. In addition, an Apache configuration file is installed at */etc/httpd/conf.d/apache-maddash.conf* that sets-up the */maddash-webui* URL. It also creates a reverse proxy for request to the URL */maddash* to localhost port 8881. If you modify the server port for maddash, you will also need to update this configuration.
 
 
 .. _config-webui-vizcustom:
 
 Visual Customizations
 =====================
-The interface provides some customization options in the JSON config file */opt/maddash/maddash-webui/etc/config.json*. It provides the following options:
+The interface provides some customization options in the JSON config file */etc/maddash/maddash-webui/config.json*. It provides the following options:
 
 +------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Name             | Type        | Required | Description                                                                                                                                                                                                               |
