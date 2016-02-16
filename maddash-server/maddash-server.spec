@@ -106,6 +106,9 @@ if [ "$1" = "2" ]; then
         sed -i "s:/usr/lib/nagios/plugins:/usr/lib64/nagios/plugins:g" %{config_base}/maddash.yaml
     fi
     
+    #fix graph URL
+    sed -i "s:/serviceTest:/perfsonar-graphs:g" %{config_base}/maddash.yaml
+    
     #restart service on update
     /sbin/service %{package_name} restart
 fi
