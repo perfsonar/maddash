@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MaDDash: Monitoring and Debugging Dashboard &mdash; MaDDash 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/esnet/esnet.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="MaDDash 1.1 documentation" href="#" />
+    <link rel="next" title="Quick Start" href="quick_start.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          <!-- LOGO: logo-esnet-ball-sm.png _static/logo-esnet-ball-sm.png --><img src="_static/logo-esnet-ball-sm.png">
+          MaDDash</a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Section <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_dashboards.html">Dashboards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="quick_start.html" title="Next Chapter: Quick Start">
+      <span class="hidden-sm">
+        Quick Start
+      </span>
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+  </li>
+              
+            
+            <li class="divider-vertical"></li>
+            
+                <li><a href="genindex.html">Index</a></li>
+                <li><a href="https://www.es.net">ESnet</a></li>
+            
+            <li><a href="https://github.com/esnet/maddash"><img src="_static/esnet/icon-github.png" height="20" width="20"></a></li>
+            
+            
+            
+          </ul>
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-1"></div>
+    <div class="col-md-9">
+      
+  <div class="section" id="maddash-monitoring-and-debugging-dashboard">
+<h1>MaDDash: Monitoring and Debugging Dashboard<a class="headerlink" href="#maddash-monitoring-and-debugging-dashboard" title="Permalink to this headline">¶</a></h1>
+<p>MaDDash is a project aimed at collecting and presenting two-dimensional monitoring data as a set of grids referred to as a dashboard. Many monitoring systems focus on one dimension, such as a single host or service. Unfortunately, users can quickly run into n-squared problems both in terms of configuration on the back-end and data presentation on the front-end if you try to present naturally two-dimensional data in this manner.</p>
+<p>The classic use case is point-to-point network measurements between two hosts. For every host in the set, you want to know some performance metric to every other host. You don&#8217;t want to add a large configuration block for every host. You also don&#8217;t want to do things like only look at the results in aggregate or be presented with a long list of every host pair. MaDDash addresses this by reading a configuration file where the two-dimensional grids are defined using specialized structures, running a set of jobs based on this configuration (usually a set of <a class="reference external" href="http://www.nagios.org">Nagios</a> checks), then storing the results. These results can then be accessed using a REST API which provides the building blocks for components such as the included web interface that presents the data as a set of grids.</p>
+<p>MaDDash is currently developed as part of the <a class="reference external" href="http://code.google.com/p/perfsonar-ps/w/list">perfSONAR</a> project. As such network monitoring is a primary focus of most deployments, but it is relatively agnostic to the data being collected and displayed so can be adapted to any case where a two-dimensional relationship is formed.</p>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="deploying">
+<h3>Deploying<a class="headerlink" href="#deploying" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#yum-repository-setup">Yum Repository Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installing-maddash">Installing MaDDash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#updating">Updating</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config_server.html#groups">groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_server.html#checks">checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_server.html#grids">grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_server.html#dashboards">dashboards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_server.html#global-properties">Global Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config_webui.html#web-server">Web Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config_webui.html#visual-customizations">Visual Customizations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="running.html#starting-the-service">Starting the service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running.html#stopping-the-service">Stopping the service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running.html#restarting-the-service">Restarting the service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running.html#logs">Logs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#adding-removing-administrative-users">Adding/Removing Administrative Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#configuring-https">Configuring HTTPS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#accessing-the-administrator-web-interface">Accessing the Administrator Web Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#rescheduling-checks">Rescheduling Checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#scheduling-events">Scheduling Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#viewing-existing-events">Viewing Existing Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#canceling-events">Canceling Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_ui.html#selecting-checks">Selecting Checks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mesh_config.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mesh_config.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mesh_config.html#installing-the-package">Installing the package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mesh_config.html#configuration-guide">Configuration Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mesh_config.html#log-files">Log Files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#version-1-2">Version 1.2</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="api">
+<h3>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_dashboards.html">Dashboards</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_dashboards.html#retrieving-the-list-of-dashboards">Retrieving the list of dashboards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_grids.html">Grids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_grids.html#retrieving-the-list-of-grids">Retrieving the list of grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_grids.html#retrieving-a-single-grid">Retrieving a single grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_rows.html#retrieving-a-row">Retrieving a row</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_cells.html#retrieving-a-cell">Retrieving a cell</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_checks.html#retrieving-a-single-check">Retrieving a single check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_checks.html#rescheduling-checks">Rescheduling checks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_events.html#retrieving-a-list-of-events">Retrieving a list of events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_events.html#retrieving-a-single-event">Retrieving a single event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_events.html#creating-an-event">Creating an Event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_events.html#deleting-an-event">Deleting an Event</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_type_params.html#nagios-check">Nagios Check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_type_params.html#perfsonar-nagios-check">perfSONAR Nagios Check</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_misc.html#listing-all-the-unique-row-names">Listing all the unique row names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_misc.html#listing-all-the-unique-column-names">Listing all the unique column names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_misc.html#listing-all-the-unique-check-names">Listing all the unique check names</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="links">
+<h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://software.es.net/maddash/">Project Homepage</a></li>
+<li><a class="reference external" href="https://github.com/esnet/maddash">Source Code Repository</a></li>
+<li><a class="reference external" href="https://github.com/esnet/maddash/issues">Issue Tracker</a></li>
+<li><a class="reference external" href="http://code.google.com/p/perfsonar-ps/w/list">perfSONAR Project Page</a></li>
+<li><a class="reference external" href="http://ps-dashboard.es.net">Example ESnet MaDash Deployment</a></li>
+</ul>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1">
+        <a href="http://www.es.net/"><img src="_static/esnet/logo-esnet.png" alt="[ESnet]"></a>
+      </div>
+      <div class="col-md-11">
+        <p class="pull-right">
+        <a href="#">Back to top</a>
+        
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/index.txt"
+     rel="nofollow">Source</a>
+</div>
+        
+        </p>
+        <p>
+            &copy; Copyright 2014, Andy Lake.<br/>
+          Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>

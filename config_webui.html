@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Customizing the Web Interface &mdash; MaDDash 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/esnet/esnet.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="MaDDash 1.1 documentation" href="index.html" />
+    <link rel="next" title="Running and Managing MaDDash" href="running.html" />
+    <link rel="prev" title="Configuration" href="config_server.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          <!-- LOGO: logo-esnet-ball-sm.png _static/logo-esnet-ball-sm.png --><img src="_static/logo-esnet-ball-sm.png">
+          MaDDash</a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Section <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Customizing the Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_dashboards.html">Dashboards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="config_server.html" title="Previous Chapter: Configuration">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      <span class="hidden-sm">
+        Configuration
+      </span>
+    </a>
+  </li>
+  <li>
+    <a href="running.html" title="Next Chapter: Running and Managing MaDDash">
+      <span class="hidden-sm">
+        Running and Mana...
+      </span>
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+  </li>
+              
+            
+            <li class="divider-vertical"></li>
+            
+                <li><a href="genindex.html">Index</a></li>
+                <li><a href="https://www.es.net">ESnet</a></li>
+            
+            <li><a href="https://github.com/esnet/maddash"><img src="_static/esnet/icon-github.png" height="20" width="20"></a></li>
+            
+            
+            
+          </ul>
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Customizing the Web Interface</a><ul>
+<li><a class="reference internal" href="#web-server">Web Server</a></li>
+<li><a class="reference internal" href="#visual-customizations">Visual Customizations</a><ul>
+<li><a class="reference internal" href="#customizing-dashboard-colors">Customizing Dashboard Colors</a></li>
+<li><a class="reference internal" href="#adding-a-custom-list-of-external-links">Adding a Custom List of External Links</a></li>
+<li><a class="reference internal" href="#grids-properties">grids properties</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    <div class="col-md-9">
+      
+  <div class="section" id="customizing-the-web-interface">
+<h1>Customizing the Web Interface<a class="headerlink" href="#customizing-the-web-interface" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="web-server">
+<h2>Web Server<a class="headerlink" href="#web-server" title="Permalink to this headline">¶</a></h2>
+<p>The maddash-webui is a web application that runs under Apache. The web scripts and resources are installed in <em>/usr/lib/maddash/maddash-webui</em>. In addition, an Apache configuration file is installed at <em>/etc/httpd/conf.d/apache-maddash.conf</em> that sets-up the <em>/maddash-webui</em> URL. It also creates a reverse proxy for request to the URL <em>/maddash</em> to localhost port 8881. If you modify the server port for maddash, you will also need to update this configuration.</p>
+</div>
+<div class="section" id="visual-customizations">
+<span id="config-webui-vizcustom"></span><h2>Visual Customizations<a class="headerlink" href="#visual-customizations" title="Permalink to this headline">¶</a></h2>
+<p>The interface provides some customization options in the JSON config file <em>/etc/maddash/maddash-webui/config.json</em>. It provides the following options:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="5%" />
+<col width="4%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>title</td>
+<td>String</td>
+<td>Yes</td>
+<td>The title displayed at the very top of the web page</td>
+</tr>
+<tr class="row-odd"><td>defaultDashboard</td>
+<td>String</td>
+<td>Yes</td>
+<td>The name of the default dashboard to display when someone visits /maddash-webui. It MUST match the name of a dashboard defined in your maddash-server.yaml file.</td>
+</tr>
+<tr class="row-even"><td>colors</td>
+<td>JSON object</td>
+<td>No</td>
+<td>See <a class="reference internal" href="#config-webui-vizcustom-colors"><em>Customizing Dashboard Colors</em></a></td>
+</tr>
+<tr class="row-odd"><td>enableAdminUI</td>
+<td>Boolean</td>
+<td>No</td>
+<td>A &#8216;true&#8217; or &#8216;false&#8217; value indicating you want <em>Server Settings...</em> to appear in the <em>Settings</em> menu of the web interface. Note this does NOT disable direct access to the administrator UI, just removes it from the menu.</td>
+</tr>
+<tr class="row-even"><td>addNodeURL</td>
+<td>String</td>
+<td>No</td>
+<td>A URL where users may find more information about adding a node to your dashboard(s). If populated an extra item will be added to the menu bar displayed for users.</td>
+</tr>
+<tr class="row-odd"><td>externalLinksMenu</td>
+<td>JSON object</td>
+<td>No</td>
+<td>See <a class="reference internal" href="#config-webui-vizcustom-extlinks"><em>Adding a Custom List of External Links</em></a></td>
+</tr>
+<tr class="row-even"><td>grids</td>
+<td>JSON object</td>
+<td>No</td>
+<td>Custom layout features for individual grids. See <a class="reference internal" href="#grids-props"><em>grids properties</em></a> section.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="customizing-dashboard-colors">
+<span id="config-webui-vizcustom-colors"></span><h3>Customizing Dashboard Colors<a class="headerlink" href="#customizing-dashboard-colors" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Color customization was added in version 1.2 of MaDDash and not supported in previous versions.</p>
+</div>
+<p>You may customize the colors used by the dashboards for each check state using the <em>colors</em> option. This option takes the form of an object consisting of key/value pairs. The key is the state value and the value is the color to be displayed for that state value.  See <a class="reference internal" href="api_grids.html#status-codes"><em>Status-Codes</em></a> for a complete listing of status codes and their meanings.  The value is the color as a CSS color name (e.g. black) or hexadecimal (e.g. #000000). For example, the default value look like the following:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;colors&quot;: {
+    0: &quot;green&quot;,
+    1: &quot;yellow&quot;,
+    2: &quot;red&quot;,
+    3: &quot;orange&quot;,
+    4: &quot;gray&quot;,
+    5: &quot;black&quot;
+ }
+</pre></div>
+</div>
+<p>If you wanted to change everything in the OK state to be blue instead of green you could provide something like the following:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;colors&quot;: {
+    0: &quot;blue&quot;,
+    1: &quot;yellow&quot;,
+    2: &quot;red&quot;,
+    3: &quot;orange&quot;,
+    4: &quot;gray&quot;,
+    5: &quot;black&quot;
+ }
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It should be noted you must define states 0-5 every time you provide the colors. It is not enough to just define the subset you want to change. In addition, some checks may have custom states greater than 5. You may optionally include any states greater than five  in the configuration, but 0-5 are always required. See documentation for a specific check if you are unsure if it has any custom states.</p>
+</div>
+</div>
+<div class="section" id="adding-a-custom-list-of-external-links">
+<span id="config-webui-vizcustom-extlinks"></span><h3>Adding a Custom List of External Links<a class="headerlink" href="#adding-a-custom-list-of-external-links" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The External Links menu was added in version 1.2 of MaDDash and not supported in previous versions.</p>
+</div>
+<p>You may define a list of links that will appear in the top navigation menu of all MaDDash pages. You may add links to anything with a URL including items such as your organization&#8217;s homepage, links to other MaDDash instances or other monitoring tools. The block contains a list of objects with a label and a URL. The label is the text displayed in the drop-down menu and the URL is the hyperlink to be opened when that text is clicked. An example of the configuration block is below:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;externalLinksMenu&quot;: {
+    &quot;menuLinks&quot;: [
+        {
+           &quot;label&quot;: &quot;ESnet&quot;,
+            &quot;url&quot;: &quot;http://www.es.net&quot;
+        },
+        {
+           &quot;label&quot;: &quot;perfSONAR&quot;,
+           &quot;url&quot;: &quot;http://www.perfsonar.net&quot;
+        }
+    ]
+}
+</pre></div>
+</div>
+<p>By default the dopdown appear as <em>External Links&#8221; in the top menu. If you would like to change this you can customize the label with the **menuLabel*</em> property:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;externalLinksMenu&quot;: {
+    &quot;menuLabel&quot;: &quot;Other Resources&quot;,
+    &quot;menuLinks&quot;: [
+        {
+           &quot;label&quot;: &quot;ESnet&quot;,
+            &quot;url&quot;: &quot;http://www.es.net&quot;
+        },
+        {
+           &quot;label&quot;: &quot;perfSONAR&quot;,
+           &quot;url&quot;: &quot;http://www.perfsonar.net&quot;
+        }
+    ]
+}
+</pre></div>
+</div>
+<p>A table with a full listing of the properties detailed above can be seen below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="7%" />
+<col width="8%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>menuLabel</td>
+<td>String</td>
+<td>No</td>
+<td>Optional label that appears in menu bar for external links menu. Default is &#8220;External Links&#8221;</td>
+</tr>
+<tr class="row-odd"><td>menuLinks</td>
+<td>Array</td>
+<td>Yes</td>
+<td>Array of objects describing each link you want displayed in the menu.</td>
+</tr>
+<tr class="row-even"><td>menuLinks[n].label</td>
+<td>String</td>
+<td>Yes</td>
+<td>The text to appear in the menu for an individual link</td>
+</tr>
+<tr class="row-odd"><td>menuLinks[n].url</td>
+<td>String</td>
+<td>Yes</td>
+<td>The URL to open when a link is clicked</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="grids-properties">
+<span id="grids-props"></span><h3>grids properties<a class="headerlink" href="#grids-properties" title="Permalink to this headline">¶</a></h3>
+<p>grids are specified as follows (where <em>gridName</em> is the name of the grid you want to adjust):</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;grids&quot;:{
+        &quot;gridName&quot;:{
+            ...properties...
+        },
+    }
+</pre></div>
+</div>
+<p>The following properties are available:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="10%" />
+<col width="11%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>cellSize</td>
+<td>Integer</td>
+<td>No</td>
+<td>The height and width in pixels of one cell in the grid</td>
+</tr>
+<tr class="row-odd"><td>cellPadding</td>
+<td>Integer</td>
+<td>No</td>
+<td>The space between cells of the grid</td>
+</tr>
+<tr class="row-even"><td>textBlockSize</td>
+<td>Integer</td>
+<td>No</td>
+<td>The length of the text blocks at the top of the grid</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1">
+        <a href="http://www.es.net/"><img src="_static/esnet/logo-esnet.png" alt="[ESnet]"></a>
+      </div>
+      <div class="col-md-11">
+        <p class="pull-right">
+        <a href="#">Back to top</a>
+        
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/config_webui.txt"
+     rel="nofollow">Source</a>
+</div>
+        
+        </p>
+        <p>
+            &copy; Copyright 2014, Andy Lake.<br/>
+          Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>

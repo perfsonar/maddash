@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced: perfSONAR Auto-Configuration &mdash; MaDDash 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/esnet/esnet.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="MaDDash 1.1 documentation" href="index.html" />
+    <link rel="next" title="Release Notes" href="release_notes.html" />
+    <link rel="prev" title="Administrator Web Interface" href="admin_ui.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          <!-- LOGO: logo-esnet-ball-sm.png _static/logo-esnet-ball-sm.png --><img src="_static/logo-esnet-ball-sm.png">
+          MaDDash</a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Section <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_dashboards.html">Dashboards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="admin_ui.html" title="Previous Chapter: Administrator Web Interface">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      <span class="hidden-sm">
+        Administrator We...
+      </span>
+    </a>
+  </li>
+  <li>
+    <a href="release_notes.html" title="Next Chapter: Release Notes">
+      <span class="hidden-sm">
+        Release Notes
+      </span>
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+  </li>
+              
+            
+            <li class="divider-vertical"></li>
+            
+                <li><a href="genindex.html">Index</a></li>
+                <li><a href="https://www.es.net">ESnet</a></li>
+            
+            <li><a href="https://github.com/esnet/maddash"><img src="_static/esnet/icon-github.png" height="20" width="20"></a></li>
+            
+            
+            
+          </ul>
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Advanced: perfSONAR Auto-Configuration</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li><a class="reference internal" href="#installing-the-package">Installing the package</a></li>
+<li><a class="reference internal" href="#configuration-guide">Configuration Guide</a><ul>
+<li><a class="reference internal" href="#cron">Cron</a><ul>
+<li><a class="reference internal" href="#non-perfsonar-toolkit-nodes">Non-perfSONAR Toolkit Nodes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#gui-agent">GUI Agent</a><ul>
+<li><a class="reference internal" href="#general-properties">General Properties</a></li>
+<li><a class="reference internal" href="#mesh-properties">Mesh Properties</a></li>
+<li><a class="reference internal" href="#maddash-properties">MaDDash Properties</a></li>
+<li><a class="reference internal" href="#maddash-one-way-delay-check-properties">MaDDash One-Way Delay Check Properties</a></li>
+<li><a class="reference internal" href="#maddash-throughput-check-properties">MaDDash Throughput Check Properties</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#manual-maddash-configurations">Manual MaDDash Configurations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#log-files">Log Files</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    <div class="col-md-9">
+      
+  <div class="section" id="advanced-perfsonar-auto-configuration">
+<h1>Advanced: perfSONAR Auto-Configuration<a class="headerlink" href="#advanced-perfsonar-auto-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The perfSONAR project includes centralized configuration management software that allows tests to be defined and published in a JSON format. It also provides a tool that can read this JSON file and generate a maddash.yaml file. This has the advantage that you dashboards will automatically update as new tests are added and removed and reduce errors due to mismatches between MaDDash configurations and the configurations on your testers. This section details how to configure your MaDDash instance to consume a published JSON file(s) and generate the corresponding maddash.yaml file.</p>
+</div>
+<div class="section" id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Login to the command-line interface of your host running MaDDash via SSH or a local terminal</p>
+</li>
+<li><p class="first">Install the MeshConfig software:</p>
+<div class="highlight-python"><div class="highlight"><pre>yum install perfsonar-meshconfig-guiagent
+</pre></div>
+</div>
+</li>
+<li><p class="first">Update <em>/etc/perfsonar/meshconfig-guiagent.conf</em> with the URL of your JSON file:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;mesh&gt;
+    configuration_url             https://host.domain.edu/example.json
+&lt;/mesh&gt;
+...
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the following command to generate your maddash configuration for the first time:</p>
+<div class="highlight-python"><div class="highlight"><pre>/usr/lib/perfsonar/bin/generate_gui_configuration
+</pre></div>
+</div>
+</li>
+<li><p class="first">Go to your MaDDash web interface to verify the results. You should now have a MaDDash configuration that will update nightly based on the published mesh</p>
+</li>
+</ol>
+</div>
+<div class="section" id="installing-the-package">
+<h2>Installing the package<a class="headerlink" href="#installing-the-package" title="Permalink to this headline">¶</a></h2>
+<p>The configuration agent is made available in the same yum repository as maddash. To install it, run the following command:</p>
+<div class="highlight-python"><div class="highlight"><pre>yum install perfsonar-meshconfig-guiagent
+</pre></div>
+</div>
+</div>
+<div class="section" id="configuration-guide">
+<h2>Configuration Guide<a class="headerlink" href="#configuration-guide" title="Permalink to this headline">¶</a></h2>
+<p>This section provides detailed instructions on the configuration options available and details more advanced topics for those wishing to go beyond the default settings.</p>
+<div class="section" id="cron">
+<span id="config-cron"></span><h3>Cron<a class="headerlink" href="#cron" title="Permalink to this headline">¶</a></h3>
+<p>The perl-perfSONAR_PS-MeshConfig-GUIAgent package by default installs a cron job that generates a new config nightly. The cron file can be found at the following location:</p>
+<ul class="simple">
+<li>/etc/cron.d/cron-mesh_config_gui_agent</li>
+</ul>
+<p>You may edit this file if you wish to change the frequency.</p>
+<div class="section" id="non-perfsonar-toolkit-nodes">
+<h4>Non-perfSONAR Toolkit Nodes<a class="headerlink" href="#non-perfsonar-toolkit-nodes" title="Permalink to this headline">¶</a></h4>
+<p>If you are not running MaDDash on the perfSONAR Toolkit, you MUST do the following:</p>
+<ol class="arabic">
+<li><p class="first">Add a cron job to restart the services. You can do this by manually installing a provided cron script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">cp</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">perfsonar</span><span class="o">-</span><span class="n">meshconfig</span><span class="o">-</span><span class="n">agent</span><span class="o">/</span><span class="n">cron</span><span class="o">-</span><span class="n">restart_gui_services</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">cron</span><span class="o">-</span><span class="n">restart_gui_services</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">It is required that MaDDash get restarted after the configuration is regenerated. You should adjust the time such that it runs at least 10 minutes after the configuration script runs to give adequate time for the new config to be built. The provided script will work for the default cron schedule, but you may need to adjust the time if you change the schedule. perfSONAR Toolkit users do not need to install this cron job as it can interact with a special daemon on the toolkit to restart it as soon as the script finishes.</p>
+</li>
+<li><p class="first">Make sure <em>generate_gui_configuration</em> can write to your maddash.yaml file. The easiest way to do this is to change the line in <em>/etc/cron.d/cron-mesh_config_gui_agent</em> to run as <em>root</em> instead of the <em>perfsonar</em> user.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="gui-agent">
+<h3>GUI Agent<a class="headerlink" href="#gui-agent" title="Permalink to this headline">¶</a></h3>
+<p>The primary file where you can configure the GUI Agent is found at the following location:</p>
+<ul class="simple">
+<li>/etc/perfsonar/meshconfig-guiagent.conf</li>
+</ul>
+<p>This file allows you to define the meshes to use. It also allows you to set parameters for MaDDash such as how often checks run.</p>
+<div class="section" id="general-properties">
+<h4>General Properties<a class="headerlink" href="#general-properties" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="5%" />
+<col width="3%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>maddash_yaml</td>
+<td>String</td>
+<td>Yes</td>
+<td>The path on the local filesystem to maddash.yaml. In the general case it will be <em>/etc/maddash/maddash-server/maddash.yaml</em></td>
+</tr>
+<tr class="row-odd"><td>use_toolkit</td>
+<td>0 or 1</td>
+<td>Yes</td>
+<td>The &#8216;use_toolkit&#8217; option can be used to specify whether the agent should use the pS-Performance Toolkit&#8217;s configuration daemon to save the configuration, and restart the services. If the agent is not installed on a toolkit instance, you will make sure that the configuration files listed above are all writable by user &#8216;perfsonar&#8217;.</td>
+</tr>
+<tr class="row-even"><td>restart_services</td>
+<td>0 or 1</td>
+<td>Yes</td>
+<td>The &#8216;restart_services&#8217; option can be used to specify whether the services should be restarted after their configuration is updated. If the &#8216;use_toolkit&#8217; variable is set to 0, use the &#8216;cron-restart_gui_services&#8217; cron script included in /usr/share/doc/perfsonar-meshconfig-agent to restart the services. See <a class="reference internal" href="#config-cron"><em>Cron</em></a>.</td>
+</tr>
+<tr class="row-odd"><td>send_error_emails</td>
+<td>0 or 1</td>
+<td>No</td>
+<td>The &#8216;send_error_emails&#8217; option can be used to tell the agent to send an email via sendmail) when an error occurs. These emails will be sent to the applicable administrators (e.g. the local administrator(s), the mesh administrator(s), the site administrator(s), and/or the host administrator(s).</td>
+</tr>
+<tr class="row-even"><td>send_error_emails_to_mesh</td>
+<td>0 or 1</td>
+<td>No</td>
+<td>The &#8216;send_error_emails_to_mesh&#8217; option can be used to tell the agent to send an email to the mesh configuration administrators. If this is left unset, the only emails that will be sent out are to those listed in this configuration file.</td>
+</tr>
+<tr class="row-odd"><td>email_from_address</td>
+<td>String</td>
+<td>No</td>
+<td>The port on which the web server should listen for HTTPS connections</td>
+</tr>
+<tr class="row-even"><td>admin_email</td>
+<td>String</td>
+<td>No</td>
+<td>By default, the from address for the error emails will be <em>mesh_agent&#64;hostname</em>. However, if you&#8217;d like to specify a different email address, you can do so here. You may specify more than one.</td>
+</tr>
+<tr class="row-odd"><td>mesh</td>
+<td>Configuration Block</td>
+<td>Yes</td>
+<td>You must define one or more blocks that give information about the location of the mesh file. See <a class="reference internal" href="#mesh-props"><em>Mesh Properties</em></a></td>
+</tr>
+<tr class="row-even"><td>maddash_options</td>
+<td>Configuration Block</td>
+<td>Yes</td>
+<td>A block defining maddash specific options. See <a class="reference internal" href="#maddash-props"><em>MaDDash Properties</em></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mesh-properties">
+<span id="mesh-props"></span><h4>Mesh Properties<a class="headerlink" href="#mesh-properties" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="3%" />
+<col width="14%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>configuration_url</td>
+<td>String</td>
+<td>Yes</td>
+<td>Specifies the URL where the mesh config JSON file is published</td>
+</tr>
+<tr class="row-odd"><td>validate_certificate</td>
+<td>0 or 1</td>
+<td>No</td>
+<td>If using https in the <em>configuration_url</em>  verifies that the certificate is trusted and matches the hostname. If the &#8216;validate_certificate&#8217; option is set to 1, the &#8216;ca_certificate_file&#8217; option must be set.</td>
+</tr>
+<tr class="row-even"><td>ca_certificate_file</td>
+<td>String</td>
+<td>No (unless validate_certificate is 1)</td>
+<td>Specifies a .crt file to use as to validate https certificates</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="maddash-properties">
+<span id="maddash-props"></span><h4>MaDDash Properties<a class="headerlink" href="#maddash-properties" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="16%" />
+<col width="8%" />
+<col width="61%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>external_address</td>
+<td>String</td>
+<td>No</td>
+<td>The address to use in fields like graphUrl. Should be a public hostname or IP.</td>
+</tr>
+<tr class="row-odd"><td>perfsonarbuoy/owamp</td>
+<td>Configuration block</td>
+<td>Yes</td>
+<td>Contains options for one-way delay and loss checks. See <a class="reference internal" href="#owdelay-props"><em>MaDDash One-Way Delay Check Properties</em></a></td>
+</tr>
+<tr class="row-even"><td>perfsonarbuoy/bwctl</td>
+<td>Configuration block</td>
+<td>Yes</td>
+<td>Contains options for throughput checks. See <a class="reference internal" href="#throughput-props"><em>MaDDash Throughput Check Properties</em></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="maddash-one-way-delay-check-properties">
+<span id="owdelay-props"></span><h4>MaDDash One-Way Delay Check Properties<a class="headerlink" href="#maddash-one-way-delay-check-properties" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="5%" />
+<col width="6%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>check_command</td>
+<td>String</td>
+<td>Yes</td>
+<td>The path to the command to run when doing the check</td>
+</tr>
+<tr class="row-odd"><td>check_interval</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>The time in between checks in seconds</td>
+</tr>
+<tr class="row-even"><td>check_time_range</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>The amount of time range of data to analyse in seconds</td>
+</tr>
+<tr class="row-odd"><td>acceptable_loss_rate</td>
+<td>Float</td>
+<td>Yes</td>
+<td>The amount of acceptable loss as a decimal indicating the percentage (e.g. 0.01 for 1%)</td>
+</tr>
+<tr class="row-even"><td>critical_loss_rate</td>
+<td>Float</td>
+<td>Yes</td>
+<td>The loss threshold at which the dashboard will go critical/red for the check as a decimal indicating the percentage (e.g. 0.01 for 1%)</td>
+</tr>
+<tr class="row-odd"><td>grid_name</td>
+<td>String</td>
+<td>No</td>
+<td>You may specify this option more than once. The name of the grid(s) for which these check parameters apply.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="maddash-throughput-check-properties">
+<span id="throughput-props"></span><h4>MaDDash Throughput Check Properties<a class="headerlink" href="#maddash-throughput-check-properties" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="6%" />
+<col width="7%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>check_command</td>
+<td>String</td>
+<td>Yes</td>
+<td>The path to the command to run when doing the check</td>
+</tr>
+<tr class="row-odd"><td>check_interval</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>The time in between checks in seconds</td>
+</tr>
+<tr class="row-even"><td>check_time_range</td>
+<td>Integer</td>
+<td>Yes</td>
+<td>The amount of time range of data to analyse in seconds</td>
+</tr>
+<tr class="row-odd"><td>acceptable_throughput</td>
+<td>Float</td>
+<td>Yes</td>
+<td>The acceptable throughput in Gbps</td>
+</tr>
+<tr class="row-even"><td>critical_throughput</td>
+<td>Float</td>
+<td>Yes</td>
+<td>The threshold at which throughput should alarm critical/red in Mbps</td>
+</tr>
+<tr class="row-odd"><td>grid_name</td>
+<td>String</td>
+<td>No</td>
+<td>You may specify this option more than once. The name of the grid(s) for which these check parameters apply.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="manual-maddash-configurations">
+<h3>Manual MaDDash Configurations<a class="headerlink" href="#manual-maddash-configurations" title="Permalink to this headline">¶</a></h3>
+<p>It should be noted all existing groups, grids, checks, dashboards and general properties that are defined outside the mesh will be preserved. this allows you to combine manual configurations with those automatically generated. This can also be useful for adjusting how automatically generated values are displayed. For example, the automatically generated file only creates one dashboard with all the grids. You can manually create more dashboards and reference both manual or automatically generated grids if you wish to have a richer display.</p>
+</div>
+</div>
+<div class="section" id="log-files">
+<h2>Log Files<a class="headerlink" href="#log-files" title="Permalink to this headline">¶</a></h2>
+<p>Each run of the <em>generate_gui_configuration</em> script logs to the following file:</p>
+<ul class="simple">
+<li>/var/log/perfsonar/mesh_configuration_gui_agent.log</li>
+</ul>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1">
+        <a href="http://www.es.net/"><img src="_static/esnet/logo-esnet.png" alt="[ESnet]"></a>
+      </div>
+      <div class="col-md-11">
+        <p class="pull-right">
+        <a href="#">Back to top</a>
+        
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/mesh_config.txt"
+     rel="nofollow">Source</a>
+</div>
+        
+        </p>
+        <p>
+            &copy; Copyright 2014, Andy Lake.<br/>
+          Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>
