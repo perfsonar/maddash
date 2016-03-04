@@ -1,5 +1,5 @@
 %define install_base /usr/lib/maddash
-%define relnum 0.2.rc1 
+%define relnum 1 
 
 Name:           maddash
 Version:        1.3
