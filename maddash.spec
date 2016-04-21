@@ -26,10 +26,10 @@ MaDDash is a framework for scheduling service checks and displaying results in a
 rm -rf %{buildroot}
 
 %build
-mkdir -p %{buildroot}/%{install_base}/
-echo "%{version}-%{release}" >  %{buildroot}/%{install_base}/VERSION
 
 %install
+mkdir -p %{buildroot}/%{install_base}/
+echo "%{version}-%{release}" >  %{buildroot}/%{install_base}/VERSION
 
 %post
 
