@@ -3,7 +3,7 @@
 
 Name:           maddash
 Version:        1.3
-Release:        %{relnum}
+Release:        %{relnum}%{?dist}
 Summary:        MaDDash  
 License:        distributable, see LICENSE
 Group:          Development/Libraries
