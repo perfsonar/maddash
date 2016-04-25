@@ -9,7 +9,7 @@
 
 Name:           %{package_name}
 Version:        1.3
-Release:        %{relnum}
+Release:        %{relnum}%{?dist}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
 Group:          Development/Libraries
