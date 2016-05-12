@@ -16,12 +16,18 @@ Group:          Development/Libraries
 URL:            http://code.google.com/p/esnet-perfsonar
 Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  java-1.6.0-openjdk
-BuildRequires:  java-1.6.0-openjdk-devel
+BuildRequires:  java-1.7.0-openjdk
+BuildRequires:  java-1.7.0-openjdk-devel
+BuildRequires:  maven
 BuildRequires:  sed 
 BuildArch:      noarch
-Requires:       java-1.6.0-openjdk
+Requires:       java-1.7.0-openjdk
+%if 0%{?el7}
+BuildRequires: systemd
+%{?systemd_requires: %systemd_requires}
+%else
 Requires:       chkconfig
+%endif
 
 %description
 MaDDash is a framework for scheduling service checks and displaying results in a grid. 
@@ -60,6 +66,7 @@ cp %{package_name}/target/*.jar %{buildroot}/%{install_base}/target/
 install -m 755 %{package_name}/bin/* %{buildroot}/%{install_base}/bin/
 install -m 744 %{package_name}/sql/* %{buildroot}/%{install_base}/sql/
 install -m 755 %{package_name}/scripts/%{package_name} %{buildroot}/etc/init.d/%{package_name}
+install -m 644 %{package_name}/scripts/%{package_name}.service %{buildroot}%{_unitdir}/%{package_name}.service
 
 # Copy default config file
 cp %{package_name}/etc/maddash.yaml %{buildroot}/%{config_base}/maddash.yaml
@@ -92,6 +99,9 @@ ln -s %{install_base}/target/%{package_name}-%{version}.jar %{install_base}/targ
 chown maddash:maddash %{install_base}/target/%{package_name}.jar
 
 #Configure service to start when machine boots
+%if 0%{?el7}
+%systemd_post %{package_name}.service
+%else
 /sbin/chkconfig --add %{package_name}
 /sbin/chkconfig %{package_name} on
 
@@ -112,8 +122,7 @@ if [ "$1" = "2" ]; then
     #restart service on update
     /sbin/service %{package_name} restart
 fi
-
-
+%endif
 
 %files
 %defattr(-,maddash,maddash,-)
@@ -121,12 +130,25 @@ fi
 %{install_base}/target/*
 %{install_base}/bin/*
 %{install_base}/sql/*
+%if 0%{?el7}
+%{_unitdir}/%{package_name}.service
+%else
 /etc/init.d/%{package_name}
+%endif
 
 %preun
 if [ $1 -eq 0 ]; then
+%if 0%{?el7}
+%systemd_preun owamp-server.service
+%else
     /sbin/chkconfig --del %{package_name}
     /sbin/service %{package_name} stop
+%endif
     unlink %{install_base}/target/%{package_name}.one-jar.jar
     unlink %{install_base}/target/%{package_name}.jar
 fi
+
+%postun
+%if 0%{?el7}
+%systemd_postun_with_restart owamp-server.service
+%endif
