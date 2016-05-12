@@ -25,8 +25,8 @@
   <!-- puts all code & libraries in one jar -->
   <pluginRepositories>
       <pluginRepository>
-          <id>onejar-maven-plugin.googlecode.com</id>
-          <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+          <id>central.maven.org</id>
+          <url>http://central.maven.org/maven2/com/jolira/onejar-maven-plugin</url>
       </pluginRepository>
   </pluginRepositories>
     
@@ -123,9 +123,9 @@
         <plugins>
             <!-- puts all code & libraries in one jar -->
             <plugin>
-                <groupId>org.dstovall</groupId>
+                <groupId>com.jolira</groupId>
                 <artifactId>onejar-maven-plugin</artifactId>
-                <version>1.4.1</version>
+                <version>1.4.4</version>
                 <executions>
                     <execution>
                         <configuration>
