@@ -59,14 +59,21 @@ mkdir -p %{buildroot}/%{install_base}/target
 mkdir -p %{buildroot}/%{install_base}/bin
 mkdir -p %{buildroot}/%{install_base}/sql
 mkdir -p %{buildroot}/%{config_base}
+%if 0%{?el7}
+mkdir -p %{buildroot}%{_unitdir}
+%else
 mkdir -p %{buildroot}/etc/init.d
+%endif
 
 #Copy jar files and scripts
 cp %{package_name}/target/*.jar %{buildroot}/%{install_base}/target/
 install -m 755 %{package_name}/bin/* %{buildroot}/%{install_base}/bin/
 install -m 744 %{package_name}/sql/* %{buildroot}/%{install_base}/sql/
-install -m 755 %{package_name}/scripts/%{package_name} %{buildroot}/etc/init.d/%{package_name}
+%if 0%{?el7}
 install -m 644 %{package_name}/scripts/%{package_name}.service %{buildroot}%{_unitdir}/%{package_name}.service
+%else
+install -m 755 %{package_name}/scripts/%{package_name} %{buildroot}/etc/init.d/%{package_name}
+%endif
 
 # Copy default config file
 cp %{package_name}/etc/maddash.yaml %{buildroot}/%{config_base}/maddash.yaml
