@@ -82,7 +82,7 @@ if [ ! -e %{install_base}/etc/config.json ]; then
 fi
 
 #restart apache so config changes are applied
-/etc/init.d/httpd restart
+service httpd restart
 
 %files
 %defattr(-,maddash,maddash,-)
