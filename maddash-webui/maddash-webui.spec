@@ -13,6 +13,8 @@ URL:            http://code.google.com/p/esnet-perfsonar
 Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
+BuildRequires:  wget
+BuildRequires:  java-1.7.0-openjdk
 Requires:       perl
 Requires:       httpd 
 Requires:       mod_ssl
