@@ -21,7 +21,7 @@
           <url>file:///${basedir}/../common-libs/repo</url>
       </repository>
   </repositories>
-   
+
   <!-- puts all code & libraries in one jar -->
   <pluginRepositories>
       <pluginRepository>
@@ -29,7 +29,7 @@
           <url>http://central.maven.org/maven2/com/jolira/onejar-maven-plugin</url>
       </pluginRepository>
   </pluginRepositories>
-    
+
   <dependencies>
     <!-- netlogger -->
     <dependency>
