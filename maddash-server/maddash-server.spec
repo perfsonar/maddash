@@ -146,7 +146,7 @@ fi
 %preun
 if [ $1 -eq 0 ]; then
 %if 0%{?el7}
-%systemd_preun owamp-server.service
+%systemd_preun %{package_name}.service
 %else
     /sbin/chkconfig --del %{package_name}
     /sbin/service %{package_name} stop
@@ -157,5 +157,5 @@ fi
 
 %postun
 %if 0%{?el7}
-%systemd_postun_with_restart owamp-server.service
+%systemd_postun_with_restart %{package_name}.service
 %endif
