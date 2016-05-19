@@ -1,0 +1,17 @@
+[Unit]
+Description=MaDDash Scheduler and REST Server
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/maddash/maddash-server.pid
+ExecStartPre=/bin/mkdir -p /var/run/maddash
+ExecStartPre=/bin/chown maddash:maddash /var/run/maddash
+ExecStartPre=/bin/chown -R maddash:maddash /var/log/maddash
+User=maddash
+PermissionsStartOnly=true
+ExecStart=/bin/sh -c '/usr/lib/maddash/maddash-server/bin/startServer.sh /var/run/maddash/maddash-server.pid /usr/lib/maddash/maddash-server/target/maddash-server.one-jar.jar -c /etc/maddash/maddash-server/maddash.yaml -l /etc/maddash/maddash-server/log4j.properties >/var/log/maddash/maddash-server.out 2>&1'
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

@@ -5,7 +5,7 @@
 
 Name:           %{package_name}
 Version:        1.3
-Release:        %{relnum}
+Release:        %{relnum}%{?dist}
 Summary:        MaDDash Web Interface 
 License:        distributable, see LICENSE
 Group:          Development/Libraries
@@ -13,6 +13,8 @@ URL:            http://code.google.com/p/esnet-perfsonar
 Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
+BuildRequires:  wget
+BuildRequires:  java-1.7.0-openjdk
 Requires:       perl
 Requires:       httpd 
 Requires:       mod_ssl
@@ -82,7 +84,7 @@ if [ ! -e %{install_base}/etc/config.json ]; then
 fi
 
 #restart apache so config changes are applied
-/etc/init.d/httpd restart
+service httpd restart
 
 %files
 %defattr(-,maddash,maddash,-)
