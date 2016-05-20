@@ -108,8 +108,8 @@ public class CheckSchedulerJob extends Thread{
                 dataMap.put("retryAttempts", checksToRun.getInt(9));
                 dataMap.put("timeout", checksToRun.getInt(10));
                 dataMap.put("statusMessage", checksToRun.getString(11));
-                dataMap.put("rowVars", DimensionUtil.getParams(checksToRun.getString(3), conn));
-                dataMap.put("colVars", DimensionUtil.getParams(checksToRun.getString(4), conn));
+                dataMap.put("rowVars", DimensionUtil.getParams(checksToRun.getString(3), checksToRun.getString(4), conn));
+                dataMap.put("colVars", DimensionUtil.getParams(checksToRun.getString(4), checksToRun.getString(3),conn));
                 jobDetail.setJobDataMap(dataMap);
                 globals.updateScheduledChecks(checksToRun.getInt(1), true);
                 globals.getScheduler().scheduleJob(jobDetail, trigger);

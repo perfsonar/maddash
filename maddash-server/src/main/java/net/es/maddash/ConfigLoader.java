@@ -37,7 +37,7 @@ public class ConfigLoader {
     static final public String PROP_DIMENSIONS = "groupMembers";
     static final public String PROP_DIMENSIONS_ID = "id";
     static final public String PROP_DIMENSIONS_LABEL = "label";
-
+    static final public String PROP_DIMENSION_MAP = "map";
     static final public String PROP_GROUPS = "groups";
 
     static final public String PROP_CHECKS = "checks";
@@ -113,6 +113,7 @@ public class ConfigLoader {
                     }
                     for(Object dimensionParamObj : dimension.keySet()){
                         String dimensionParam = dimensionParamObj+"";
+                        String dimensionValue = "";
                         if(dimensionParam.equals(PROP_DIMENSIONS_ID)){
                             continue;
                         }
@@ -120,9 +121,16 @@ public class ConfigLoader {
                         if(dimensionParam.equals(PROP_DIMENSIONS_LABEL)){
                             dimensionLabelMap.put(dimension.get(PROP_DIMENSIONS_ID)+"", dimension.get(dimensionParam)+"");
                         }
+                        
+                        if(dimensionParam.equals(PROP_DIMENSION_MAP)){
+                            dimensionValue = JSONObject.fromObject(dimension.get(dimensionParam)).toString();
+                        }else{
+                            dimensionValue = dimension.get(dimensionParam)+"";
+                        }
+                        
                         insertDimension.setString(1, dimension.get(PROP_DIMENSIONS_ID)+"");
                         insertDimension.setString(2, dimensionParam);
-                        insertDimension.setString(3, dimension.get(dimensionParam)+"");
+                        insertDimension.setString(3, dimensionValue);
                         insertDimension.executeUpdate();
                     }
                     i++;
