@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import net.es.maddash.checks.Check;
 import net.es.maddash.checks.CheckConstants;
+import net.es.maddash.utils.DimensionUtil;
 import net.sf.json.JSONObject;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -96,6 +97,7 @@ public class ConfigLoader {
         List<Map> gridList = (List<Map>) config.get(PROP_GRIDS);
         HashMap<String, Class> checkTypeClassMap = new HashMap<String, Class>();
         HashMap<String,String> dimensionLabelMap = new HashMap<String,String>();
+        HashMap<String,JSONObject> dimensionMap = new HashMap<String,JSONObject>();
         
         Connection conn = null;
         try{
@@ -111,6 +113,7 @@ public class ConfigLoader {
                         throw new RuntimeException("Found dimension at position " + i + 
                                 " that is missing 'id' attribute");
                     }
+                    dimensionMap.put(dimension.get(PROP_DIMENSIONS_ID)+"", new JSONObject());
                     for(Object dimensionParamObj : dimension.keySet()){
                         String dimensionParam = dimensionParamObj+"";
                         String dimensionValue = "";
@@ -123,9 +126,12 @@ public class ConfigLoader {
                         }
                         
                         if(dimensionParam.equals(PROP_DIMENSION_MAP)){
-                            dimensionValue = JSONObject.fromObject(dimension.get(dimensionParam)).toString();
+                            JSONObject jsonMap = JSONObject.fromObject(dimension.get(dimensionParam));
+                            dimensionValue = jsonMap.toString();
+                            dimensionMap.get(dimension.get(PROP_DIMENSIONS_ID)+"").put(dimensionParam, jsonMap);
                         }else{
                             dimensionValue = dimension.get(dimensionParam)+"";
+                            dimensionMap.get(dimension.get(PROP_DIMENSIONS_ID)+"").put(dimensionParam, dimensionValue);
                         }
                         
                         insertDimension.setString(1, dimension.get(PROP_DIMENSIONS_ID)+"");
@@ -339,7 +345,7 @@ public class ConfigLoader {
                             ResultSet selResult = selCheckStmt.executeQuery();
                             if(selResult.next()){
                                 log.debug("Updated check " + checkName);
-                                updateCheckStmt.setString(1, formatCheckDescription(checkDescrName, row, col));
+                                updateCheckStmt.setString(1, formatCheckDescription(checkDescrName, row, col, dimensionMap));
                                 updateCheckStmt.setInt(2, ri);
                                 updateCheckStmt.setInt(3, colOrderMap.get(col));
                                 updateCheckStmt.setInt(4, selResult.getInt(1));
@@ -353,7 +359,7 @@ public class ConfigLoader {
                                 insertCheckStmt.setString(5, checkNiceName);
                                 insertCheckStmt.setInt(6, ri);
                                 insertCheckStmt.setInt(7, colOrderMap.get(col));
-                                insertCheckStmt.setString(8, formatCheckDescription(checkDescrName, row, col));
+                                insertCheckStmt.setString(8, formatCheckDescription(checkDescrName, row, col, dimensionMap));
                                 insertCheckStmt.executeUpdate();
                             }
 
@@ -408,8 +414,27 @@ public class ConfigLoader {
         }
         return statusLabelMap.get(label)+"";
     }
-
-    private static String formatCheckDescription(String description, String rowName, String colName) {
+    
+    private static String replaceDimensionProps(String str, String type, String key1, String key2, HashMap<String, JSONObject> dimensionMap){
+        if(!dimensionMap.containsKey(key1)){
+            return str;
+        }
+        for(Object dimMapParam : dimensionMap.get(key1).keySet()){
+            if(dimMapParam.equals(PROP_DIMENSION_MAP)){
+                JSONObject rowColMap = dimensionMap.get(key1).getJSONObject(dimMapParam + "");
+                JSONObject colMap = DimensionUtil.getJsonProp(rowColMap, key2);
+                for(Object colProp : colMap.keySet()){
+                    str = str.replaceAll("%" + type + ".map."+colProp, colMap.getString(colProp+""));
+                }
+            }else{
+                str = str.replaceAll("%" + type + dimMapParam, dimensionMap.get(key1).getString(dimMapParam+""));
+            }
+        }
+        return str;
+    }
+    private static String formatCheckDescription(String description, String rowName, String colName, HashMap<String, JSONObject> dimensionMap) {
+        description = ConfigLoader.replaceDimensionProps(description, "row", rowName, colName, dimensionMap);
+        description = ConfigLoader.replaceDimensionProps(description, "col", colName, rowName, dimensionMap);
         description = description.replaceAll("%row", rowName);
         description = description.replaceAll("%col", colName);
         return description;
