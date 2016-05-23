@@ -339,7 +339,8 @@ var MaDDashCheckTitle = function(parent){
 			console.log("data is null");
 			return;
 		}
-		this.parent.appendChild(maddashCreateSpan("maddashCheckTitle", data.rowName + " to " + data.colName + " (" + data.checkName + ")"));
+		this.parent.appendChild(maddashCreateDiv("maddashCheckTitle", data.rowName + " to " + data.colName + " (" + data.checkName + ")"));
+		this.parent.appendChild(maddashCreateDiv("maddashCheckSubtitle", data.description));
 	}
 }
 
