@@ -4,7 +4,7 @@
 %define relnum 1
 
 Name:           %{package_name}
-Version:        1.3
+Version:        1.4
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash Web Interface 
 License:        distributable, see LICENSE
