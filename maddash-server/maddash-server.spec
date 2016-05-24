@@ -18,14 +18,18 @@ Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  java-1.7.0-openjdk
 BuildRequires:  java-1.7.0-openjdk-devel
-BuildRequires:  maven
 BuildRequires:  sed 
 BuildArch:      noarch
 Requires:       java-1.7.0-openjdk
 %if 0%{?el7}
 BuildRequires: systemd
+BuildRequires:  maven
 %{?systemd_requires: %systemd_requires}
 %else
+#apache-maven is not in standard centos repos
+#can be acquired from https://repos.fedorapeople.org/repos/dchen/apache-maven/
+#install in mock with mock -r $target --install <RPM_URL>
+BuildRequires:  apache-maven
 Requires:       chkconfig
 %endif
 
