@@ -63,12 +63,23 @@ groups:
 #         is useful in cases where you want  a value such as an IP address or port 
 #         number passed to a check but on the GUI you want a human-readable value displayed
 #     - Set the "pstoolkiturl" to the URL of a perfSONAR Toolkit web page
+#     - Map to create special mapped template variables dependent on the opposing row or column
+#     - Any custom value accessible in template variables %row.<prop> and %col.<prop> respectively
 groupMembers:
     - id: "chic-pt1.es.net"
       label: "Chicago Tester" 
     - id: "nettest.lbl.gov"
       label: "LBL Toolkit"
       pstoolkiturl: "http://nettest.lbl.gov/toolkit" 
+      # The special map property can be used to create template variables that change depending on opposing row or column
+      # For example we could use %row.map.ip in a command to tell nettest.lbl.gov to use ip 10.0.1.1 when every the column is 
+      # albq-pt1.es.net and 131.243.24.11 for anything else (default is a special key). The parameter name is freeform and "ip"
+      # is just an example
+      #map:
+      #"albq-pt1.es.net":
+      #      ip: "10.0.1.1"
+      #  "default":
+      #      ip: "131.243.24.11"
 ##
 
 ##
@@ -83,6 +94,8 @@ checks:
         name: "Loss"
         #A description of the check
         description: "Loss from %row to %col (according to %row MA)"
+        #Example using mapped variables
+        #description: "Loss from %row.map.ip to %col.map.ip (according to %row MA)"
         #The type of check. Other valid values are net.es.maddash.checks.NagiosCheck and
         # net.es.maddash.checks.RandomCheck.
         type: "net.es.maddash.checks.PSNagiosCheck"
