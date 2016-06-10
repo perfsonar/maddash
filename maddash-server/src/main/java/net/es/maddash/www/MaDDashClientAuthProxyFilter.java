@@ -62,16 +62,16 @@ public class MaDDashClientAuthProxyFilter extends BaseFilter{
                 return ctx.getInvokeAction();
             }
             if(httpContent.getHttpHeader().containsHeader(SSL_CLIENT_S_DN)){
-                httpContent.getHttpHeader().setHeader(SSL_CLIENT_S_DN, null);
+                httpContent.getHttpHeader().setHeader(SSL_CLIENT_S_DN, (String)null);
             }
             if(httpContent.getHttpHeader().containsHeader(SSL_CLIENT_I_DN)){
-                httpContent.getHttpHeader().setHeader(SSL_CLIENT_I_DN, null);
+                httpContent.getHttpHeader().setHeader(SSL_CLIENT_I_DN, (String)null);
             }
             if(httpContent.getHttpHeader().containsHeader(SSL_CLIENT_VERIFY)){
-                httpContent.getHttpHeader().setHeader(SSL_CLIENT_VERIFY, null);
+                httpContent.getHttpHeader().setHeader(SSL_CLIENT_VERIFY, (String)null);
             }
             if(httpContent.getHttpHeader().containsHeader(X_FORWARDED_FOR)){
-                httpContent.getHttpHeader().setHeader(X_FORWARDED_FOR, null);
+                httpContent.getHttpHeader().setHeader(X_FORWARDED_FOR, (String)null);
             }
             
             /**

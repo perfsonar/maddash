@@ -21,21 +21,9 @@ import net.es.maddash.jobs.CheckSchedulerJob;
 import net.es.maddash.jobs.CleanDBJob;
 import net.es.maddash.jobs.EventCalendarJob;
 import net.es.maddash.utils.URIUtil;
+import net.es.maddash.www.MaDDashApplication;
 import net.es.maddash.www.WebServer;
-import net.es.maddash.www.rest.AdminEventResource;
-import net.es.maddash.www.rest.AdminEventsResource;
-import net.es.maddash.www.rest.AdminScheduleResource;
-import net.es.maddash.www.rest.CellResource;
-import net.es.maddash.www.rest.CheckResource;
-import net.es.maddash.www.rest.ChecksResource;
-import net.es.maddash.www.rest.ColumnsResource;
-import net.es.maddash.www.rest.DashboardsResource;
-import net.es.maddash.www.rest.EventResource;
-import net.es.maddash.www.rest.EventsResource;
-import net.es.maddash.www.rest.GridResource;
 import net.es.maddash.www.rest.GridsResource;
-import net.es.maddash.www.rest.RowResource;
-import net.es.maddash.www.rest.RowsResource;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -49,9 +37,6 @@ import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.sun.jersey.api.core.ClassNamesResourceConfig;
-import com.sun.jersey.api.core.ResourceConfig;
-
 /**
  * Singleton with global parameters. Initializes scheduler, database and various other settings 
  * 
@@ -278,26 +263,9 @@ public class MaDDashGlobals {
         String resourceProto = null;
         int resourcePort = 0;
         String resourceHost = serverHost; 
-        String[] services = {
-                DashboardsResource.class.getName(),
-                GridsResource.class.getName(),
-                GridResource.class.getName(),
-                RowResource.class.getName(),
-                RowsResource.class.getName(),
-                CellResource.class.getName(),
-                CheckResource.class.getName(),
-                ChecksResource.class.getName(),
-                ColumnsResource.class.getName(),
-                AdminScheduleResource.class.getName(),
-                AdminEventsResource.class.getName(),
-                AdminEventResource.class.getName(),
-                EventsResource.class.getName(),
-                EventResource.class.getName()
-        };
-        ResourceConfig rc = new ClassNamesResourceConfig(services);
-
+        
         //create server
-        this.webServer = new WebServer(serverHost,rc);
+        this.webServer = new WebServer(serverHost, new MaDDashApplication());
 
         //configure HTTP
         if(config.containsKey(PROP_HTTP) && config.get(PROP_HTTP) != null){

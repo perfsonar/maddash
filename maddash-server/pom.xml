@@ -68,14 +68,24 @@
     
     <!-- Jersey -->
     <dependency>
-        <groupId>com.sun.jersey</groupId>
+        <groupId>org.glassfish.jersey.core</groupId>
         <artifactId>jersey-server</artifactId>
-        <version>1.12</version>
+        <version>2.23</version>
     </dependency>
     <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-grizzly2-servlet</artifactId>
-        <version>1.12</version>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>2.23</version>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-grizzly2-servlet</artifactId>
+        <version>2.23</version>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-servlet</artifactId>
+        <version>2.23</version>
     </dependency>
     
     <!-- JSON -->
@@ -117,8 +127,41 @@
         <artifactId>commons-exec</artifactId>
         <version>1.1</version>
     </dependency>
+    
+    <!-- madalert dependencies -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.json</artifactId>
+        <version>1.0.4</version>
+    </dependency>
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>2.0.31-beta</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>glassfish</artifactId>
+        <version>1.13</version>
+        <type>pom</type>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>javax</groupId>
+        <artifactId>javaee-web-api</artifactId>
+        <version>7.0</version>
+        <scope>provided</scope>
+    </dependency>
+    
   </dependencies>
-  
+
   <build>  
         <plugins>
             <!-- puts all code & libraries in one jar -->
@@ -165,12 +208,12 @@
             </plugin>
 
 
-            <!-- specifically use java 1.5 to compile -->
+            <!-- specifically use java 1.8 to compile -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             
