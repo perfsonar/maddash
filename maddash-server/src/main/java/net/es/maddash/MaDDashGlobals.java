@@ -36,6 +36,10 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
+import static org.quartz.TriggerBuilder.*;
+import static org.quartz.JobBuilder.*;
+import static org.quartz.CronScheduleBuilder.*;
+
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  * Singleton with global parameters. Initializes scheduler, database and various other settings 
@@ -237,8 +241,13 @@ public class MaDDashGlobals {
                 this.scheduler = schedFactory.getScheduler();
                 this.scheduler.start();
                 if(this.dbDataMaxAge >= 0L){
-                    CronTrigger cleanCronTrigger = new CronTrigger("CleanTrigger", "CLEAN", dbCleanSched);
-                    JobDetail cleanJobDetail = new JobDetail("CleanScheduler", "CLEAN", CleanDBJob.class);
+                    CronTrigger cleanCronTrigger = newTrigger()
+                            .withIdentity("CleanTrigger", "CLEAN")
+                            .withSchedule(cronSchedule(dbCleanSched))
+                            .build();
+                    JobDetail cleanJobDetail = newJob(CleanDBJob.class)
+                            .withIdentity("CleanScheduler", "CLEAN")
+                            .build();
                     this.scheduler.scheduleJob(cleanJobDetail, cleanCronTrigger);
                 }
             }catch(Exception e){
