@@ -256,6 +256,8 @@ grids:
       #  afterSelf - Run a check to every host that's defined after the current row in the 'rows' group
       #  beforeSelf - Run a check to every host that's defined before the current row in the 'rows' group
       columnAlgorithm: "all" 
+      # Reference a report (see the further down in this file) to apply to this grid
+      report: "loss_mesh_report"
       # 'statusLabels' is where you provide a human-readable description of what each 
       #  threshold means. These are the values that will be displayed in the legend. If a 
       #  threshold is not defined below then that will not be displayed in the legend. 
@@ -283,6 +285,7 @@ grids:
       colOrder: "alphabetical"
       excludeSelf: 1
       columnAlgorithm: "all" 
+      report: "throughput_mesh_report"
       statusLabels:
             ok: "Throughput >= 100Mbps"
             warning: "Throughput >= 10Mbps"
@@ -297,7 +300,7 @@ grids:
                      
                     
 
-#'dashboard' provide a way to group grids together. Grids grouped in this manner will
+#'dashboards' provide a way to group grids together. Grids grouped in this manner will
 # be displayed on the same page together. This is a list, so you can define as many 
 # dashboards as you want.
 dashboards:
@@ -309,4 +312,570 @@ dashboards:
       grids:
         - name: "OWAMP"
         - name: "BWCTL"
-    
+
+#'reports' provide a way to define patterns that can be used to alert on certain types of problems
+# Since every dashboard is different, reports provide a flexible way to define patterns
+defaultReport: "grid_up_down_report"
+reports:
+    -
+        id: "grid_up_down_report"
+        rule:
+            type: matchFirst
+            rules:
+                - 
+                    type: rule
+                    selector:
+                        type: grid
+                    match:
+                        type: status
+                        status: 3
+                    problem:
+                        severity: 3
+                        category: CONFIGURATION
+                        message: "Grid is down" 
+                        solutions:
+                            - "Check your maddash configuration"
+                - 
+                    type: rule
+                    selector:
+                        type: grid
+                    match:
+                        type: status
+                        status: 0
+                    problem:
+                        severity: 0
+                        category: CONFIGURATION
+                        message: "No issues found"
+    -
+        id: "throughput_mesh_report"
+        rule:
+            type: matchFirst
+            rules:
+                - 
+                    type: rule
+                    selector:
+                        type: grid
+                    match:
+                        type: status
+                        status: 3
+                    problem:
+                        severity: 3
+                        category: CONFIGURATION
+                        message: "Grid is down" 
+                        solutions:
+                            - "If you just configured this grid in the mesh, you may just need to wait as it takes several hours for throughput data to populate (depending on the interval between tests)"
+                            - "Verify maddash is configured properly. Look in the files under /var/log/maddash/ for any errors. Things to look for are incorrect paths to checks or connection errors."
+                            - "Verify that /usr/lib/perfsonar/bin/generate_gui_configuration has run recently and you are looking at an accurate test mesh"                            
+                            - "Verify that your measurement archive(s) are running"
+                            - "Verify no firewall is blocking maddash from reaching your measurement archive(s)"
+                            - "Verify your hosts are downloading the mesh configuration file and that there are tests defined in /etc/perfsonar/regulartesting.conf"
+                            - "Verify that regular testing is running (/etc/init.d/perfsonar-regulartesting status)"
+                            - "Verify your hosts are able to reach their configured measurement archive and that there are no errors in /var/log/perfsonar/regulartesting.log"                            
+                - 
+                    type: rule
+                    selector:
+                        type: grid
+                    match:
+                        type: status
+                        status: 0
+                    problem:
+                        severity: 0
+                        category: CONFIGURATION
+                        message: "No issues found"
+                - 
+                    type: forEachSite
+                    rule:
+                        type: matchFirst
+                        rules:
+                            - 
+                                type: rule
+                                selector:
+                                    type: site
+                                match:
+                                    type: status
+                                    status: 3                        
+                                problem:
+                                    severity: 3
+                                    category: CONFIGURATION
+                                    message: "Site is down"
+                                    solutions:
+                                        - "Verify the host is up"
+                                        - "If recently added to the mesh, verify the mesh config file has been downloaded by the end-hosts since the update. It may also take several hours for the first BWCTL test to run on this host."
+                                        - "If recently removed from the mesh, verify that /usr/lib/perfsonar/bin/generate_gui_configuration has run recently and you are looking at an accurate test mesh"
+                                        - "Verify NTP is synced on this host" 
+                                        - "Verify the local and remote sites allow access to TCP port 4823, TCP/UDP ports 6001-6200, and TCP/UDP ports 5001-5900"                           
+                            - 
+                                type: rule
+                                selector:
+                                    type: row
+                                match:
+                                    type: status
+                                    status: 3                        
+                                problem:
+                                    severity: 3
+                                    category: CONFIGURATION
+                                    message: "Unable to run and/or query any outgoing throughput tests."
+                                    solutions:
+                                        - "Verify you are not blocking any of the required outgoing BWCTL ports in your firewall"
+                                        - "Verify the remote sites allow your host to access TCP/UDP ports 5001-5900"
+                                        - "Verify the limits defined in /etc/bwctl-server/bwctl-server.limits are properly defined and not being exceeded by the tests"
+                            - 
+                                type: rule
+                                selector:
+                                    type: column
+                                match:
+                                    type: status
+                                    status: 3                        
+                                problem:
+                                    severity: 3
+                                    category: CONFIGURATION
+                                    message: "Unable to run and/or query any incoming throughput tests."
+                                    solutions:
+                                        - "Verify your host and router firewalls are allowing TCP/UDP 5001-5900"
+                                        - "Verify the limits defined in /etc/bwctl-server/bwctl-server.limits are properly defined and not being exceeded by the tests"
+                            - 
+                                type: matchAll
+                                rules:
+                                    - 
+                                        type: matchFirst
+                                        rules: 
+                                            - 
+                                                type: rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 0
+                                                    colIndex: 1
+                                                match:
+                                                    type: status
+                                                    status: 3
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated at this site are failing in both incoming and outgoing directions"
+                                                    solutions:
+                                                        - "Verify that your measurement archive(s) are running"
+                                                        - "Verify no firewall is blocking maddash from reaching your measurement archive(s)"
+                                                        - "Verify your hosts are downloading the mesh configuration file and that there are tests defined in /etc/perfsonar/regulartesting.conf"
+                                                        - "Verify that regular testing is running (/etc/init.d/perfsonar-regulartesting status)"
+                                                        - "Verify your hosts are able to reach their configured measurement archive and that there are no errors in /var/log/perfsonar/regulartesting.log" 
+                                            - 
+                                                type: rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 0
+                                                    colIndex: 1
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "A majority (but not all) of tests initiated by this site are failing in both incoming and outgoing directions"
+                                                    solutions:
+                                                        - "Check if the sites that are failing are blocking TCP port 4823."
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                                        
+                                            - 
+                                                type: rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 0
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated at this site are failing in the outgoing direction"
+                                                    solutions:
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                            - 
+                                                type: rule
+                                                selector:
+                                                    type: check
+                                                    colIndex: 1
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated at this site are failing in the incoming direction"
+                                                    solutions:
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                    - 
+                                        type: matchFirst
+                                        rules: 
+                                            - 
+                                                type:rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 1
+                                                    colIndex: 0
+                                                match:
+                                                    type: status
+                                                    status: 3
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated by remote sites are failing in both incoming and outgoing directions"
+                                                    solutions:
+                                                        - "Verify that the local site has TCP port 4823 open on the host and router firewalls"
+                                                        - "Verify that bwctl-server is running on the host with '/etc/init.d/bwctl-server status'"
+                                                        - "Verify the limits defined in /etc/bwctl-server/bwctl-server.limits are properly defined and not being exceeded by the tests"
+                                            - 
+                                                type:rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 1
+                                                    colIndex: 0
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "A majority (but not all) of tests initiated by remote sites are failing in both incoming and outgoing directions"
+                                                    solutions:
+                                                        - "Verify that the local site has TCP port 4823 open on the host and router firewalls to all hosts in the mesh"
+                                                        - "Verify the limits defined in /etc/bwctl-server/bwctl-server.limits are properly defined and not being exceeded by the tests"
+                                            - 
+                                                type:rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 1
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated by remote sites are failing in the outgoing direction"
+                                                    solutions:
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                            - 
+                                                type:rule
+                                                selector:
+                                                    type: check
+                                                    colIndex: 0
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated by remote sites are failing in the incoming direction"
+                                                    solutions:
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                    -
+                                        type: rule
+                                        selector:
+                                            type: row
+                                        match:
+                                            type: statusWeightedThreshold
+                                            statuses: 
+                                                - 0.0
+                                                - .5
+                                                - 1.0
+                                                - -1.0
+                                            threshold: .6
+                                        problem:
+                                            severity: 2
+                                            category: PERFORMANCE
+                                            message: "Outgoing throughput is below warning or critical thresholds to a majority of sites"
+                                    - 
+                                        type: rule
+                                        selector:
+                                            type: column
+                                        match:
+                                            type: statusWeightedThreshold
+                                            statuses: 
+                                                - 0.0
+                                                - .5
+                                                - 1.0
+                                                - -1.0
+                                            threshold: .6
+                                        problem:
+                                            severity: 2
+                                            category: PERFORMANCE
+                                            message: "Incoming throughput is below warning or critical thresholds to a majority of sites"
+    -
+        id: "loss_mesh_report"
+        rule:
+            type: matchFirst
+            rules:
+                - 
+                    type: rule
+                    selector:
+                        type: grid
+                    match:
+                        type: status
+                        status: 3
+                    problem:
+                        severity: 3
+                        category: CONFIGURATION
+                        message: "Grid is down" 
+                        solutions:
+                            - "If you just configured this grid in the mesh, you may just need to wait as it takes a few minutes for loss data to populate"
+                            - "Verify maddash is configured properly. Look in the files under /var/log/maddash/ for any errors. Things to look for are incorrect paths to checks or connection errors."
+                            - "Verify that /usr/lib/perfsonar/bin/generate_gui_configuration has run recently and you are looking at an accurate test mesh"                            
+                            - "Verify that your measurement archive(s) are running"
+                            - "Verify no firewall is blocking maddash from reaching your measurement archive(s)"
+                            - "Verify your hosts are downloading the mesh configuration file and that there are tests defined in /etc/perfsonar/regulartesting.conf"
+                            - "Verify that regular testing is running (/etc/init.d/perfsonar-regulartesting status)"
+                            - "Verify your hosts are able to reach their configured measurement archive and that there are no errors in /var/log/perfsonar/regulartesting.log"                            
+                - 
+                    type: rule
+                    selector:
+                        type: grid
+                    match:
+                        type: status
+                        status: 0
+                    problem:
+                        severity: 0
+                        category: CONFIGURATION
+                        message: "No issues found"
+                - 
+                    type: forEachSite
+                    rule:
+                        type: matchFirst
+                        rules:
+                            - 
+                                type: rule
+                                selector:
+                                    type: site
+                                match:
+                                    type: status
+                                    status: 3                        
+                                problem:
+                                    severity: 3
+                                    category: CONFIGURATION
+                                    message: "Site is down"
+                                    solutions:
+                                        - "Verify the host is up"
+                                        - "If recently added to the mesh, verify the mesh config file has been downloaded by the end-hosts since the update."
+                                        - "If recently removed from the mesh, verify that /usr/lib/perfsonar/bin/generate_gui_configuration has run recently and you are looking at an accurate test mesh"
+                                        - "Verify the local and remote sites allow access to TCP port 861 and UDP ports 8760-9960"                           
+                            - 
+                                type: rule
+                                selector:
+                                    type: row
+                                match:
+                                    type: status
+                                    status: 3                        
+                                problem:
+                                    severity: 3
+                                    category: CONFIGURATION
+                                    message: "Unable to run and/or query any outgoing one-way delay tests."
+                                    solutions:
+                                        - "Verify you are not blocking any of the required outgoing OWAMP ports in your firewall"
+                                        - "Verify the remote sites allow your host to access UDP ports 8760-9960"
+                            - 
+                                type: rule
+                                selector:
+                                    type: column
+                                match:
+                                    type: status
+                                    status: 3                        
+                                problem:
+                                    severity: 3
+                                    category: CONFIGURATION
+                                    message: "Unable to run and/or query any incoming one-way delay tests."
+                                    solutions:
+                                        - "Verify your host and router firewalls are allowing UDP ports 8760-9960"
+                            - 
+                                type: matchAll
+                                rules:
+                                    - 
+                                        type: matchFirst
+                                        rules: 
+                                            - 
+                                                type: rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 0
+                                                    colIndex: 1
+                                                match:
+                                                    type: status
+                                                    status: 3
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated at this site are failing in both incoming and outgoing directions"
+                                                    solutions:
+                                                        - "Verify that your measurement archive(s) are running"
+                                                        - "Verify no firewall is blocking maddash from reaching your measurement archive(s)"
+                                                        - "Verify your hosts are downloading the mesh configuration file and that there are tests defined in /etc/perfsonar/regulartesting.conf"
+                                                        - "Verify that regular testing is running (/etc/init.d/perfsonar-regulartesting status)"
+                                                        - "Verify your hosts are able to reach their configured measurement archive and that there are no errors in /var/log/perfsonar/regulartesting.log" 
+                                            - 
+                                                type: rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 0
+                                                    colIndex: 1
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "A majority (but not all) of tests initiated by this site are failing in both incoming and outgoing directions"
+                                                    solutions:
+                                                        - "Check if the sites that are failing are blocking TCP port 861."
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                                        
+                                            - 
+                                                type: rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 0
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated at this site are failing in the outgoing direction"
+                                                    solutions:
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                            - 
+                                                type: rule
+                                                selector:
+                                                    type: check
+                                                    colIndex: 1
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated at this site are failing in the incoming direction"
+                                                    solutions:
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                    - 
+                                        type: matchFirst
+                                        rules: 
+                                            - 
+                                                type:rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 1
+                                                    colIndex: 0
+                                                match:
+                                                    type: status
+                                                    status: 3
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated by remote sites are failing in both incoming and outgoing directions"
+                                                    solutions:
+                                                        - "Verify that the local site has TCP port 861 open on the host and router firewalls"
+                                                        - "Verify that owamp-server is running on the host with '/etc/init.d/owamp-server status'"
+                                            - 
+                                                type:rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 1
+                                                    colIndex: 0
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "A majority (but not all) of tests initiated by remote sites are failing in both incoming and outgoing directions"
+                                                    solutions:
+                                                        - "Verify that the local site has TCP port 861 open on the host and router firewalls to all hosts in the mesh"
+                                            - 
+                                                type:rule
+                                                selector:
+                                                    type: check
+                                                    rowIndex: 1
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated by remote sites are failing in the outgoing direction"
+                                                    solutions:
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                            - 
+                                                type:rule
+                                                selector:
+                                                    type: check
+                                                    colIndex: 0
+                                                match:
+                                                    type: statusThreshold
+                                                    status: 3
+                                                    threshold: .6
+                                                problem:
+                                                    severity: 3
+                                                    category: CONFIGURATION
+                                                    message: "Tests initiated by remote sites are failing in the incoming direction"
+                                                    solutions:
+                                                        - "Verify that /usr/lib/perfsonar/bin/generate_configuration doesn't throw any errors."
+                                                        - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
+                                                        - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
+                                    -
+                                        type: rule
+                                        selector:
+                                            type: row
+                                        match:
+                                            type: statusWeightedThreshold
+                                            statuses: 
+                                                - 0.0
+                                                - .5
+                                                - 1.0
+                                                - -1.0
+                                            threshold: .6
+                                        problem:
+                                            severity: 2
+                                            category: PERFORMANCE
+                                            message: "Outgoing loss is below warning or critical thresholds to a majority of sites"
+                                    - 
+                                        type: rule
+                                        selector:
+                                            type: column
+                                        match:
+                                            type: statusWeightedThreshold
+                                            statuses: 
+                                                - 0.0
+                                                - .5
+                                                - 1.0
+                                                - -1.0
+                                            threshold: .6
+                                        problem:
+                                            severity: 2
+                                            category: PERFORMANCE
+                                            message: "Incoming loss is below warning or critical thresholds to a majority of sites"
