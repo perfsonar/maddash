@@ -8,6 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 import net.es.maddash.ConfigLoader;
 import net.es.maddash.jobs.CheckSchedulerJob;
 import net.sf.json.JSONObject;
@@ -54,8 +60,8 @@ public class DimensionUtil {
             
             return props;
 	}
-	static public List<String> translateNames(List<String> names, HashMap<String,String> labelMap){
-		ArrayList<String> translatedNames = new ArrayList<String>();
+	static public JsonArray translateNames(List<String> names, HashMap<String,String> labelMap){
+		JsonArrayBuilder translatedNames = Json.createArrayBuilder();
 		//translate column to label if possible
 		for(String name : names){
 			String label = name;
@@ -64,34 +70,36 @@ public class DimensionUtil {
 			}
 			translatedNames.add(label);
 		}
-		return translatedNames;
+		return translatedNames.build();
 	}
 
-	public static ArrayList<JSONObject> translateNames(ArrayList<JSONObject> namedObjs,
+	public static JsonArray translateJsonObjNames(List<String> names, List<JsonObjectBuilder> namedObjs,
 			HashMap<String, String> labelMap) {
+	        JsonArrayBuilder jsonArr = Json.createArrayBuilder();
 		//translate column to label if possible
-		for(JSONObject namedObj : namedObjs){
-			String label = namedObj.getString("name");
+		for(int i = 0; i < names.size(); i++){
+			String label = names.get(i);
 			if(labelMap.containsKey(label) && labelMap.get(label) != null){
 				label = labelMap.get(label);
 			}
-			namedObj.put("name", label);
+			namedObjs.get(i).add("name", label);
+			jsonArr.add(namedObjs.get(i));
 		}
-		return namedObjs;
+		return jsonArr.build();
 	}
 
-    public static Object translateProperties(List<String> names,
-            HashMap<String, HashMap<String, String>> propMap) {
-        ArrayList<HashMap<String, String>> translatedProps = new ArrayList<HashMap<String, String>>();
+    public static JsonArray translateProperties(List<String> names,
+            HashMap<String, JsonObjectBuilder> dimensionProperties) {
+        JsonArrayBuilder translatedProps = Json.createArrayBuilder();
         //translate column to label if possible
         for(String name : names){
-            if(propMap.containsKey(name) && propMap.get(name) != null){
-                translatedProps.add(propMap.get(name));
+            if(dimensionProperties.containsKey(name) && dimensionProperties.get(name) != null){
+                translatedProps.add(dimensionProperties.get(name));
             }else{
-                translatedProps.add(new HashMap<String, String>());//add an empty map
+                translatedProps.add(Json.createObjectBuilder());//add an empty map
             }
         }
-        return translatedProps;
+        return translatedProps.build();
     }
 
 }

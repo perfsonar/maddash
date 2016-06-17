@@ -1,5 +1,6 @@
 package net.es.maddash.www.rest;
 
+import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -12,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import net.es.maddash.MaDDashGlobals;
 import net.es.maddash.NetLogger;
-import net.sf.json.JSONObject;
 
 @Path("/maddash/dashboards")
 public class DashboardsResource {
@@ -28,7 +28,7 @@ public class DashboardsResource {
         NetLogger netLog = NetLogger.getTlogger();
         this.netLogger.info(netLog.start(GET_EVENT));
         
-        JSONObject json = null;
+        JsonObject json = null;
         try{
             json = MaDDashGlobals.getInstance().getResourceManager().getDashboards();
         }catch(Exception e){

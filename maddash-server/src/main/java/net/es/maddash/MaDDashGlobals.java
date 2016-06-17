@@ -14,6 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.UriBuilder;
 
@@ -67,7 +72,7 @@ public class MaDDashGlobals {
 
     //web related parameters
     private String webTitle;
-    private JSONArray dashboards;
+    private JsonArray dashboards;
     private String defaultDashboard;
 
     //properties
@@ -298,8 +303,8 @@ public class MaDDashGlobals {
     }
 
     private void configureDashboards(List dashConfig) {
-        this.dashboards = new JSONArray();
-        HashMap<String,JSONArray> dashMap = new HashMap<String,JSONArray>();
+        JsonArrayBuilder dashboardBuilder = Json.createArrayBuilder();
+        HashMap<String,JsonArray> dashMap = new HashMap<String,JsonArray>();
         ArrayList<String> dashList = new ArrayList<String>();
 
             for(Map<String,Object> dashboard: (List<Map<String,Object>>)dashConfig){
@@ -311,29 +316,31 @@ public class MaDDashGlobals {
                 }
                 log.debug("Added dashboard " + (String)dashboard.get(PROP_DASHBOARDS_NAME));
                 dashList.add((String)dashboard.get(PROP_DASHBOARDS_NAME));
-                JSONArray grids = new JSONArray();
+                JsonArrayBuilder grids = Json.createArrayBuilder();
                 for(Map configGrid : (List<Map>)dashboard.get(PROP_DASHBOARDS_GRIDS)){
                     if(!configGrid.containsKey(PROP_DASHBOARDS_GRIDS_NAME) || 
                             configGrid.get(PROP_DASHBOARDS_GRIDS_NAME) == null){
                         throw new RuntimeException("Grid list is missing " + PROP_DASHBOARDS_GRIDS_NAME + " atribute");
                     }
                     String name = (String)configGrid.get(PROP_DASHBOARDS_GRIDS_NAME);
-                    JSONObject tmp = new JSONObject();
-                    tmp.put("name", name);
-                    tmp.put("uri", GridsResource.class.getAnnotation(Path.class).value() + "/" 
-                            + URIUtil.normalizeURIPart(name));
+                    JsonObject tmp = Json.createObjectBuilder()
+                                        .add("name", name)
+                                        .add("uri", GridsResource.class.getAnnotation(Path.class).value() + "/" 
+                                                        + URIUtil.normalizeURIPart(name))
+                                        .build();
                     grids.add(tmp);
                 }
-                dashMap.put((String)dashboard.get(PROP_DASHBOARDS_NAME), grids);
+                dashMap.put((String)dashboard.get(PROP_DASHBOARDS_NAME), grids.build());
             }
             Collections.sort(dashList);
             
             for(String name : dashList){
-                JSONObject tmp = new JSONObject();
-                tmp.put("name", name);
-                tmp.put("grids", dashMap.get(name));
-                this.dashboards.add(tmp);
+                JsonObjectBuilder tmp = Json.createObjectBuilder()
+                                    .add("name", name)
+                                    .add("grids", dashMap.get(name));
+                dashboardBuilder.add(tmp);
             }
+            this.dashboards = dashboardBuilder.build();
     }
 
     private void configureResourceURL(Map urlConfig, String proto, 
@@ -634,7 +641,7 @@ public class MaDDashGlobals {
     /**
      * @return the JSON of the dashboards configured
      */
-    public JSONArray getDashboards() {
+    public JsonArray getDashboards() {
         return this.dashboards;
     }
 
