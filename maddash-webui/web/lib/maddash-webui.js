@@ -622,17 +622,20 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
 		for(var i=0;i<gridList.length;i++){
             var grid_id = "grid-" + i;
             var legend_id = "legend-" + i;
+            var report_id = "report-" + i;
             var container = d3.select("#" + this.parent.id).append("div")
                 .attr('class', function(){return 'grid-container'})
             container.append("div").attr("class", "maddashGridName").text(gridList[i].name)
             var legend = container.append("div").attr('class', 'legends').attr("id", legend_id);
+            var report = container.append("div").attr("id", report_id);
             var gridDiv = container.append("div").attr("id", grid_id)
             gridDiv.append("img").attr("src", "images/loader.gif").attr("height", "20")
                 .attr("width", "20").attr("class", "loader")
                 .attr("style", "position:relative;left:49%;top:49%");
             
             var ds = new MaDDashDataSource(gridList[i].uri);
-            var mdGrid = new MaDDashGrid(grid_id, legend_id);
+            
+            var mdGrid = new MaDDashGrid(grid_id, legend_id, report_id);
             if(config.colors != undefined){
                 mdGrid.setColorScale(config.colors);
             }
@@ -655,11 +658,6 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
                 if(config.grids[gridList[i].name].cellPadding != undefined && 
                         config.grids[gridList[i].name].cellPadding != null){
                     mdGrid.setCellPadding(config.grids[gridList[i].name].cellPadding);
-                }
-                
-                if(config.grids[gridList[i].name].textBlockSize != undefined && 
-                        config.grids[gridList[i].name].textBlockSize != null){
-                    mdGrid.setTextBlockSize(config.grids[gridList[i].name].textBlockSize);
                 }
             }
             

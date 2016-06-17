@@ -80,7 +80,7 @@ var MaDDashDataSource = function(url, async){
  *      legendId: id string of the legend element
  */
 
-var MaDDashGrid = function(parentId, legendId){
+var MaDDashGrid = function(parentId, legendId, reportId){
     var instance = this;
     var colorscale = {
         0: "green", 
@@ -92,9 +92,9 @@ var MaDDashGrid = function(parentId, legendId){
         };
     this.parent = parentId;
     this.legend = legendId;
+    this.report = reportId;
     this.cellSize = 13;
     this.cellPadding = 2;
-    this.textBlockSize = 130;
     
     this.setColorScale = function(colors){
         colorscale = colors;
@@ -131,7 +131,52 @@ var MaDDashGrid = function(parentId, legendId){
         .attr("class", "ltext")
         .text(function(d,i){return d.label})
         .style("display", function(d,i){return d.label === null ? "none" : "block"})
-
+        
+        
+      //report
+      var reportdata = data.report;
+      var reportdiv = d3.select("#"+this.report).html("");
+      var problemCount = 0;
+      var hostCount = 0;
+      var hostProblemCount = 0;
+      var gridProblemCount = 0;
+      if(reportdata != null){
+            if(reportdata.global.severity > 0){
+                gridProblemCount += reportdata.global.problems.length;
+                problemCount += gridProblemCount;
+            }
+            
+            for(var site in reportdata.sites){
+                if(reportdata.sites[site].severity > 0){
+                    hostCount++;
+                    hostProblemCount += reportdata.sites[site].problems.length;
+                    problemCount += reportdata.sites[site].problems.length;
+                }
+            }
+      }
+      if(problemCount > 0){
+        var reportLink = reportdiv.attr('class', 'gridReportSummaryWarn')
+                            .append("a").attr("href", "#");
+        reportLink.append("img").attr("src", "images/warning.png");
+        reportLink.append("span")
+            .attr("class", "gridReportSummaryWarnText")
+            .append("a").attr("href", "#")
+            .text("Found a total of " + problemCount +  
+                    (problemCount == 1 ? " problem" : " problems") + 
+                    (hostCount == 1 ? " involving " + hostCount + " host" : "") + 
+                    (hostCount > 1 ? " involving " + hostCount +  " hosts" : "") + 
+                    (gridProblemCount > 0 && hostCount > 0 ? " with " + gridProblemCount + " affecting the entire grid" :
+                        (gridProblemCount > 0 && hostCount == 0 ? " and it is affecting the entire grid" : 
+                            (gridProblemCount == 0 ? " in the grid" : "")))
+                );
+      }else{
+        reportdiv.attr('class', 'gridReportSummaryOk')
+            .append("img").attr("src", "images/success.png");
+        reportdiv.append("span")
+            .attr("class", "gridReportSummaryOkText")
+            .text("No problems found in grid");
+      }
+      
       //GRID Container
       var nrows = data.grid.length;
       var ncols = data.grid[0].length;
@@ -139,31 +184,50 @@ var MaDDashGrid = function(parentId, legendId){
       //Changed these from portal to allow customization
       var cellsize = this.cellSize;
       var padding = this.cellPadding;
-      var text_block_size = this.textBlockSize;
-    
+      var text_multiplier = 7;
+       //calc max row text size
+      var maxRowSize = 0;
+      for(var ri = 0; ri < data.rows.length; ri++){
+        if(data.rows[ri].name.length > maxRowSize){
+            maxRowSize = data.rows[ri].name.length;
+        }
+      }
+      maxRowSize = maxRowSize * text_multiplier + 10;//10 is just arbitrary margin
+      var maxColSize = 0;
+      for(var ci = 0; ci < data.columnNames.length; ci++){
+        if(data.columnNames[ci].length > maxColSize){
+            maxColSize = data.columnNames[ci].length;
+        }
+      }
+      maxColSize = (maxColSize+1) * text_multiplier; //plus one gives some good margin
+      
       var viz = d3.select("#" + canvas)
-        .style("width", ncols * (cellsize + 2*padding) + 110 + text_block_size)
-    
+        .style("width", ncols * (cellsize + 2*padding) + 110 + maxRowSize)
       var top = viz.append("div")
         .attr("class", "gtop")
-        .style("margin-left", text_block_size + "px")
+        .style("margin-left", maxRowSize + "px")
         .style("float", "left")
         .append("svg:svg")
-          .attr("height", text_block_size)
+          .attr("height", maxColSize)
           .attr("width", ncols * (cellsize + 2*padding) + 90)
         .selectAll(".rname")
           .data(data.columnNames)
           .enter()
             .append("g")
             .attr("class", function(d,i){return "gcol" + i})
-            .attr("transform", function(d,i){return "translate("+(i*(cellsize+2*padding))+",0)"})        
+            .attr("transform", function(d,i){
+                return "translate("+((i*(cellsize+2*padding)))+",0)"}
+            );       
     
       top.append("svg:rect")
         .attr("class", function(d,i){return "gcol" + i})
         .attr("x",0).attr("y",0)
-        .attr("transform", "rotate(45,0,"+ text_block_size +") translate (-0.5,3)")
-        .attr("height",text_block_size).attr("width",(cellsize+padding))
-        //.attr("transform", "rotate(35,"+ (cellsize+padding)/2  + "," + text_block_size/2 + ")")
+        .attr("transform", function(d,i){
+                //return "rotate(45,0,"+ (d.length * text_multiplier) + ") translate (-0.5,3)";
+                //return "rotate(45,0," + maxColSize +") translate(0,0)";
+                return "translate (0, 0)";
+            })
+        .attr("height",function(d,i){ return maxColSize}).attr("width",(cellsize+padding))
       
       
       top.append("svg:a")
@@ -177,17 +241,28 @@ var MaDDashGrid = function(parentId, legendId){
             }
         })
         .append("svg:text")
-        .attr("class", "gtext")
+        .attr("class", function(d,i){
+            if(data.report.sites[d].severity > 0){
+                return "gtexterr";
+            }else{
+                return "gtext";
+            }
+        })
         .attr("text-anchor", "start")
         .attr("dy", "1.5em")
         .attr("dx", "1em")
-        .attr("transform", "rotate(-45,0,"+ text_block_size +")  translate(0,"+ (text_block_size-5) + ")")
+        .attr("transform", 
+            function(d,i){
+                return "rotate(-90) translate(-" + (maxColSize + 10) + ", -3)";
+                //return "rotate(-45," + maxColSize + "," + (ncols * (cellsize + 2*padding)) + ") translate(0,0)";
+            }
+        )
         .text(function(d,i){return d})        
     
       var left = viz.append("div")
         .attr("class", "gleft")
         .append("svg:svg")
-          .attr("width", text_block_size)
+          .attr("width", maxRowSize)
           .attr("height", nrows * (cellsize + 2*padding))
         .selectAll(".rname")
           .data(data.rows)
@@ -199,7 +274,7 @@ var MaDDashGrid = function(parentId, legendId){
       left.append("svg:rect")
         .attr("class", function(d,i){return "grow" + i})
         .attr("x",0).attr("y",0)
-        .attr("width",text_block_size).attr("height",(cellsize+2*padding))
+        .attr("width",maxRowSize).attr("height",(cellsize+2*padding))
       
       left.append("svg:a")
         .attr("xlink:href", function(d,i){return data.rows[i].props['pstoolkiturl']})
@@ -212,8 +287,14 @@ var MaDDashGrid = function(parentId, legendId){
             }
         })
         .append("svg:text")
-        .attr("class", "gtext")
-        .attr("transform", "translate("+ (text_block_size-5) +",0)")
+        .attr("class", function(d,i){
+            if(data.report.sites[data.rows[i].name].severity > 0){
+                return "gtexterr";
+            }else{
+                return "gtext";
+            }
+        })
+        .attr("transform", "translate("+ (maxRowSize-5) +",0)")
         .text(function(d,i){return data.rows[i].name})
         .attr("text-anchor", "end")
         .attr("dy", "1.1em")
@@ -341,9 +422,6 @@ var MaDDashGrid = function(parentId, legendId){
     }
     this.setCellPadding = function(value){
         this.cellPadding = value;
-    }
-    this.setTextBlockSize = function(value){
-        this.textBlockSize = value;
     }
     
 }

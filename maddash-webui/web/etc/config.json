@@ -6,7 +6,6 @@
         "OWAMP":{
             "cellSize": 13,
             "cellPadding": 3,
-            "textBlockSize": 130,
         },
     },
 }
