@@ -35,6 +35,7 @@ public class DBMesh extends BaseMesh{
     private Logger netlogger = Logger.getLogger("netlogger");
     
     private String name;
+    private HashMap<String,String> dimensionLabelMap;
     private JsonArray statusLabels;
     private Long lastUpdateTime;
     private JsonArray columnNames;
@@ -104,13 +105,13 @@ public class DBMesh extends BaseMesh{
             this.statusLabels = statusLabels.build();
             
             //get row and column labels
-            HashMap<String, String> dimesnionLabelMap = new HashMap<String, String>();
+            HashMap<String, String> dimensionLabelMap = new HashMap<String, String>();
             HashMap<String,JsonObjectBuilder> dimensionProperties = new HashMap<String,JsonObjectBuilder>();
             PreparedStatement labelStmt = conn.prepareStatement("SELECT configIdent, keyName, value FROM dimensions");
             ResultSet labelResults = labelStmt.executeQuery();
             while(labelResults.next()){
                 if(ConfigLoader.PROP_DIMENSIONS_LABEL.equals(labelResults.getString(2))){
-                    dimesnionLabelMap.put(labelResults.getString(1), labelResults.getString(3));
+                    dimensionLabelMap.put(labelResults.getString(1), labelResults.getString(3));
                 }
                 if(!dimensionProperties.containsKey(labelResults.getString(1)) || dimensionProperties.get(labelResults.getString(1)) == null){
                     dimensionProperties.put(labelResults.getString(1), Json.createObjectBuilder());
@@ -121,6 +122,7 @@ public class DBMesh extends BaseMesh{
                     dimensionProperties.get(labelResults.getString(1)).add(labelResults.getString(2).toLowerCase(), labelResults.getString(3));
                 }
             }
+            this.dimensionLabelMap = dimensionLabelMap;
             
             //get information on checks
             PreparedStatement stmt = conn.prepareStatement("SELECT rowName, colName," +
@@ -200,7 +202,7 @@ public class DBMesh extends BaseMesh{
                 jsonCheckList.add(checkListItem);
             }
             this.lastUpdateTime = lastUpdateTime;
-            this.columnNames = DimensionUtil.translateNames(colList, dimesnionLabelMap);
+            this.columnNames = DimensionUtil.translateNames(colList, dimensionLabelMap);
             this.columnProps = DimensionUtil.translateProperties(colList, dimensionProperties);
             this.checkNames = jsonCheckList.build();
             
@@ -225,7 +227,7 @@ public class DBMesh extends BaseMesh{
                 jsonGrid.add(jsonRow);
             }
             this.grid = jsonGrid.build();
-            this.rows = DimensionUtil.translateJsonObjNames(rowNames, rowList, dimesnionLabelMap);
+            this.rows = DimensionUtil.translateJsonObjNames(rowNames, rowList, dimensionLabelMap);
         } catch (Exception e) {
             if(conn != null){
                 try {
@@ -283,6 +285,10 @@ public class DBMesh extends BaseMesh{
     @Override
     public boolean hasColumn(int row, int column) {
         return this.grid.getJsonArray(row).get(column) != JsonValue.NULL;
+    }
+    
+    public String lookupLabel(String dimensionId) {
+        return DimensionUtil.translateName(dimensionId, this.dimensionLabelMap);
     }
     
     private void addStringOrNull(JsonArrayBuilder list, String val) {

@@ -502,8 +502,14 @@ public class ResourceManager {
                 resultJson.add("status", historyResults.getInt(6));
                 historyJson.add(resultJson);
             }
-            //output result
             checkJson.add("history", historyJson);
+            
+            //generate report
+            DBMesh mesh = new DBMesh(gridName, uriInfo.getPath());
+            JsonObject report = Madalert.lookupRule(gridName).createReport(mesh).toJson();
+            checkJson.add("globalReport", report.getJsonObject("global"));
+            checkJson.add("rowReport", report.getJsonObject("sites").getJsonObject(mesh.lookupLabel(rowName)));
+            checkJson.add("colReport", report.getJsonObject("sites").getJsonObject(mesh.lookupLabel(colName)));
             
             conn.close();
         }catch(Exception e){

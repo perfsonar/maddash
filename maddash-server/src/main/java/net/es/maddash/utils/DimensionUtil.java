@@ -58,15 +58,21 @@ public class DimensionUtil {
 
         return props;
     }
+    
+    static public String translateName(String name, HashMap<String,String> labelMap){
+        String label = name;
+        if(labelMap.containsKey(name) && labelMap.get(name) != null){
+            label = labelMap.get(name);
+        }
+        
+        return label;
+    }
+    
     static public JsonArray translateNames(List<String> names, HashMap<String,String> labelMap){
         JsonArrayBuilder translatedNames = Json.createArrayBuilder();
         //translate column to label if possible
         for(String name : names){
-            String label = name;
-            if(labelMap.containsKey(name) && labelMap.get(name) != null){
-                label = labelMap.get(name);
-            }
-            translatedNames.add(label);
+            translatedNames.add(DimensionUtil.translateName(name, labelMap));
         }
         return translatedNames.build();
     }
@@ -76,11 +82,7 @@ public class DimensionUtil {
         JsonArrayBuilder jsonArr = Json.createArrayBuilder();
         //translate column to label if possible
         for(int i = 0; i < names.size(); i++){
-            String label = names.get(i);
-            if(labelMap.containsKey(label) && labelMap.get(label) != null){
-                label = labelMap.get(label);
-            }
-            namedObjs.get(i).add("name", label);
+            namedObjs.get(i).add("name", DimensionUtil.translateName(names.get(i), labelMap));
             jsonArr.add(namedObjs.get(i));
         }
         return jsonArr.build();
