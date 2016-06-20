@@ -19,7 +19,7 @@ import net.es.maddash.www.rest.GridResource;
 import net.es.maddash.www.rest.GridsResource;
 import net.es.maddash.www.rest.MaDAlertDiffResource;
 import net.es.maddash.www.rest.MaDAlertIndexResource;
-import net.es.maddash.www.rest.MaDAlertReportResource;
+import net.es.maddash.www.rest.ReportResource;
 import net.es.maddash.www.rest.RowResource;
 import net.es.maddash.www.rest.RowsResource;
 
@@ -43,10 +43,10 @@ public class MaDDashApplication extends Application{
         services.add(AdminEventResource.class);
         services.add(EventsResource.class);
         services.add(EventResource.class);
+        services.add(ReportResource.class);
         //madalert
         services.add(MaDAlertDiffResource.class);
         services.add(MaDAlertIndexResource.class);
-        services.add(MaDAlertReportResource.class);
         return services;
     }
 }
