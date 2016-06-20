@@ -140,6 +140,7 @@ var MaDDashGrid = function(parentId, legendId, reportId){
       var hostCount = 0;
       var hostProblemCount = 0;
       var gridProblemCount = 0;
+      var reportDetailUrl = "report.cgi?grid=" + data.name;
       if(reportdata != null){
             if(reportdata.global.severity > 0){
                 gridProblemCount += reportdata.global.problems.length;
@@ -156,11 +157,11 @@ var MaDDashGrid = function(parentId, legendId, reportId){
       }
       if(problemCount > 0){
         var reportLink = reportdiv.attr('class', 'gridReportSummaryWarn')
-                            .append("a").attr("href", "#");
+                            .append("a").attr("href", reportDetailUrl);
         reportLink.append("img").attr("src", "images/warning.png");
         reportLink.append("span")
             .attr("class", "gridReportSummaryWarnText")
-            .append("a").attr("href", "#")
+            .append("a").attr("href", reportDetailUrl)
             .text("Found a total of " + problemCount +  
                     (problemCount == 1 ? " problem" : " problems") + 
                     (hostCount == 1 ? " involving " + hostCount + " host" : "") + 
@@ -231,7 +232,14 @@ var MaDDashGrid = function(parentId, legendId, reportId){
       
       
       top.append("svg:a")
-        .attr("xlink:href", function(d,i){return data.columnProps[i]['pstoolkiturl']})
+        .attr("xlink:href", function(d,i){
+                if(data.columnProps[i]['pstoolkiturl']){
+                    return data.columnProps[i]['pstoolkiturl'];
+                }else if(data.report.sites[d].severity > 0){
+                    return reportDetailUrl + "&host=" + d;
+                }
+                return null;
+            })
         .attr("target", "_blank")
         .attr("class", function(d,i){
             if(data.columnProps[i]['pstoolkiturl']){
@@ -277,7 +285,14 @@ var MaDDashGrid = function(parentId, legendId, reportId){
         .attr("width",maxRowSize).attr("height",(cellsize+2*padding))
       
       left.append("svg:a")
-        .attr("xlink:href", function(d,i){return data.rows[i].props['pstoolkiturl']})
+        .attr("xlink:href", function(d,i){
+                if(data.rows[i].props['pstoolkiturl']){
+                    return data.rows[i].props['pstoolkiturl'];
+                }else if(data.report.sites[data.rows[i].name].severity > 0){
+                    return reportDetailUrl + "&host=" + data.rows[i].name;
+                }
+                return null;
+        })
         .attr("target", "_blank")
         .attr("class", function(d,i){
             if(data.rows[i].props['pstoolkiturl']){
