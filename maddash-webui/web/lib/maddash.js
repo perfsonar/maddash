@@ -140,7 +140,7 @@ var MaDDashGrid = function(parentId, legendId, reportId){
       var hostCount = 0;
       var hostProblemCount = 0;
       var gridProblemCount = 0;
-      var reportDetailUrl = "report.cgi?grid=" + data.name;
+      var reportDetailUrl = "report.cgi?grid=" + encodeURIComponent(data.name);
       if(reportdata != null){
             if(reportdata.global.severity > 0){
                 gridProblemCount += reportdata.global.problems.length;
@@ -236,7 +236,7 @@ var MaDDashGrid = function(parentId, legendId, reportId){
                 if(data.columnProps[i]['pstoolkiturl']){
                     return data.columnProps[i]['pstoolkiturl'];
                 }else if(data.report.sites[d].severity > 0){
-                    return reportDetailUrl + "&host=" + d;
+                    return reportDetailUrl + "&host=" + encodeURIComponent(d);
                 }
                 return null;
             })
@@ -289,7 +289,7 @@ var MaDDashGrid = function(parentId, legendId, reportId){
                 if(data.rows[i].props['pstoolkiturl']){
                     return data.rows[i].props['pstoolkiturl'];
                 }else if(data.report.sites[data.rows[i].name].severity > 0){
-                    return reportDetailUrl + "&host=" + data.rows[i].name;
+                    return reportDetailUrl + "&host=" + encodeURIComponent(data.rows[i].name);
                 }
                 return null;
         })
