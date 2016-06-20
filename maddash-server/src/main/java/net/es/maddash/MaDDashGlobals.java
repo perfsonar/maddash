@@ -29,8 +29,6 @@ import net.es.maddash.utils.URIUtil;
 import net.es.maddash.www.MaDDashApplication;
 import net.es.maddash.www.WebServer;
 import net.es.maddash.www.rest.GridsResource;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.ho.yaml.Yaml;
