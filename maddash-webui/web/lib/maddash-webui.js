@@ -212,6 +212,15 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 		}
 		dashDropMenu.addChild(new dijit.MenuSeparator({}));
 		
+		var reportDropMenu = new dijit.DropDownMenu({});
+		for(var i=0; i < data.dashboards.length;i++){
+			reportDropMenu.addChild(new dijit.MenuItem({
+				label: data.dashboards[i].name,
+				onClick: function(){window.location = "report.cgi?dashboard=" + encodeURIComponent(this.label);}
+			}));
+		}
+		reportDropMenu.addChild(new dijit.MenuSeparator({}));
+		
 		var settingsDropMenu = new dijit.DropDownMenu({});
 		var autoRefreshDropMenu = new dijit.DropDownMenu({});
 		settingsDropMenu.addChild(new dijit.PopupMenuItem({
@@ -244,6 +253,11 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 		var gridDropMenu = new dijit.DropDownMenu({});
 		var mdGridDropMenu = new MadDashGridDropMenu(gridDropMenu, link);
 		this.gridSource.connect(mdGridDropMenu); 
+		
+		var gridReportDropMenu = new dijit.DropDownMenu({});
+		var mdReportGridDropMenu = new MadDashGridDropMenu(gridReportDropMenu, "report.cgi");
+		this.gridSource.connect(mdReportGridDropMenu); 
+		
 		this.gridSource.render();
 		
 		dashDropMenu.addChild(new dijit.PopupMenuItem({
@@ -253,6 +267,14 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 		menuBar.addChild(new dijit.PopupMenuBarItem({
 				label: "&#9776; Dashboards",
 				popup: dashDropMenu
+			}));
+		reportDropMenu.addChild(new dijit.PopupMenuItem({
+				label: "All Grids",
+				popup: gridReportDropMenu
+			}));
+		menuBar.addChild(new dijit.PopupMenuBarItem({
+				label: "&#128270; Reports",
+				popup: reportDropMenu
 			}));
 		if(config != undefined && config.data != undefined && config.data.addNodeURL != undefined){
             menuBar.addChild(new dijit.MenuBarItem({
@@ -313,7 +335,7 @@ var MadDashGridDropMenu = function(parent, link){
 	this.link = link;
 	
 	this.render = function(data){
-		for (i = 0; i < data.grids.length; i++) {
+		for (var i = 0; i < data.grids.length; i++) {
 			this.parent.addChild(new dijit.MenuItem({
 				label: data.grids[i].name,
 				onClick: function(){window.location = instance.link + "?grid=" + encodeURIComponent(this.label);}	

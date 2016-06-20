@@ -63,7 +63,7 @@ var MaDDashDataSource = function(url, async){
 	this._xhrResponseHandler = function(){
 		if(instance.xhr.readyState == 4 && instance.xhr.status==200){
 			this.data = eval('(' + instance.xhr.responseText + ')');
-			for(i=0; i < instance.callbacks.length; i++){
+			for(var i=0; i < instance.callbacks.length; i++){
 				instance.callbacks[i].render(this.data, instance.url);
 			}
 		}	
