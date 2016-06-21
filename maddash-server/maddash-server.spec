@@ -109,12 +109,18 @@ chown maddash:maddash %{install_base}/target/%{package_name}.one-jar.jar
 ln -s %{install_base}/target/%{package_name}-%{version}.jar %{install_base}/target/%{package_name}.jar
 chown maddash:maddash %{install_base}/target/%{package_name}.jar
 
+#Correct paths on x86_64 hosts
+if [ -d "/usr/lib64" ]; then
+    sed -i "s:/usr/lib/nagios/plugins:/usr/lib64/nagios/plugins:g" %{config_base}/maddash.yaml
+fi
+    
 #Configure service to start when machine boots
 %if 0%{?el7}
 %systemd_post %{package_name}.service
 %else
 /sbin/chkconfig --add %{package_name}
 /sbin/chkconfig %{package_name} on
+%endif
 
 if [ "$1" = "2" ]; then
     ##Upgrade database
@@ -122,18 +128,20 @@ if [ "$1" = "2" ]; then
     
     #Update old nagios check paths
     sed -i "s:/opt/perfsonar_ps/nagios/bin:/usr/lib/nagios/plugins:g" %{config_base}/maddash.yaml
-    #Correct paths on x86_64 hosts
-    if [ -d "/usr/lib64/nagios/plugins" ]; then
-        sed -i "s:/usr/lib/nagios/plugins:/usr/lib64/nagios/plugins:g" %{config_base}/maddash.yaml
-    fi
     
     #fix graph URL
     sed -i "s:/serviceTest:/perfsonar-graphs:g" %{config_base}/maddash.yaml
     
-    #restart service on update
-    /sbin/service %{package_name} restart
+    #restart service
+    %if 0%{?el7}
+    %else
+        #restart service on update
+        /sbin/service %{package_name} restart
+    %endif
 fi
-%endif
+
+
+
 
 %files
 %defattr(-,maddash,maddash,-)
