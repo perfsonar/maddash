@@ -252,7 +252,13 @@ public class DBMesh extends BaseMesh{
     public List<String> getRowNames() {
         ArrayList<String> rowNames = new ArrayList<String>();
         for(int i = 0; i < this.rows.size(); i++){
-            rowNames.add(this.rows.getJsonObject(i).getJsonObject("props").getString("label"));
+            if(this.rows.getJsonObject(i).containsKey("props") && this.rows.getJsonObject(i).getJsonObject("props") != JsonValue.NULL &&
+                    this.rows.getJsonObject(i).getJsonObject("props").containsKey("label") && 
+                    this.rows.getJsonObject(i).getJsonObject("props").getString("label") != null){
+                rowNames.add(this.rows.getJsonObject(i).getJsonObject("props").getString("label"));
+            }else{
+                rowNames.add(this.rows.getJsonObject(i).getString("name"));
+            }
         }
         return rowNames;
     }
