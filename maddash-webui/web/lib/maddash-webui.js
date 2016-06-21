@@ -413,6 +413,7 @@ var MaDDashCheckSummary = function(parent, config){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.config = config;
+	this.reportCount = 0;
 	
 	this.render = function(data){
 		this.parent.innerHTML = "";
@@ -435,6 +436,19 @@ var MaDDashCheckSummary = function(parent, config){
 		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Message For Current Status: "));
 		this.parent.appendChild(maddashCreateSpan("maddashFieldValue", data.message));
 		this.parent.appendChild(document.createElement("br"));
+		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Reports: "));
+		
+		var reportsDiv = document.createElement("div");
+		var reportBuilder = new MaDDashReport("maddashSummaryReportsDiv", null);
+		reportsDiv.className = "maddashSummaryReportsDiv";
+		this.addReport(reportBuilder, reportsDiv, "Grid Reports", data.globalReport);
+		this.addReport(reportBuilder, reportsDiv, data.rowName, data.rowReport);
+		this.addReport(reportBuilder, reportsDiv, data.colName, data.colReport);
+		if(this.reportCount == 0){
+		    this.parent.appendChild(maddashCreateSpan("maddashFieldValue", "No reports found for this check"));
+		}
+		this.parent.appendChild(reportsDiv);
+		
 		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Events: "));
 		var eventsDiv = document.createElement("div");
 		eventsDiv.className = "maddashSummaryEventsDiv";
@@ -448,6 +462,13 @@ var MaDDashCheckSummary = function(parent, config){
 		eventsSource.connect(mdEventsList);
 		eventsSource.render();
 	}
+	
+    this.addReport = function(builder, div, label, data){
+        if(data != null && data.problems != null && data.problems.length > 0){
+            div.appendChild(builder.createReport( label, data));
+            this.reportCount++;
+        }
+    }
 }
 
 var MaDDashEventsSummary = function(parent){
