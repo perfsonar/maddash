@@ -273,7 +273,7 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 				popup: gridReportDropMenu
 			}));
 		menuBar.addChild(new dijit.PopupMenuBarItem({
-				label: "&#128270; Reports",
+				label: "&#119567; Reports",
 				popup: reportDropMenu
 			}));
 		if(config != undefined && config.data != undefined && config.data.addNodeURL != undefined){
