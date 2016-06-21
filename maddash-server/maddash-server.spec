@@ -5,10 +5,10 @@
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
-%define relnum 1 
+%define relnum 0.0rc1 
 
 Name:           %{package_name}
-Version:        1.4
+Version:        2.0
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
@@ -16,11 +16,11 @@ Group:          Development/Libraries
 URL:            http://code.google.com/p/esnet-perfsonar
 Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  java-1.7.0-openjdk
-BuildRequires:  java-1.7.0-openjdk-devel
+BuildRequires:  java-1.8.0-openjdk
+BuildRequires:  java-1.8.0-openjdk-devel
 BuildRequires:  sed 
 BuildArch:      noarch
-Requires:       java-1.7.0-openjdk
+Requires:       java-1.8.0-openjdk
 %if 0%{?el7}
 BuildRequires: systemd
 BuildRequires:  maven
