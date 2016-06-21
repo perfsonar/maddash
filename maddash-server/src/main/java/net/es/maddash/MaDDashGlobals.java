@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -520,13 +522,30 @@ public class MaDDashGlobals {
                         "warningLabel VARCHAR(2000) NOT NULL, criticalLabel VARCHAR(2000) NOT NULL, " +
                         "unknownLabel VARCHAR(2000) NOT NULL, notRunLabel VARCHAR(2000) NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE dimensions (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
-                        "configIdent VARCHAR(2000) NOT NULL, keyName VARCHAR(2000) NOT NULL, value VARCHAR(2000) NOT NULL )", conn);
+                        "configIdent VARCHAR(2000) NOT NULL, keyName VARCHAR(2000) NOT NULL, value CLOB NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE events (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "name VARCHAR(2000) NOT NULL, description VARCHAR(2000) NOT NULL, startTime BIGINT NOT NULL, endTime BIGINT, changeStatus INTEGER NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE eventChecks (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "eventId INTEGER NOT NULL, checkId INTEGER NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE checkStateDefs (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         " gridName VARCHAR(500) NOT NULL, stateValue INTEGER NOT NULL,  shortName VARCHAR(500) NOT NULL, description VARCHAR(2000) NOT NULL)", conn);
+                
+                //Update for 2.0 - convert dimension value to CLOB
+                //don't need data, but do copy to satisfy not null constraint
+                DatabaseMetaData dbMetadata = conn.getMetaData();
+                ResultSet dimensionColMeta = dbMetadata.getColumns(null, null, "DIMENSIONS", "VALUE");
+                while(dimensionColMeta.next()){
+                    if("DIMENSIONS".equals(dimensionColMeta.getString("TABLE_NAME")) &&
+                            "VALUE".equals(dimensionColMeta.getString("COLUMN_NAME")) &&
+                            dimensionColMeta.getInt("DATA_TYPE") == java.sql.Types.VARCHAR){
+                        System.out.println("Doing update of SQL");
+                        this.execSQLCreate("ALTER TABLE dimensions ADD COLUMN tmpValue CLOB", conn);
+                        this.execSQLCreate("UPDATE dimensions SET tmpValue = value", conn);
+                        this.execSQLCreate("ALTER TABLE dimensions ALTER COLUMN tmpValue NOT NULL", conn);
+                        this.execSQLCreate("ALTER TABLE dimensions DROP COLUMN value", conn);
+                        this.execSQLCreate("RENAME COLUMN dimensions.tmpValue to value", conn);
+                    }
+                }
                 
                 //Create indexes - always rebuilds indexes which can help performance.
                 //    checks indexes

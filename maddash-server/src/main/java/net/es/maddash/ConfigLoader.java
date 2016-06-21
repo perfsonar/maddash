@@ -181,7 +181,8 @@ public class ConfigLoader {
                         
                         insertDimension.setString(1, dimension.get(PROP_DIMENSIONS_ID)+"");
                         insertDimension.setString(2, dimensionParam);
-                        insertDimension.setString(3, dimensionValue);
+                        SerialClob valueClob = new SerialClob(dimensionValue.toCharArray());
+                        insertDimension.setClob(3, valueClob);
                         insertDimension.executeUpdate();
                     }
                     i++;
