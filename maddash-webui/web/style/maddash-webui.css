@@ -43,6 +43,13 @@ a.maddashTitleLink:active {
 	color:#000000;
 }
 
+.maddashCheckSubtitle {
+	font-size: 14px;
+	font-style: italic;
+	color: #999999;
+	padding: 5px 5px 5px 5px;
+}
+
 .maddashCheckTitleDiv {
 	margin: 10px 10px 10px 5px;
 }
@@ -222,4 +229,74 @@ td.maddashFieldLabel {
     padding: 2px 2px 2px 2px;
     
 }
+
+.maddashReportScopeTitle {
+	font-size: 16px;
+	color:#000000;
+	margin-top: 10px;
+	margin: 10px 5px 5px 0px;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.maddashReportReport {
+    margin: 5px 5px 10px 0px;
+}
+
+.report-container {
+    width: 97%;
+    margin: 10px 10px 20px 10px;
+    border-bottom: 1px solid  #d0d1e6;
+    padding-bottom: 20px
+}
+
+.maddashReportGridName {
+	font-size: 18px;
+	font-weight: bold;
+	color:#000000;
+	margin: 25px 5px 5px 0px;
+}
+
+.maddashReportRow {
+    margin: 5px 0px 5px 0px;
+}
+
+.maddashReportLabel {
+    font-size: 14px;
+	font-weight: bold;
+	margin-right: 5px;
+}
+.maddashReportProblems {
+    margin-left: 0px;
+}
+
+.maddashReportProblem {
+    border: 1px solid  #d0d1e6;
+    background-color:#fff7fb;
+    margin: 5px 0px 5px 0px;
+    padding: 5px 5px 5px 5px;
+}
+
+.maddashReportStatusRowImg {
+        vertical-align: middle;
+        height: 24px;
+        width: 24px;
+        
+}
+.maddashReportStatusRow {
+    font-size:14px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.maddashReportSolutionsList {
+    margin: 0px 0px 0px 0px;
+    font-size: 14px;
+}
+
+.maddashSummaryReportsDiv {
+    margin: 0px 0px 0px 10px;
+    width: 95%;
+}
+
 

@@ -1,6 +1,5 @@
 package net.es.maddash;
 
-import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +18,14 @@ import org.apache.log4j.Logger;
 
 import net.es.maddash.checks.Check;
 import net.es.maddash.checks.CheckConstants;
+import net.es.maddash.madalert.Madalert;
+import net.es.maddash.madalert.Problem;
+import net.es.maddash.madalert.Rule;
+import net.es.maddash.madalert.SiteRule;
+import net.es.maddash.madalert.SiteTestSet;
+import net.es.maddash.madalert.StatusMatcher;
+import net.es.maddash.madalert.TestSet;
+import net.es.maddash.utils.DimensionUtil;
 import net.sf.json.JSONObject;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -37,7 +44,7 @@ public class ConfigLoader {
     static final public String PROP_DIMENSIONS = "groupMembers";
     static final public String PROP_DIMENSIONS_ID = "id";
     static final public String PROP_DIMENSIONS_LABEL = "label";
-
+    static final public String PROP_DIMENSION_MAP = "map";
     static final public String PROP_GROUPS = "groups";
 
     static final public String PROP_CHECKS = "checks";
@@ -60,6 +67,7 @@ public class ConfigLoader {
     static final public String PROP_GRIDS_COL_ALG = "columnAlgorithm";
     static final public String PROP_GRIDS_ROW_ORDER = "rowOrder";
     static final public String PROP_GRIDS_COL_ORDER = "colOrder";
+    static final public String PROP_GRIDS_REPORT = "report";
     static final public String PROP_GRIDS_STATUS_LABELS = "statusLabels";
     static final public String PROP_GRIDS_STATUS_LABELS_OK = "ok";
     static final public String PROP_GRIDS_STATUS_LABELS_WARNING = "warning";
@@ -78,7 +86,45 @@ public class ConfigLoader {
     static final public String ORDER_GROUP = "group";
     static final public String EXCL_CHECKS_DEFAULT = "default";
     static final public String EXCL_CHECKS_ALL = "all";
-
+    
+    static final public String PROP_DEFAULT_REPORT = "defaultReport";
+    static final public String PROP_REPORTS = "reports";
+    static final public String PROP_REPORTS_ID = "id";
+    static final public String PROP_REPORTS_RULE = "rule";
+    static final public String PROP_REPORTS_RULES = "rules";
+    static final public String PROP_REPORTS_RULE_TYPE = "type";
+    static final public String PROP_REPORTS_RULE_TYPE_MATCH_FIRST = "matchFirst";
+    static final public String PROP_REPORTS_RULE_TYPE_MATCH_ALL = "matchAll";
+    static final public String PROP_REPORTS_RULE_TYPE_FOREACH_SITE = "forEachSite";
+    static final public String PROP_REPORTS_RULE_TYPE_RULE = "rule";
+    static final public String PROP_REPORTS_RULE_TYPE_SITERULE = "siteRule";
+    static final public String PROP_REPORTS_RULE_SITE = "site";
+    static final public String PROP_REPORTS_RULE_SELECTOR = "selector";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE = "type";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_GRID = "grid";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_SITE = "site";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_ROW = "row";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_COLUMN = "column";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_CELL = "column";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK = "check";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_ROWSITE = "rowSite";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_COLSITE = "colSite";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX = "rowIndex";
+    static final public String PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX = "colIndex";
+    static final public String PROP_REPORTS_RULE_MATCH = "match";
+    static final public String PROP_REPORTS_RULE_MATCH_TYPE = "type";
+    static final public String PROP_REPORTS_RULE_MATCH_TYPE_STATUS = "status";
+    static final public String PROP_REPORTS_RULE_MATCH_TYPE_STATUS_STATUS = "status";
+    static final public String PROP_REPORTS_RULE_MATCH_TYPE_STATUSTHRESH = "statusThreshold";
+    static final public String PROP_REPORTS_RULE_MATCH_TYPE_STATUSTHRESH_THRESH = "threshold";
+    static final public String PROP_REPORTS_RULE_MATCH_TYPE_STATUSWEIGHTTHRESH = "statusWeightedThreshold";
+    static final public String PROP_REPORTS_RULE_MATCH_TYPE_STATUSWEIGHTTHRESH_STATUSES = "statuses";
+    static final public String PROP_REPORTS_RULE_PROBLEM = "problem";
+    static final public String PROP_REPORTS_RULE_PROBLEM_SEVERITY = "severity";
+    static final public String PROP_REPORTS_RULE_PROBLEM_CATEGORY = "category";
+    static final public String PROP_REPORTS_RULE_PROBLEM_MSG = "message";
+    static final public String PROP_REPORTS_RULE_PROBLEM_SOLUTIONS = "solutions";
+    
     /**
      * Loads YAML properties into scheduler database
      * 
@@ -96,6 +142,7 @@ public class ConfigLoader {
         List<Map> gridList = (List<Map>) config.get(PROP_GRIDS);
         HashMap<String, Class> checkTypeClassMap = new HashMap<String, Class>();
         HashMap<String,String> dimensionLabelMap = new HashMap<String,String>();
+        HashMap<String,JSONObject> dimensionMap = new HashMap<String,JSONObject>();
         
         Connection conn = null;
         try{
@@ -111,8 +158,10 @@ public class ConfigLoader {
                         throw new RuntimeException("Found dimension at position " + i + 
                                 " that is missing 'id' attribute");
                     }
+                    dimensionMap.put(dimension.get(PROP_DIMENSIONS_ID)+"", new JSONObject());
                     for(Object dimensionParamObj : dimension.keySet()){
                         String dimensionParam = dimensionParamObj+"";
+                        String dimensionValue = "";
                         if(dimensionParam.equals(PROP_DIMENSIONS_ID)){
                             continue;
                         }
@@ -120,9 +169,20 @@ public class ConfigLoader {
                         if(dimensionParam.equals(PROP_DIMENSIONS_LABEL)){
                             dimensionLabelMap.put(dimension.get(PROP_DIMENSIONS_ID)+"", dimension.get(dimensionParam)+"");
                         }
+                        
+                        if(dimensionParam.equals(PROP_DIMENSION_MAP)){
+                            JSONObject jsonMap = JSONObject.fromObject(dimension.get(dimensionParam));
+                            dimensionValue = jsonMap.toString();
+                            dimensionMap.get(dimension.get(PROP_DIMENSIONS_ID)+"").put(dimensionParam, jsonMap);
+                        }else{
+                            dimensionValue = dimension.get(dimensionParam)+"";
+                            dimensionMap.get(dimension.get(PROP_DIMENSIONS_ID)+"").put(dimensionParam, dimensionValue);
+                        }
+                        
                         insertDimension.setString(1, dimension.get(PROP_DIMENSIONS_ID)+"");
                         insertDimension.setString(2, dimensionParam);
-                        insertDimension.setString(3, dimension.get(dimensionParam)+"");
+                        SerialClob valueClob = new SerialClob(dimensionValue.toCharArray());
+                        insertDimension.setClob(3, valueClob);
                         insertDimension.executeUpdate();
                     }
                     i++;
@@ -198,7 +258,20 @@ public class ConfigLoader {
             //NOTE: Remove this if ever have foreign keys to this value
             conn.createStatement().executeUpdate("DELETE FROM grids");
             conn.createStatement().executeUpdate("DELETE FROM checkStateDefs");
-
+            
+            //load reports
+            Map<String, Rule> ruleIdMap = ConfigLoader.loadReport(config);
+            Map<String, Rule> gridReportMap = new HashMap<String, Rule>();
+            Rule defaultReport = null;
+            if(config.containsKey(PROP_DEFAULT_REPORT) && config.get(PROP_DEFAULT_REPORT) != null){
+                String defaultReportId = config.get(PROP_DEFAULT_REPORT) + "";
+                if(!ruleIdMap.containsKey(defaultReportId) || ruleIdMap.get(defaultReportId) == null){
+                    throw new RuntimeException("Invalid " + PROP_DEFAULT_REPORT + "specifed. Id '" + defaultReportId + "'does not exist" );
+                }
+                defaultReport = ruleIdMap.get(defaultReportId);
+                gridReportMap.put(Madalert.RULE_DEFAULT_KEY, defaultReport);
+            }
+            
             //parse grids and update database
             PreparedStatement insertGridStmt = conn.prepareStatement("INSERT INTO grids VALUES(DEFAULT, ?, ?, ?, ?, ?, ?)");            
             PreparedStatement selCheckStmt = conn.prepareStatement("SELECT id FROM checks WHERE " +
@@ -219,7 +292,18 @@ public class ConfigLoader {
                 checkRequiredProp(gridMap, PROP_GRIDS_STATUS_LABELS);
                 // checkRequiredProp(gridMap, PROP_GRIDS_ROW_ORDER);
                 // checkRequiredProp(gridMap, PROP_GRIDS_COL_ORDER);
-
+                
+                //load reports if we have any
+                if(gridMap.containsKey(PROP_GRIDS_REPORT) && gridMap.get(PROP_GRIDS_REPORT) != null){
+                    String reportId = gridMap.get(PROP_GRIDS_REPORT) + "";
+                    if(!ruleIdMap.containsKey(reportId) || ruleIdMap.get(reportId) == null){
+                        throw new RuntimeException("Unable to report with id " + reportId);
+                    }
+                    gridReportMap.put(gridMap.get(PROP_GRIDS_NAME)+"", ruleIdMap.get(reportId));
+                }else if(defaultReport != null){
+                    gridReportMap.put(gridMap.get(PROP_GRIDS_NAME)+"", defaultReport);
+                }
+                
                 String colAlg = ((String)gridMap.get(PROP_GRIDS_COL_ALG)).toLowerCase();
                 int exclSelf = (Integer)gridMap.get(PROP_GRIDS_EXCL_SELF);
                 Map<String, List<String>> exclChecks = new HashMap<String, List<String>>();
@@ -331,7 +415,7 @@ public class ConfigLoader {
                             ResultSet selResult = selCheckStmt.executeQuery();
                             if(selResult.next()){
                                 log.debug("Updated check " + checkName);
-                                updateCheckStmt.setString(1, formatCheckDescription(checkDescrName, row, col));
+                                updateCheckStmt.setString(1, formatCheckDescription(checkDescrName, row, col, dimensionMap));
                                 updateCheckStmt.setInt(2, ri);
                                 updateCheckStmt.setInt(3, colOrderMap.get(col));
                                 updateCheckStmt.setInt(4, selResult.getInt(1));
@@ -345,7 +429,7 @@ public class ConfigLoader {
                                 insertCheckStmt.setString(5, checkNiceName);
                                 insertCheckStmt.setInt(6, ri);
                                 insertCheckStmt.setInt(7, colOrderMap.get(col));
-                                insertCheckStmt.setString(8, formatCheckDescription(checkDescrName, row, col));
+                                insertCheckStmt.setString(8, formatCheckDescription(checkDescrName, row, col, dimensionMap));
                                 insertCheckStmt.executeUpdate();
                             }
 
@@ -354,6 +438,11 @@ public class ConfigLoader {
                 }
             }
             conn.close();
+            
+            //set report rules
+            if(!gridReportMap.isEmpty()){
+                Madalert.setRules(gridReportMap);
+            }
         }catch(SQLException e){
             if(conn != null){
                 try{
@@ -367,6 +456,244 @@ public class ConfigLoader {
         return checkTypeClassMap;
     }
     
+    static public  Map<String, Rule> loadReport(Map config){
+        Map<String, Rule> ruleIdMap = new HashMap<String, Rule>();
+        //make sure we have any reports defined
+        if(!config.containsKey(PROP_REPORTS) || config.get(PROP_REPORTS) == null){
+            return ruleIdMap;
+        }
+        
+        //loop through reports
+        List<Map> reportList = (List<Map>) config.get(PROP_REPORTS);
+        for(Map report : reportList){
+            checkRequiredProp(report, PROP_REPORTS_ID);
+            checkRequiredProp(report, PROP_REPORTS_RULE);
+            String reportId = report.get(PROP_REPORTS_ID) + "";
+            if(ruleIdMap.containsKey(reportId) && ruleIdMap.get(reportId) != null){
+                throw new RuntimeException("Found two reports with same ID '" + 
+                        reportId + "'. IDs must be unique.");
+            }
+            ruleIdMap.put(reportId, parseRule((Map)report.get(PROP_REPORTS_RULE)));
+        }
+        
+        return ruleIdMap;
+    }
+    
+    static private Rule parseRule(Map rule){
+        checkRequiredProp(rule, PROP_REPORTS_RULE_TYPE);
+        String type = rule.get(PROP_REPORTS_RULE_TYPE) + "";
+        if(type.equals(PROP_REPORTS_RULE_TYPE_MATCH_FIRST)){
+            checkRequiredProp(rule, PROP_REPORTS_RULES);
+            return Madalert.matchFirst(parseRules((List<Map>)rule.get(PROP_REPORTS_RULES)));
+        }else if(type.equals(PROP_REPORTS_RULE_TYPE_MATCH_ALL)){
+            checkRequiredProp(rule, PROP_REPORTS_RULES);
+            return Madalert.matchAll(parseRules((List<Map>)rule.get(PROP_REPORTS_RULES)));
+        }else if(type.equals(PROP_REPORTS_RULE_TYPE_FOREACH_SITE)){
+            checkRequiredProp(rule, PROP_REPORTS_RULE);
+            return Madalert.forEachSite(parseSiteRule((Map)rule.get(PROP_REPORTS_RULE)));
+        }else if(type.equals(PROP_REPORTS_RULE_TYPE_SITERULE)){
+            checkRequiredProp(rule, PROP_REPORTS_RULE_SITE);
+            checkRequiredProp(rule, PROP_REPORTS_RULE_SELECTOR);
+            checkRequiredProp(rule, PROP_REPORTS_RULE_MATCH);
+            checkRequiredProp(rule, PROP_REPORTS_RULE_PROBLEM);
+            return Madalert.rule(parseSiteTestSet((Map)rule.get(PROP_REPORTS_RULE_SELECTOR)), 
+                    parseStatusMatcher((Map)rule.get(PROP_REPORTS_RULE_MATCH)), 
+                    parseProblem((Map)rule.get(PROP_REPORTS_RULE_PROBLEM))).site(rule.get(PROP_REPORTS_RULE_SITE) + "");
+        }else if(type.equals(PROP_REPORTS_RULE_TYPE_RULE)){
+            checkRequiredProp(rule, PROP_REPORTS_RULE_SELECTOR);
+            checkRequiredProp(rule, PROP_REPORTS_RULE_MATCH);
+            checkRequiredProp(rule, PROP_REPORTS_RULE_PROBLEM);
+            return Madalert.rule(parseTestSet((Map)rule.get(PROP_REPORTS_RULE_SELECTOR)), 
+                    parseStatusMatcher((Map)rule.get(PROP_REPORTS_RULE_MATCH)), 
+                    parseProblem((Map)rule.get(PROP_REPORTS_RULE_PROBLEM)));
+        }
+        
+        throw new RuntimeException("Invalid rule type '" + type + "'");
+    }
+
+    private static SiteRule parseSiteRule(Map rule) {
+        checkRequiredProp(rule, PROP_REPORTS_RULE_TYPE);
+        String type = rule.get(PROP_REPORTS_RULE_TYPE) + "";
+        if(type.equals(PROP_REPORTS_RULE_TYPE_MATCH_FIRST)){
+            checkRequiredProp(rule, PROP_REPORTS_RULES);
+            return Madalert.matchFirst(parseSiteRules((List<Map>)rule.get(PROP_REPORTS_RULES)));
+        }else if(type.equals(PROP_REPORTS_RULE_TYPE_MATCH_ALL)){
+            checkRequiredProp(rule, PROP_REPORTS_RULES);
+            return Madalert.matchAll(parseSiteRules((List<Map>)rule.get(PROP_REPORTS_RULES)));
+        }else if(type.equals(PROP_REPORTS_RULE_TYPE_FOREACH_SITE)){
+            throw new RuntimeException("Cannot nest " + PROP_REPORTS_RULE_TYPE_FOREACH_SITE + " rules");
+        }else if(type.equals(PROP_REPORTS_RULE_TYPE_SITERULE)){
+            throw new RuntimeException("Cannot nest " + PROP_REPORTS_RULE_TYPE_SITERULE + " rules in " + PROP_REPORTS_RULE_TYPE_FOREACH_SITE);
+        }else if(type.equals(PROP_REPORTS_RULE_TYPE_RULE)){
+            checkRequiredProp(rule, PROP_REPORTS_RULE_SELECTOR);
+            checkRequiredProp(rule, PROP_REPORTS_RULE_MATCH);
+            checkRequiredProp(rule, PROP_REPORTS_RULE_PROBLEM);
+            return Madalert.rule(parseSiteTestSet((Map)rule.get(PROP_REPORTS_RULE_SELECTOR)), 
+                    parseStatusMatcher((Map)rule.get(PROP_REPORTS_RULE_MATCH)), 
+                    parseProblem((Map)rule.get(PROP_REPORTS_RULE_PROBLEM)));
+        }
+        
+        throw new RuntimeException("Invalid rule type '" + type + "'");
+    }
+    
+    private static TestSet parseTestSet(Map rule) {
+        checkRequiredProp(rule, PROP_REPORTS_RULE_SELECTOR_TYPE);
+        String type = rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE) + "";
+        if(type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_GRID)){
+            return Madalert.forAllSites();
+        }else if(type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_SITE) ||
+                type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_ROW) ||
+                type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_COLUMN) ||
+                type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_CELL) ||
+                type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK)){
+            throw new RuntimeException("You may only use selector type '" + 
+                    type + "' within a " + PROP_REPORTS_RULE_TYPE_FOREACH_SITE + "rule");
+        }
+        
+        throw new RuntimeException("Invalid rule selector type '" + type + "'");
+    }
+    
+    private static SiteTestSet parseSiteTestSet(Map rule) {
+        checkRequiredProp(rule, PROP_REPORTS_RULE_SELECTOR_TYPE);
+        String type = rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE) + "";
+        if(type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_GRID)){
+            throw new RuntimeException("You may only use selector type '" + 
+                    type + "' outside a " + PROP_REPORTS_RULE_TYPE_FOREACH_SITE + "rule");
+        }else if(type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_SITE)){
+            return Madalert.forSite();
+        }else if(type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_ROW)){
+            return Madalert.forRow();
+        }else if(type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_COLUMN)){
+            return Madalert.forColumn();
+        }else if(type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_CELL)){
+            String rowSite = null;
+            String colSite = null;
+            int rowCheck = -1;
+            int colCheck = -1;
+            if(rule.containsKey(PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_ROWSITE) && rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_ROWSITE) != null){
+                rowSite = rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_ROWSITE) + "";
+            }
+            if(rule.containsKey(PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_COLSITE) && rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_COLSITE) != null){
+                colSite = rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_COLSITE) + "";
+            }
+            try{
+                if(rule.containsKey(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX) && rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX) != null){
+                    rowCheck = Integer.parseInt(rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX) + "");
+                }
+                if(rule.containsKey(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX) && rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX) != null){
+                    colCheck = Integer.parseInt(rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX) + "");
+                }
+            }catch(Exception e){
+                throw new RuntimeException("Both " + PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX + 
+                        " and " + PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX + " must be an integer "
+                        + "when used in a selector of type " + type);
+            }
+            if(rowSite == null && colSite == null){
+                throw new RuntimeException("Must specify either " + PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_ROWSITE + 
+                        " or " + PROP_REPORTS_RULE_SELECTOR_TYPE_CELL_COLSITE + "when using a selector of type " + type);
+            }
+            return Madalert.forCell(rowSite, colSite, rowCheck, colCheck);
+        }else if(type.equals(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK)){
+            int rowCheck = -1;
+            int colCheck = -1;
+            try{
+                if(rule.containsKey(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX) && rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX) != null){
+                    rowCheck = Integer.parseInt(rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX) + "");
+                }
+                if(rule.containsKey(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX) && rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX) != null){
+                    colCheck = Integer.parseInt(rule.get(PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX) + "");
+                }
+            }catch(Exception e){
+                throw new RuntimeException("Both " + PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX + 
+                        " and " + PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX + " must be an integer "
+                        + "when used in a selector of type " + type);
+            }
+            if(rowCheck < 0 && colCheck < 0){
+                throw new RuntimeException("Must specify either " + PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_ROWINDEX + 
+                        " or " + PROP_REPORTS_RULE_SELECTOR_TYPE_CHECK_COLINDEX + "when using a selector of type " + type);
+            }
+            return Madalert.forCheck(rowCheck, colCheck);
+        }
+        
+        throw new RuntimeException("Invalid rule selector type '" + type + "'");
+    }
+    
+    private static StatusMatcher parseStatusMatcher(Map rule) {
+        checkRequiredProp(rule, PROP_REPORTS_RULE_MATCH_TYPE);
+        String type = rule.get(PROP_REPORTS_RULE_MATCH_TYPE) + "";
+        if(type.equals(PROP_REPORTS_RULE_MATCH_TYPE_STATUS)){
+            checkRequiredProp(rule, PROP_REPORTS_RULE_MATCH_TYPE_STATUS_STATUS);
+            try{
+                return Madalert.matchStatus(Integer.parseInt(rule.get(PROP_REPORTS_RULE_MATCH_TYPE_STATUS_STATUS)+""));
+            }catch(Exception e){
+                throw new RuntimeException("The match 'status' property must be an integer");
+            }
+        }else if(type.equals(PROP_REPORTS_RULE_MATCH_TYPE_STATUSTHRESH)){
+            checkRequiredProp(rule, PROP_REPORTS_RULE_MATCH_TYPE_STATUS_STATUS);
+            checkRequiredProp(rule, PROP_REPORTS_RULE_MATCH_TYPE_STATUSTHRESH_THRESH);
+            try{
+                return Madalert.matchStatus(
+                        Integer.parseInt(rule.get(PROP_REPORTS_RULE_MATCH_TYPE_STATUS_STATUS)+""),
+                        Double.parseDouble(rule.get(PROP_REPORTS_RULE_MATCH_TYPE_STATUSTHRESH_THRESH)+""));
+            }catch(Exception e){
+                throw new RuntimeException("The match 'status' and 'threshold' property must be an integer and floating point number repspectively");
+            }
+        }else if(type.equals(PROP_REPORTS_RULE_MATCH_TYPE_STATUSWEIGHTTHRESH)){
+            checkRequiredProp(rule, PROP_REPORTS_RULE_MATCH_TYPE_STATUSWEIGHTTHRESH_STATUSES);
+            checkRequiredProp(rule, PROP_REPORTS_RULE_MATCH_TYPE_STATUSTHRESH_THRESH);
+            try{
+                List statusesConfig = (List)rule.get(PROP_REPORTS_RULE_MATCH_TYPE_STATUSWEIGHTTHRESH_STATUSES);
+                double[] statuses = new double[statusesConfig.size()];
+                for(int i =0; i < statusesConfig.size(); i++){
+                    statuses[i] = Double.parseDouble(statusesConfig.get(i)+"");
+                }
+                return Madalert.matchStatus(
+                        statuses,
+                        Double.parseDouble(rule.get(PROP_REPORTS_RULE_MATCH_TYPE_STATUSTHRESH_THRESH)+""));
+            }catch(Exception e){
+                throw new RuntimeException("The match 'statuses' must be a list of floating points and 'threshold' property must be a floating point number ");
+            }
+        }
+        
+        throw new RuntimeException("Invalid rule match type '" + type + "'");
+    }
+    
+    private static Problem parseProblem(Map rule) {
+        checkRequiredProp(rule, PROP_REPORTS_RULE_PROBLEM_SEVERITY);
+        checkRequiredProp(rule, PROP_REPORTS_RULE_PROBLEM_CATEGORY);
+        checkRequiredProp(rule, PROP_REPORTS_RULE_PROBLEM_MSG);
+        int severity;
+        try{
+            severity = Integer.parseInt(rule.get(PROP_REPORTS_RULE_PROBLEM_SEVERITY)+"");
+        }catch(Exception e){
+            throw new RuntimeException("The 'severity' property must be an integer");
+        }
+        List<String> solutions = new ArrayList<String>();
+        if(rule.containsKey(PROP_REPORTS_RULE_PROBLEM_SOLUTIONS) && rule.get(PROP_REPORTS_RULE_PROBLEM_SOLUTIONS) != null){
+            solutions = (List<String>) rule.get(PROP_REPORTS_RULE_PROBLEM_SOLUTIONS);
+        }
+        return new Problem(rule.get(PROP_REPORTS_RULE_PROBLEM_MSG)+"",
+                        severity,
+                        rule.get(PROP_REPORTS_RULE_PROBLEM_CATEGORY)+"",
+                        solutions);
+    }
+    
+    private static SiteRule[] parseSiteRules(List<Map> configRules) {
+        SiteRule[] rules = new SiteRule[configRules.size()];
+        for(int i = 0; i < configRules.size(); i++){
+            rules[i] = parseSiteRule(configRules.get(i));
+        }
+        return rules;
+    }
+    
+    private static List<Rule> parseRules(List<Map> configRules) {
+        List<Rule> rules = new ArrayList<Rule>();
+        for(Map configRule : configRules){
+            rules.add(parseRule(configRule));
+        }
+        return rules;
+    }
+
     /**
      * Sorts rows and/or columns alphabetically by label if provided or by ID otherwise
      * @param dimension the row or column list to sort
@@ -400,8 +727,27 @@ public class ConfigLoader {
         }
         return statusLabelMap.get(label)+"";
     }
-
-    private static String formatCheckDescription(String description, String rowName, String colName) {
+    
+    private static String replaceDimensionProps(String str, String type, String key1, String key2, HashMap<String, JSONObject> dimensionMap){
+        if(!dimensionMap.containsKey(key1)){
+            return str;
+        }
+        for(Object dimMapParam : dimensionMap.get(key1).keySet()){
+            if(dimMapParam.equals(PROP_DIMENSION_MAP)){
+                JSONObject rowColMap = dimensionMap.get(key1).getJSONObject(dimMapParam + "");
+                JSONObject colMap = DimensionUtil.getJsonProp(rowColMap, key2);
+                for(Object colProp : colMap.keySet()){
+                    str = str.replaceAll("%" + type + ".map."+colProp, colMap.getString(colProp+""));
+                }
+            }else{
+                str = str.replaceAll("%" + type + dimMapParam, dimensionMap.get(key1).getString(dimMapParam+""));
+            }
+        }
+        return str;
+    }
+    private static String formatCheckDescription(String description, String rowName, String colName, HashMap<String, JSONObject> dimensionMap) {
+        description = ConfigLoader.replaceDimensionProps(description, "row", rowName, colName, dimensionMap);
+        description = ConfigLoader.replaceDimensionProps(description, "col", colName, rowName, dimensionMap);
         description = description.replaceAll("%row", rowName);
         description = description.replaceAll("%col", colName);
         return description;

@@ -1,10 +1,10 @@
 %define package_name maddash-webui 
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
-%define relnum 1
+%define relnum 0.2rc1
 
 Name:           %{package_name}
-Version:        1.3
+Version:        2.0
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash Web Interface 
 License:        distributable, see LICENSE
@@ -14,7 +14,7 @@ Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  wget
-BuildRequires:  java-1.7.0-openjdk
+BuildRequires:  java-1.8.0-openjdk
 Requires:       perl
 Requires:       httpd 
 Requires:       mod_ssl

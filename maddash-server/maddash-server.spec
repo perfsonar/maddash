@@ -5,10 +5,10 @@
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
-%define relnum 1 
+%define relnum 0.2rc1 
 
 Name:           %{package_name}
-Version:        1.3
+Version:        2.0
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
@@ -16,16 +16,20 @@ Group:          Development/Libraries
 URL:            http://code.google.com/p/esnet-perfsonar
 Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  java-1.7.0-openjdk
-BuildRequires:  java-1.7.0-openjdk-devel
-BuildRequires:  maven
+BuildRequires:  java-1.8.0-openjdk
+BuildRequires:  java-1.8.0-openjdk-devel
 BuildRequires:  sed 
 BuildArch:      noarch
-Requires:       java-1.7.0-openjdk
+Requires:       java-1.8.0-openjdk
 %if 0%{?el7}
 BuildRequires: systemd
+BuildRequires:  maven
 %{?systemd_requires: %systemd_requires}
 %else
+#apache-maven is not in standard centos repos
+#can be acquired from https://repos.fedorapeople.org/repos/dchen/apache-maven/
+#install in mock with mock -r $target --install <RPM_URL>
+BuildRequires:  apache-maven
 Requires:       chkconfig
 %endif
 
@@ -105,12 +109,18 @@ chown maddash:maddash %{install_base}/target/%{package_name}.one-jar.jar
 ln -s %{install_base}/target/%{package_name}-%{version}.jar %{install_base}/target/%{package_name}.jar
 chown maddash:maddash %{install_base}/target/%{package_name}.jar
 
+#Correct paths on x86_64 hosts
+if [ -d "/usr/lib64" ]; then
+    sed -i "s:/usr/lib/nagios/plugins:/usr/lib64/nagios/plugins:g" %{config_base}/maddash.yaml
+fi
+    
 #Configure service to start when machine boots
 %if 0%{?el7}
 %systemd_post %{package_name}.service
 %else
 /sbin/chkconfig --add %{package_name}
 /sbin/chkconfig %{package_name} on
+%endif
 
 if [ "$1" = "2" ]; then
     ##Upgrade database
@@ -118,18 +128,20 @@ if [ "$1" = "2" ]; then
     
     #Update old nagios check paths
     sed -i "s:/opt/perfsonar_ps/nagios/bin:/usr/lib/nagios/plugins:g" %{config_base}/maddash.yaml
-    #Correct paths on x86_64 hosts
-    if [ -d "/usr/lib64/nagios/plugins" ]; then
-        sed -i "s:/usr/lib/nagios/plugins:/usr/lib64/nagios/plugins:g" %{config_base}/maddash.yaml
-    fi
     
     #fix graph URL
     sed -i "s:/serviceTest:/perfsonar-graphs:g" %{config_base}/maddash.yaml
     
-    #restart service on update
-    /sbin/service %{package_name} restart
+    #restart service
+    %if 0%{?el7}
+    %else
+        #restart service on update
+        /sbin/service %{package_name} restart
+    %endif
 fi
-%endif
+
+
+
 
 %files
 %defattr(-,maddash,maddash,-)

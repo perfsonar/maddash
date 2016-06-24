@@ -212,6 +212,15 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 		}
 		dashDropMenu.addChild(new dijit.MenuSeparator({}));
 		
+		var reportDropMenu = new dijit.DropDownMenu({});
+		for(var i=0; i < data.dashboards.length;i++){
+			reportDropMenu.addChild(new dijit.MenuItem({
+				label: data.dashboards[i].name,
+				onClick: function(){window.location = "report.cgi?dashboard=" + encodeURIComponent(this.label);}
+			}));
+		}
+		reportDropMenu.addChild(new dijit.MenuSeparator({}));
+		
 		var settingsDropMenu = new dijit.DropDownMenu({});
 		var autoRefreshDropMenu = new dijit.DropDownMenu({});
 		settingsDropMenu.addChild(new dijit.PopupMenuItem({
@@ -244,6 +253,11 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 		var gridDropMenu = new dijit.DropDownMenu({});
 		var mdGridDropMenu = new MadDashGridDropMenu(gridDropMenu, link);
 		this.gridSource.connect(mdGridDropMenu); 
+		
+		var gridReportDropMenu = new dijit.DropDownMenu({});
+		var mdReportGridDropMenu = new MadDashGridDropMenu(gridReportDropMenu, "report.cgi");
+		this.gridSource.connect(mdReportGridDropMenu); 
+		
 		this.gridSource.render();
 		
 		dashDropMenu.addChild(new dijit.PopupMenuItem({
@@ -253,6 +267,14 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 		menuBar.addChild(new dijit.PopupMenuBarItem({
 				label: "&#9776; Dashboards",
 				popup: dashDropMenu
+			}));
+		reportDropMenu.addChild(new dijit.PopupMenuItem({
+				label: "All Grids",
+				popup: gridReportDropMenu
+			}));
+		menuBar.addChild(new dijit.PopupMenuBarItem({
+				label: "&#119567; Reports",
+				popup: reportDropMenu
 			}));
 		if(config != undefined && config.data != undefined && config.data.addNodeURL != undefined){
             menuBar.addChild(new dijit.MenuBarItem({
@@ -313,7 +335,7 @@ var MadDashGridDropMenu = function(parent, link){
 	this.link = link;
 	
 	this.render = function(data){
-		for (i = 0; i < data.grids.length; i++) {
+		for (var i = 0; i < data.grids.length; i++) {
 			this.parent.addChild(new dijit.MenuItem({
 				label: data.grids[i].name,
 				onClick: function(){window.location = instance.link + "?grid=" + encodeURIComponent(this.label);}	
@@ -339,7 +361,8 @@ var MaDDashCheckTitle = function(parent){
 			console.log("data is null");
 			return;
 		}
-		this.parent.appendChild(maddashCreateSpan("maddashCheckTitle", data.rowName + " to " + data.colName + " (" + data.checkName + ")"));
+		this.parent.appendChild(maddashCreateDiv("maddashCheckTitle", data.rowName + " to " + data.colName + " (" + data.checkName + ")"));
+		this.parent.appendChild(maddashCreateDiv("maddashCheckSubtitle", data.description));
 	}
 }
 
@@ -390,6 +413,7 @@ var MaDDashCheckSummary = function(parent, config){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.config = config;
+	this.reportCount = 0;
 	
 	this.render = function(data){
 		this.parent.innerHTML = "";
@@ -412,6 +436,19 @@ var MaDDashCheckSummary = function(parent, config){
 		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Message For Current Status: "));
 		this.parent.appendChild(maddashCreateSpan("maddashFieldValue", data.message));
 		this.parent.appendChild(document.createElement("br"));
+		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Reports: "));
+		
+		var reportsDiv = document.createElement("div");
+		var reportBuilder = new MaDDashReport("maddashSummaryReportsDiv", null);
+		reportsDiv.className = "maddashSummaryReportsDiv";
+		this.addReport(reportBuilder, reportsDiv, "Grid Reports", data.globalReport);
+		this.addReport(reportBuilder, reportsDiv, data.rowName, data.rowReport);
+		this.addReport(reportBuilder, reportsDiv, data.colName, data.colReport);
+		if(this.reportCount == 0){
+		    this.parent.appendChild(maddashCreateSpan("maddashFieldValue", "No reports found for this check"));
+		}
+		this.parent.appendChild(reportsDiv);
+		
 		this.parent.appendChild(maddashCreateSpan("maddashFieldLabel", "Events: "));
 		var eventsDiv = document.createElement("div");
 		eventsDiv.className = "maddashSummaryEventsDiv";
@@ -425,6 +462,13 @@ var MaDDashCheckSummary = function(parent, config){
 		eventsSource.connect(mdEventsList);
 		eventsSource.render();
 	}
+	
+    this.addReport = function(builder, div, label, data){
+        if(data != null && data.problems != null && data.problems.length > 0){
+            div.appendChild(builder.createReport( label, data));
+            this.reportCount++;
+        }
+    }
 }
 
 var MaDDashEventsSummary = function(parent){
@@ -621,17 +665,20 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
 		for(var i=0;i<gridList.length;i++){
             var grid_id = "grid-" + i;
             var legend_id = "legend-" + i;
+            var report_id = "report-" + i;
             var container = d3.select("#" + this.parent.id).append("div")
                 .attr('class', function(){return 'grid-container'})
             container.append("div").attr("class", "maddashGridName").text(gridList[i].name)
             var legend = container.append("div").attr('class', 'legends').attr("id", legend_id);
+            var report = container.append("div").attr("id", report_id);
             var gridDiv = container.append("div").attr("id", grid_id)
             gridDiv.append("img").attr("src", "images/loader.gif").attr("height", "20")
                 .attr("width", "20").attr("class", "loader")
                 .attr("style", "position:relative;left:49%;top:49%");
             
             var ds = new MaDDashDataSource(gridList[i].uri);
-            var mdGrid = new MaDDashGrid(grid_id, legend_id);
+            
+            var mdGrid = new MaDDashGrid(grid_id, legend_id, report_id);
             if(config.colors != undefined){
                 mdGrid.setColorScale(config.colors);
             }
@@ -655,11 +702,6 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
                         config.grids[gridList[i].name].cellPadding != null){
                     mdGrid.setCellPadding(config.grids[gridList[i].name].cellPadding);
                 }
-                
-                if(config.grids[gridList[i].name].textBlockSize != undefined && 
-                        config.grids[gridList[i].name].textBlockSize != null){
-                    mdGrid.setTextBlockSize(config.grids[gridList[i].name].textBlockSize);
-                }
             }
             
             ds.render();
@@ -667,7 +709,239 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
 	}
 }
 
+/**
+ * Class: MaDDashReportPane
+ * Description: Widget that contains a report for a grid and optionally a host
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ *      grid: the name of the grid for which to display reports
+ *      host: optionally the host for which to display a report
+ */
+var MaDDashReportPane = function(parent, type, name, host, config){
+	var instance = this;
+	this.parent = _maddashSetParent(parent);
+	this.type = (type == null ? "dashboard" : type);
+	this.name = ((name == null && this.type == "dashboard")? config.defaultDashboard : name);
+    this.host = host;
+    
+	this.render = function(data){
 
+		this.parent.innerHTML = "";
+		if (data == null) {
+			console.log("data is null");
+			return;
+		}
+		
+		//get the list of grids that need to be drawn
+		var gridList = new Array();
+		if(this.type == "dashboard"){
+			var dashFound = false;
+			if (this.name) {
+				for(var i = 0;i < data.dashboards.length && !dashFound;i++){
+					if(data.dashboards[i].name == this.name){
+						gridList = data.dashboards[i].grids;
+						dashFound = true;
+					}
+				}
+			}
+			else {
+				this.name = data.dashboards[0].name;
+				gridList = data.dashboards[0].grids;
+				if (gridList) {
+					dashFound = true;
+				}
+			}
+			if(!dashFound){
+				if(this.name){
+					console.log("Dashboard " + this.name + " not found");
+				}
+				else {
+					console.log("No dashboards not found");
+				}
+			}
+		}else if(this.type == "grid"){
+		    var gridFound = false;
+			for(var i = 0;i < data.grids.length && !gridFound;i++){
+			    if(data.grids[i].name == this.name){
+					gridList.push(data.grids[i]);
+					gridFound = true;
+				}
+			}
+			if(!gridFound){
+				console.log("Grid " + this.name + " not found");
+			}
+		}else{
+			console.log("Unable to render dashboard. Invalid type " + this.type);
+			return;
+		}
+		
+		//start loading grids
+		if(dashFound){
+		    d3.select("#" + this.parent.id).append("div").attr("class", "maddashDashboardName").text(this.name + " Dashboard");
+		}
+		for(var i=0;i<gridList.length;i++){
+            var report_id = "report-" + i;
+            var container = d3.select("#" + this.parent.id).append("div")
+                .attr('class', function(){return 'report-container'});
+            container.append("div").attr("class", "maddashReportGridName").text(gridList[i].name);
+            var reportDiv = container.append("div").attr("id", report_id)
+            reportDiv.append("img").attr("src", "images/loader.gif").attr("height", "20")
+                .attr("width", "20").attr("class", "loader")
+                .attr("style", "position:relative;left:49%;top:49%");
+            
+            var ds = new MaDDashDataSource(gridList[i].uri);
+            var mdReport= new MaDDashReport(report_id, host);
+            ds.connect(mdReport);
+            ds.render();
+		}
+	}
+}
+
+/**
+ * Class: MaDDashReport
+ * Description: Widget that displays details of a report
+ * Parameters:
+ *      parentId: id string of the container element
+ *      host: optional host limiter that displays just the host we want displayed
+ */
+var MaDDashReport = function(parent, host){
+    var instance = this;
+    this.parent = _maddashSetParent(parent);
+    this.host = host;
+
+    this.render = function (data){
+        this.parent.innerHTML = "";
+        if(data.report == null){
+            this.parent.appendChild(maddashCreateSpan("maddashReportNoData", "No report data available."));
+            return;
+        }
+        
+        var problemFound = false;
+        
+        if(data.report.global != null && data.report.global.problems != null && data.report.global.problems.length > 0){
+            problemFound = true;
+            this.parent.appendChild(this.createReport("Global", data.report.global));
+        }
+        
+        
+        //create header
+        if(data.report.sites != null){
+            for(var site in data.report.sites){
+                //don't render sites without problems
+                if(data.report.sites[site].problems == null || data.report.sites[site].problems.length == 0){
+                    continue;
+                }else if(host && host != site){
+                    continue;
+                }
+                
+                problemFound = true;
+                this.parent.appendChild(this.createReport(site, data.report.sites[site]));
+            }
+        }
+        
+        if(!problemFound){
+            this.parent.appendChild(this.createStatusRow(0));
+        }
+    }
+    
+    this.createReport = function (name, report){
+        //create container
+        var reportDiv = document.createElement("div");
+        reportDiv.className = "maddashReportReport";
+        
+        //create header
+        var scopeHeaderDiv = document.createElement("div");
+        scopeHeaderDiv.className = "maddashReportScopeTitle";
+        scopeHeaderDiv.appendChild(maddashCreateSpan("maddashReportScopeTitleSpan", name));
+        reportDiv.appendChild(scopeHeaderDiv);
+        
+        //add status line
+        //reportDiv.appendChild(this.createStatusRow(report.severity));
+        
+        //add problems
+        if(report.problems != null && report.problems.length > 0){
+            var probsDiv = document.createElement("div");
+            probsDiv.className = "maddashReportProblems";
+            for(var i = 0; i < report.problems.length; i++){
+                var probDiv = document.createElement("div");
+                probDiv.className = "maddashReportProblem";
+                probDiv.appendChild(this.createStatusRow(report.problems[i].severity, report.problems[i].name));
+                probDiv.appendChild(this.createLabelRow("Category", report.problems[i].category, "maddashReportCategory"));
+                if(report.problems[i].solutions != null && report.problems[i].solutions.length > 0){
+                    probDiv.appendChild(this.createHeadingRow("maddashReportLabel", "Potential Solutions:"));
+                    var solutionDiv = document.createElement("div");
+                    solutionDiv.className = "maddashReportSolutions";
+                    var solutionList = document.createElement("ul");
+                    solutionList.className = "maddashReportSolutionsList";
+                    for(var j = 0; j < report.problems[i].solutions.length; j++){
+                        solutionList.appendChild(this.createSolution(report.problems[i].solutions[j]));
+                    }
+                    solutionDiv.appendChild(solutionList);
+                    probDiv.appendChild(solutionDiv);
+                }
+                probsDiv.appendChild(probDiv);
+            }
+            reportDiv.appendChild(probsDiv);
+        }
+        
+        return reportDiv;
+    }
+    
+    this.createStatusRow = function(status, descr) {
+        var div = document.createElement("div");
+        div.className = "maddashReportStatusRow";
+        if(status == 0){
+            div.appendChild(this.createStatusImage("images/success.png"));
+            div.appendChild(maddashCreateSpan("maddashReportStatusRowOK", (descr ? descr : "Status is OK")));
+        }else if(status == 1){
+            div.appendChild(this.createStatusImage("images/warning.png"));
+            div.appendChild(maddashCreateSpan("maddashReportStatusRowWarn", (descr ? descr : "Status is WARNING. See report(s) for details.")));
+        }else if(status >= 2){
+            div.appendChild(this.createStatusImage("images/error.png"));
+            div.appendChild(maddashCreateSpan("maddashReportStatusRowCritical", (descr ? descr : "Status is CRITICAL. See report(s) for details.")));
+        }
+        return div;
+    }
+    
+    this.createStatusImage = function(src) {
+        var img = document.createElement("img");
+        img.className = "maddashReportStatusRowImg";
+        img.src = src;
+        return img;
+    }
+    
+    this.createSolution = function(text) {
+        if(text == null){
+            return;
+        }
+        var li = document.createElement("li");
+        li.className = "maddashReportSolutionsListItem";
+        li.appendChild(document.createTextNode(text));
+        return li;
+    }
+    
+    this.createHeadingRow = function(textClass, text) {
+        if(text == null){
+            return;
+        }
+        var div = document.createElement("div");
+        div.className = "maddashReportRow";
+        div.appendChild(maddashCreateSpan(textClass, text));
+        return div;
+    }
+    
+    this.createLabelRow = function(label, text, textClass) {
+        if(text == null){
+            return;
+        }
+        var div = document.createElement("div");
+        div.className = "maddashReportRow";
+        div.appendChild(maddashCreateSpan("maddashReportLabel", label + ":"));
+        div.appendChild(maddashCreateSpan(textClass, text));
+        return div;
+    }
+  }
+  
 /**
  * Class: MaDDashCheckDetails
  * Description: Widget that contains configuration information about a check

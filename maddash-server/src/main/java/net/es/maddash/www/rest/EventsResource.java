@@ -2,9 +2,8 @@ package net.es.maddash.www.rest;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
+import javax.json.JsonObject;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -15,7 +14,6 @@ import javax.ws.rs.core.UriInfo;
 
 import net.es.maddash.MaDDashGlobals;
 import net.es.maddash.NetLogger;
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
@@ -37,7 +35,7 @@ public class EventsResource {
         NetLogger netLog = NetLogger.getTlogger();
         this.netLogger.info(netLog.start(GET_EVENT));
         
-        JSONObject json = null;
+        JsonObject json = null;
         try{
             json = MaDDashGlobals.getInstance().getResourceManager().getEvents(gridName, rowName, colName, checkName, dimensionName, uriInfo);
         }catch(Exception e){

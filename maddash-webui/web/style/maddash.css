@@ -3,11 +3,18 @@
 .gactive{background:#3c3c3c; fill:#3c3c3c}
 .grow{overflow:hidden;clear:both;z-index:1;position:relative;}
 .grow-heading{float:left;margin:1px 0px;}
+/* non-error text */
 .gtext{font-family:verdana;font-size:10px;}
 .glink .gtext {fill:#242424;text-decoration: underline;}
 .glink .gtext:hover {text-decoration: underline;font-size:12px;}
-.gnolink .gtext {fill:#242424; }
+.gnolink .gtext {fill:#242424;}
 .gactive .gtext {fill:#fff;font-size:11px;}
+/* error text */
+.gtexterr{font-family:verdana;font-size:10px;font-weight: bold;}
+.glink .gtexterr {fill:#FF0000;text-decoration: underline;}
+.glink .gtexterr:hover {text-decoration: underline;font-size:12px;}
+.gnolink .gtexterr {fill:#FF0000;}
+.gactive .gtexterr {fill:#fff;font-size:11px;}
 .gcell{float:left;cursor:pointer;background:none;}
 .shadow {
 /*        -moz-box-shadow: 0 0 30px 5px #000;
@@ -34,3 +41,56 @@ rect{fill:none;}
 .legend{float:left;margin: 4px 10px 4px 10px;}
 .lsymbol{float:left;width:13px;height:13px;margin-right:3px;}
 .ltext{float:left;line-height:13px;font-style:normal;color:#252525}
+
+.gridReportSummaryWarn{
+        border:1px solid #FFFF00;
+        background-color: #FFFFCC;
+        margin: 5px 5px 5px 5px;
+        float: left;
+        min-width: 97%;
+        
+}
+.gridReportSummaryWarn img {
+        vertical-align: middle;
+        height: 24px;
+        width: 24px;
+        
+}
+.gridReportSummaryWarnText {
+    font-size:13px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.gridReportSummaryWarn a:link {
+    color: #000000;
+}
+.gridReportSummaryWarn a:visited {
+    color: #000000;
+}
+.gridReportSummaryWarn a:active {
+    color: #CCCCCC;
+}
+.gridReportSummaryWarn a:hover {
+    color: #777777;
+}
+
+.gridReportSummaryOk{
+        border:0px;
+        margin: 5px 5px 5px 5px;
+        float: left;
+        min-width: 97%;
+        
+}
+.gridReportSummaryOk img {
+        vertical-align: middle;
+        height: 24px;
+        width: 24px;
+        
+}
+.gridReportSummaryOkText {
+    font-size:13px;
+    display: inline-block;
+    vertical-align: middle;
+}
+

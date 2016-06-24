@@ -2,6 +2,9 @@ package net.es.maddash.www;
 
 import java.io.IOException;
 
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
 import org.apache.log4j.Logger;
 import org.glassfish.grizzly.filterchain.Filter;
 import org.glassfish.grizzly.http.server.HttpHandler;
@@ -9,9 +12,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.ssl.SSLContextConfigurator;
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
-
-import com.sun.jersey.api.container.ContainerFactory;
-import com.sun.jersey.api.core.ResourceConfig;
+import org.glassfish.jersey.server.ContainerFactory;
 
 public class WebServer {
     Logger log = Logger.getLogger(WebServer.class);
@@ -22,10 +23,10 @@ public class WebServer {
     final static public String HTTPS_CLIENT_AUTH_WANT = "want";
     final static public String HTTPS_CLIENT_AUTH_OFF = "off";
     
-    public WebServer(String hostname, ResourceConfig rc){
+    public WebServer(String hostname, Application app){
         this.hostname = hostname;
         this.webServer = new HttpServer();
-        HttpHandler handler = ContainerFactory.createContainer(HttpHandler.class, rc);
+        HttpHandler handler = ContainerFactory.createContainer(HttpHandler.class, app);
         this.webServer.getServerConfiguration().addHttpHandler(handler, "/");
     }
     
