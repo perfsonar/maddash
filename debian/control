@@ -2,7 +2,7 @@ Source: maddash
 Section: net
 Priority: optional
 Maintainer: Valentin Vidic <Valentin.Vidic@CARNet.hr>
-Build-Depends: debhelper (>= 9), openjdk-7-jdk | java7-jdk, maven, wget, dh-systemd
+Build-Depends: debhelper (>= 9), openjdk-8-jdk | java8-jdk, maven, wget, dh-systemd
 Standards-Version: 3.9.6
 Homepage: http://software.es.net/maddash/
 Vcs-Git: git://github.com/esnet/maddash
@@ -22,7 +22,7 @@ Description: Network monitoring server metapackage - beta
 
 Package: maddash-server
 Architecture: all
-Depends: openjdk-7-jre-headless | java7-runtime-headless, nagios-plugins-perfsonar,
+Depends: openjdk-8-jre-headless | java8-runtime-headless, nagios-plugins-perfsonar,
  adduser, ${shlibs:Depends}, ${misc:Depends}
 Description: Scheduler and REST server for network monitoring - beta
  MaDDash is a framework for scheduling service checks and displaying results in
