@@ -1,5 +1,9 @@
 package net.es.maddash;
 
+import static org.quartz.CronScheduleBuilder.cronSchedule;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,9 +19,15 @@ import java.util.Map;
 import javax.sql.rowset.serial.SerialClob;
 
 import org.apache.log4j.Logger;
+import org.quartz.CronTrigger;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 
 import net.es.maddash.checks.Check;
 import net.es.maddash.checks.CheckConstants;
+import net.es.maddash.jobs.NotifyJob;
 import net.es.maddash.madalert.Madalert;
 import net.es.maddash.madalert.Problem;
 import net.es.maddash.madalert.Rule;
@@ -25,6 +35,7 @@ import net.es.maddash.madalert.SiteRule;
 import net.es.maddash.madalert.SiteTestSet;
 import net.es.maddash.madalert.StatusMatcher;
 import net.es.maddash.madalert.TestSet;
+import net.es.maddash.notifications.NotificationFactory;
 import net.es.maddash.utils.DimensionUtil;
 import net.sf.json.JSONObject;
 
@@ -124,6 +135,21 @@ public class ConfigLoader {
     static final public String PROP_REPORTS_RULE_PROBLEM_CATEGORY = "category";
     static final public String PROP_REPORTS_RULE_PROBLEM_MSG = "message";
     static final public String PROP_REPORTS_RULE_PROBLEM_SOLUTIONS = "solutions";
+    
+    static final public String PROP_NOTIFICATIONS = "notifications";
+    static final public String PROP_NOTIFICATIONS_NAME = "name";
+    static final public String PROP_NOTIFICATIONS_TYPE = "type";
+    static final public String PROP_NOTIFICATIONS_SCHEDULE = "schedule";
+    static final public String PROP_NOTIFICATIONS_PROBFREQ = "problemReportFrequency";
+    static final public String PROP_NOTIFICATIONS_MINSEV = "minimumSeverity";
+    static final public String PROP_NOTIFICATIONS_FILTERS = "filters";
+    static final public String PROP_NOTIFICATIONS_FILTERS_TYPE = "type";
+    static final public String PROP_NOTIFICATIONS_FILTERS_TYPE_DASHBOARD = "dashboard";
+    static final public String PROP_NOTIFICATIONS_FILTERS_TYPE_GRID = "grid";
+    static final public String PROP_NOTIFICATIONS_FILTERS_TYPE_SITE = "site";
+    static final public String PROP_NOTIFICATIONS_FILTERS_TYPE_CATEGORY = "category";
+    static final public String PROP_NOTIFICATIONS_FILTERS_VALUE = "value";
+    static final public String PROP_NOTIFICATIONS_PARAMS = "parameters";
     
     /**
      * Loads YAML properties into scheduler database
@@ -311,7 +337,7 @@ public class ConfigLoader {
                         gridMap.get(PROP_GRIDS_EXCL_CHECKS) != null){
                     exclChecks = (Map<String, List<String>>) gridMap.get(PROP_GRIDS_EXCL_CHECKS);
                 }
-
+                
                 //check groups
                 checkRequiredProp(groupMap, (String) gridMap.get(PROP_GRIDS_ROWS));
                 checkRequiredProp(groupMap, (String) gridMap.get(PROP_GRIDS_COLS));
@@ -456,6 +482,10 @@ public class ConfigLoader {
         return checkTypeClassMap;
     }
     
+    private static String notifyKey(String notifyName, String notifyType) {
+        return notifyName + "::::" + notifyType;
+    }
+
     static public  Map<String, Rule> loadReport(Map config){
         Map<String, Rule> ruleIdMap = new HashMap<String, Rule>();
         //make sure we have any reports defined
@@ -767,6 +797,149 @@ public class ConfigLoader {
     static private void checkRequiredProp(Map config, String propName){
         if(!config.containsKey(propName) || config.get(propName) == null){
             throw new RuntimeException("The property '" + propName + "' is not defined");
+        }
+    }
+    
+    static public void loadNotifications(Map config,ComboPooledDataSource dataSource, Scheduler scheduler) throws SchedulerException{
+        if(!config.containsKey(PROP_NOTIFICATIONS) || config.get(PROP_NOTIFICATIONS) == null){
+            return;
+        }
+        
+        Connection conn = null;
+        try{
+            conn = dataSource.getConnection();
+            //load notifications if we have any
+            HashMap<String, Integer> notifyNameMap = new HashMap<String, Integer>();
+            PreparedStatement selNotifications = conn.prepareStatement("SELECT id, name, type FROM notifications");
+            PreparedStatement insertNotifications = conn.prepareStatement("INSERT INTO " +
+                    "notifications VALUES(DEFAULT, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement updateNotifications = conn.prepareStatement("UPDATE notifications SET params=? WHERE id=?");
+            PreparedStatement delNotifications = conn.prepareStatement("DELETE FROM notifications WHERE id=?");
+            PreparedStatement delNotificationProblems = conn.prepareStatement("DELETE FROM notificationProblems WHERE notificationId=?");
+            //build map of current notification types
+            ResultSet notifySelResult = selNotifications.executeQuery();
+            while(notifySelResult.next()){
+                String key = ConfigLoader.notifyKey(notifySelResult.getString(2), notifySelResult.getString(3));
+                notifyNameMap.put(key, notifySelResult.getInt(1));
+            }
+
+            //insert new/update existing
+            List<Map> notifyConfigList = (List<Map>) config.get(PROP_NOTIFICATIONS);
+            int i = 0;
+            for(Map notifyConfig : notifyConfigList){
+                checkRequiredProp(notifyConfig, PROP_NOTIFICATIONS_NAME);
+                checkRequiredProp(notifyConfig, PROP_NOTIFICATIONS_TYPE);
+                checkRequiredProp(notifyConfig, PROP_NOTIFICATIONS_PARAMS);
+                checkRequiredProp(notifyConfig, PROP_NOTIFICATIONS_SCHEDULE);
+               
+                //insert into database
+                String notifyName = notifyConfig.get(PROP_NOTIFICATIONS_NAME) + "";
+                String notifyType = notifyConfig.get(PROP_NOTIFICATIONS_TYPE) + "";
+                if(!NotificationFactory.isValidType(notifyType)){
+                    throw new RuntimeException("Invalid notification type " + notifyType);
+                }
+                String notifyParams = JSONObject.fromObject(notifyConfig.get(PROP_NOTIFICATIONS_PARAMS)).toString();
+                SerialClob paramClob = new SerialClob(notifyParams.toCharArray());
+                String notifyKey = ConfigLoader.notifyKey(notifyName, notifyType);
+                int notificationId = -1;
+                if(notifyNameMap.containsKey(notifyKey)){
+                    //update
+                    notificationId = notifyNameMap.get(notifyKey);
+                    updateNotifications.setClob(1, paramClob);
+                    updateNotifications.setInt(2, notificationId);
+                    updateNotifications.executeUpdate();
+                    notifyNameMap.remove(notifyKey);
+                }else{
+                    //insert
+                    insertNotifications.setString(1, notifyName);
+                    insertNotifications.setString(2, notifyType);
+                    insertNotifications.setClob(3, paramClob);
+                    insertNotifications.executeUpdate();
+                    if(insertNotifications.getGeneratedKeys().next()){
+                        notificationId = insertNotifications.getGeneratedKeys().getInt(1);
+                    }else{
+                        throw new RuntimeException("Notification insert failed to yield an auto-generated key");
+                    }
+                }
+                
+                //schedule job
+                String schedule = notifyConfig.get(PROP_NOTIFICATIONS_SCHEDULE).toString().trim();
+                schedule = "0 " + schedule; //match quartz special format by adding seconds
+                int minSeverity = -1;
+                if(notifyConfig.containsKey(PROP_NOTIFICATIONS_MINSEV) && 
+                        notifyConfig.get(PROP_NOTIFICATIONS_MINSEV) != null){
+                    try{
+                        minSeverity = Integer.parseInt(notifyConfig.get(PROP_NOTIFICATIONS_MINSEV) + "");
+                    }catch(Exception e){
+                        throw new RuntimeException(PROP_NOTIFICATIONS_MINSEV + " must be an integer");
+                    }
+                }
+                int frequency = -1;
+                if(notifyConfig.containsKey(PROP_NOTIFICATIONS_PROBFREQ) && 
+                        notifyConfig.get(PROP_NOTIFICATIONS_PROBFREQ) != null){
+                    try{
+                        frequency = Integer.parseInt(notifyConfig.get(PROP_NOTIFICATIONS_PROBFREQ) + "");
+                    }catch(Exception e){
+                        throw new RuntimeException(PROP_NOTIFICATIONS_PROBFREQ + " must be an integer");
+                    }
+                }
+                HashMap<String,Boolean> dashboardFilters = new HashMap<String,Boolean>();
+                HashMap<String,Boolean> gridFilters = new HashMap<String,Boolean>(); 
+                HashMap<String,Boolean> siteFilters = new HashMap<String,Boolean>(); 
+                HashMap<String,Boolean> categoryFilters = new HashMap<String,Boolean>(); 
+                if(notifyConfig.containsKey(PROP_NOTIFICATIONS_FILTERS) && 
+                        notifyConfig.get(PROP_NOTIFICATIONS_FILTERS) != null){
+                    for(Map filter: (List<Map>)notifyConfig.get(PROP_NOTIFICATIONS_FILTERS)){
+                        checkRequiredProp(filter, PROP_NOTIFICATIONS_FILTERS_TYPE);
+                        checkRequiredProp(filter, PROP_NOTIFICATIONS_FILTERS_VALUE);
+                        if(PROP_NOTIFICATIONS_FILTERS_TYPE_DASHBOARD.equals(filter.get(PROP_NOTIFICATIONS_FILTERS_TYPE)+"")){
+                            dashboardFilters.put(filter.get(PROP_NOTIFICATIONS_FILTERS_VALUE) + "", true);
+                        }else if(PROP_NOTIFICATIONS_FILTERS_TYPE_GRID.equals(filter.get(PROP_NOTIFICATIONS_FILTERS_TYPE)+"")){
+                            gridFilters.put(filter.get(PROP_NOTIFICATIONS_FILTERS_VALUE)+"", true);
+                        }else if(PROP_NOTIFICATIONS_FILTERS_TYPE_SITE.equals(filter.get(PROP_NOTIFICATIONS_FILTERS_TYPE)+"")){
+                            siteFilters.put(filter.get(PROP_NOTIFICATIONS_FILTERS_VALUE)+"", true);
+                        }else if(PROP_NOTIFICATIONS_FILTERS_TYPE_CATEGORY.equals(filter.get(PROP_NOTIFICATIONS_FILTERS_TYPE)+"")){
+                            categoryFilters.put(filter.get(PROP_NOTIFICATIONS_FILTERS_VALUE)+"", true);
+                        }else{
+                            throw new RuntimeException("Invalid " + PROP_NOTIFICATIONS_FILTERS_TYPE + ": " + PROP_NOTIFICATIONS_FILTERS_VALUE);
+                        }
+                    }
+                }
+                JobDataMap dataMap = new JobDataMap();
+                dataMap.put("notificationId", notificationId);
+                dataMap.put("minSeverity", minSeverity);
+                dataMap.put("frequency", frequency);
+                dataMap.put("dashboardFilters", dashboardFilters);
+                dataMap.put("gridFilters", gridFilters);
+                dataMap.put("siteFilters", siteFilters);
+                dataMap.put("categoryFilters", categoryFilters);
+                CronTrigger cronTrigger = newTrigger()
+                        .withIdentity("NotifyTrigger"+i, "NOTIFY")
+                        .withSchedule(cronSchedule(schedule))
+                        .build();
+                JobDetail jobDetail = newJob(NotifyJob.class)
+                        .withIdentity("NotifyJob"+i, "NOTIFY")
+                        .usingJobData(dataMap)
+                        .build();
+                scheduler.scheduleJob(jobDetail, cronTrigger);
+                i++;
+            }
+
+            //delete old
+            for(String notifyName : notifyNameMap.keySet()){
+                delNotificationProblems.setInt(1, notifyNameMap.get(notifyName));
+                delNotificationProblems.executeUpdate();
+                delNotifications.setInt(1, notifyNameMap.get(notifyName));
+                delNotifications.executeUpdate();
+            }
+        }catch(SQLException e){
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch(SQLException e2){}
+            }
+            e.printStackTrace();
+            throw new RuntimeException("Error loading database: " + e.getMessage());
         }
     }
 }
