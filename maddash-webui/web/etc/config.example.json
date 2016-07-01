@@ -27,6 +27,19 @@
         3: "#990000", 
         4: "gray",
         5: "black"
-        }
+        },
+    "alternateColors": [
+        {
+            "name": "Classic",
+            "colors": {
+                0: "green", 
+                1: "yellow", 
+                2: "red", 
+                3: "orange", 
+                4: "gray",
+                5: "black"
+            }
+        },
+     ]
 }
 

@@ -11,9 +11,9 @@
 .gactive .gtext {fill:#fff;font-size:11px;}
 /* error text */
 .gtexterr{font-family:verdana;font-size:10px;font-weight: bold;}
-.glink .gtexterr {fill:#FF0000;text-decoration: underline;}
+.glink .gtexterr {fill:#000000;text-decoration: underline;}
 .glink .gtexterr:hover {text-decoration: underline;font-size:12px;}
-.gnolink .gtexterr {fill:#FF0000;}
+.gnolink .gtexterr {fill:#000000;}
 .gactive .gtexterr {fill:#fff;font-size:11px;}
 .gcell{float:left;cursor:pointer;background:none;}
 .shadow {
@@ -43,8 +43,6 @@ rect{fill:none;}
 .ltext{float:left;line-height:13px;font-style:normal;color:#252525}
 
 .gridReportSummaryWarn{
-        border:1px solid #FFFF00;
-        background-color: #FFFFCC;
         margin: 5px 5px 5px 5px;
         float: left;
         min-width: 97%;
