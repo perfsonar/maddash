@@ -777,13 +777,18 @@ var MaDDashReportPane = function(parent, type, name, host, config){
 		
 		//start loading grids
 		if(dashFound){
-		    d3.select("#" + this.parent.id).append("div").attr("class", "maddashDashboardName").text(this.name + " Dashboard");
+		    d3.select("#" + this.parent.id)
+		        .append("div").attr("class", "maddashReportDashboardName")
+		        .append("a").attr("href", "index.cgi?dashboard=" + encodeURIComponent(this.name))
+		        .text(this.name + " Dashboard");
 		}
 		for(var i=0;i<gridList.length;i++){
             var report_id = "report-" + i;
             var container = d3.select("#" + this.parent.id).append("div")
                 .attr('class', function(){return 'report-container'});
-            container.append("div").attr("class", "maddashReportGridName").text(gridList[i].name);
+            container.append("div").attr("class", "maddashReportGridName")
+                .append("a").attr("href", "index.cgi?grid=" + encodeURIComponent(gridList[i].name))
+                .text(gridList[i].name);
             var reportDiv = container.append("div").attr("id", report_id)
             reportDiv.append("img").attr("src", "images/loader.gif").attr("height", "20")
                 .attr("width", "20").attr("class", "loader")
