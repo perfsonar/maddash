@@ -44,6 +44,7 @@ public class NotifyJob implements Job{
         //load data map
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         int notificationId = dataMap.getInt("notificationId");
+        Notification notifier = (Notification) dataMap.get("notifier");;
         int minSeverity = dataMap.getInt("minSeverity");
         int frequency = dataMap.getInt("frequency");
         HashMap<String, Boolean> dashboardFilters = (HashMap<String, Boolean>)dataMap.get("dashboardFilters");
@@ -57,15 +58,12 @@ public class NotifyJob implements Job{
             //init db and find notification row
             MaDDashGlobals globals = MaDDashGlobals.getInstance();
             conn = globals.getDataSource().getConnection();
-            PreparedStatement selStmt = conn.prepareStatement("SELECT name, type, params FROM notifications WHERE id=?");
+            PreparedStatement selStmt = conn.prepareStatement("SELECT id FROM notifications WHERE id=?");
             selStmt.setInt(1, notificationId);
             ResultSet notificationResult = selStmt.executeQuery();
             if(!notificationResult.next()){
                 throw new RuntimeException("Unable to find notification with ID " + notificationId + " in database");
             }
-            String name = notificationResult.getString(1);
-            String type = notificationResult.getString(2);
-            JsonObject params = Json.createReader(new StringReader(notificationResult.getString(3))).readObject();
             
             //find reports we care about
             List<NotifyProblem> problems = new ArrayList<NotifyProblem>();
@@ -170,7 +168,6 @@ public class NotifyJob implements Job{
             }
             
             //create notifier and send reports
-            Notification notifier = NotificationFactory.create(name, type, params);
             Collections.sort(newProblems, new NotifyProblemComparator());
             notifier.send(newProblems);
             netlogger.info(netLog.end("maddash.NotifyJob.execute"));

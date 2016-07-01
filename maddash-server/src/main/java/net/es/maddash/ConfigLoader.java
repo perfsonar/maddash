@@ -4,6 +4,7 @@ import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.Json;
 import javax.sql.rowset.serial.SerialClob;
 
 import org.apache.log4j.Logger;
@@ -35,6 +37,7 @@ import net.es.maddash.madalert.SiteRule;
 import net.es.maddash.madalert.SiteTestSet;
 import net.es.maddash.madalert.StatusMatcher;
 import net.es.maddash.madalert.TestSet;
+import net.es.maddash.notifications.Notification;
 import net.es.maddash.notifications.NotificationFactory;
 import net.es.maddash.utils.DimensionUtil;
 import net.sf.json.JSONObject;
@@ -905,8 +908,10 @@ public class ConfigLoader {
                         }
                     }
                 }
+                Notification notifier = NotificationFactory.create(notifyName, notifyType, Json.createReader(new StringReader(notifyParams)).readObject());
                 JobDataMap dataMap = new JobDataMap();
                 dataMap.put("notificationId", notificationId);
+                dataMap.put("notifier", notifier);
                 dataMap.put("minSeverity", minSeverity);
                 dataMap.put("frequency", frequency);
                 dataMap.put("dashboardFilters", dashboardFilters);
