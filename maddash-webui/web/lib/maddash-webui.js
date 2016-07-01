@@ -268,6 +268,7 @@ var MadDashNavMenu = function(parent, link, config, userConfig, gridSource, refr
         }else{
             userConfig.colors = undefined;
             maddashDeleteCookie("color");
+            this.colorBoxes[0].set("checked", true);
         }
 	    this.refreshSource.render();
 	}
@@ -329,6 +330,15 @@ var MadDashNavMenu = function(parent, link, config, userConfig, gridSource, refr
                 
             //add user options
             var savedColorProfile = maddashGetCookie("color");
+            var defaultCheckMenuItem = new dijit.CheckedMenuItem({
+                label: "Default", 
+                value: undefined,
+                checked: (savedColorProfile ? false : true),
+                onChange: function(checked){
+                    instance.setColorScale(undefined);
+            }});
+            this.colorBoxes.push(defaultCheckMenuItem);
+            colorsDropMenu.addChild(defaultCheckMenuItem);
             for(var i = 0; i < config.data.alternateColors.length; i++){
                 var checkMenuItem = new dijit.CheckedMenuItem({
                     label: config.data.alternateColors[i].name, 
