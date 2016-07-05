@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.sf.json.JSONObject;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 public class RESTUtil {
     
@@ -35,14 +36,14 @@ public class RESTUtil {
         return fields;
     }
     
-    static public Object checkField(String field, JSONObject request, boolean required, boolean nullable, String defaultVal){
+    static public Object checkField(String field, JsonObject request, boolean required, boolean nullable, String defaultVal){
         if(!request.containsKey(field)){
             if(required){
                 throw new RuntimeException("Missing required field " + field);
             }else{
                 return defaultVal;
             }
-        }else if(request.get(field) instanceof net.sf.json.JSONNull){
+        }else if(request.isNull(field)){
             if(!nullable){
                 throw new RuntimeException("Field " + field + " cannot be null");
             }
@@ -51,14 +52,14 @@ public class RESTUtil {
         return request.get(field);
     }
     
-    static public String checkStringField(String field, JSONObject request, boolean required, boolean nullable){
+    static public String checkStringField(String field, JsonObject request, boolean required, boolean nullable){
         if(!request.containsKey(field)){
             if(required){
                 throw new RuntimeException("Missing required field " + field);
             }else{
                 return null;
             }
-        }else if(request.get(field) instanceof net.sf.json.JSONNull){
+        }else if(request.isNull(field)){
             if(!nullable){
                 throw new RuntimeException("Field " + field + " cannot be null");
             }
@@ -67,14 +68,14 @@ public class RESTUtil {
         return request.getString(field);
     }
     
-    static public Long checkLongField(String field, JSONObject request, boolean required, boolean nullable){
+    static public Long checkLongField(String field, JsonObject request, boolean required, boolean nullable){
         if(!request.containsKey(field)){
             if(required){
                 throw new RuntimeException("Missing required field " + field);
             }else{
                 return (long) -1;
             }
-        }else if(request.get(field) instanceof net.sf.json.JSONNull){
+        }else if(request.isNull(field)){
             if(!nullable){
                 throw new RuntimeException("Field " + field + " cannot be null");
             }else{
@@ -82,10 +83,10 @@ public class RESTUtil {
             }
         }
         
-        return request.getLong(field);
+        return request.getJsonNumber(field).longValueExact();
     }
     
-    public static int checkBooleanField(String field, JSONObject request, boolean required, boolean nullable, boolean defaultVal) {
+    public static int checkBooleanField(String field, JsonObject request, boolean required, boolean nullable, boolean defaultVal) {
         int defaultIntVal = defaultVal ? 1 : 0;
         if(!request.containsKey(field)){
             if(required){
@@ -93,7 +94,7 @@ public class RESTUtil {
             }else{
                 return defaultIntVal;
             }
-        }else if(request.get(field) instanceof net.sf.json.JSONNull){
+        }else if(request.isNull(field)){
             if(!nullable){
                 throw new RuntimeException("Field " + field + " cannot be null");
             }else{
@@ -149,7 +150,7 @@ public class RESTUtil {
         return whereClause;
     }
     
-    static public String buildWhereClauseFromPost(String sql, JSONObject jsonCheckFilters, List<String> sqlParams){
+    static public String buildWhereClauseFromPost(String sql, JsonObject jsonCheckFilters, List<String> sqlParams){
         HashMap<String, List<String>> checkFilterDBMap = RESTUtil.createAdminFilterMap();
         for(String jsonField : checkFilterDBMap.keySet()){
             if(!"*".equals(RESTUtil.checkField(jsonField, jsonCheckFilters, false, false, "*") +"")){
@@ -159,7 +160,7 @@ public class RESTUtil {
                     sql += " AND";
                 }
                 boolean openParen = false;
-                for(int i = 0 ; i < jsonCheckFilters.getJSONArray(jsonField).size(); i++){
+                for(int i = 0 ; i < jsonCheckFilters.getJsonArray(jsonField).size(); i++){
                     if(i == 0){
                         sql += " (";
                         openParen = true;
@@ -172,7 +173,7 @@ public class RESTUtil {
                             sql += " OR";
                         }
                         sql += " " + checkFilterDBMap.get(jsonField).get(j) + "=?";
-                        sqlParams.add(jsonCheckFilters.getJSONArray(jsonField).getString(i));
+                        sqlParams.add(jsonCheckFilters.getJsonArray(jsonField).getString(i));
                     }
                 }
                 if(openParen){

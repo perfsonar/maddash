@@ -1,13 +1,13 @@
 package net.es.maddash.www.rest;
 
-import java.util.List;
+import java.io.StringReader;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -15,7 +15,6 @@ import javax.ws.rs.core.UriInfo;
 
 import net.es.maddash.MaDDashGlobals;
 import net.es.maddash.NetLogger;
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
@@ -24,7 +23,6 @@ public class AdminEventsResource {
     Logger log = Logger.getLogger(AdminEventsResource.class);
     Logger netLogger = Logger.getLogger("netLogger");
     @Context UriInfo uriInfo;
-    final private String GET_EVENT = "maddash.www.rest.AdminEvents.get";
     final private String POST_EVENT = "maddash.www.rest.AdminEvents.post";
     
     final public static String FIELD_CHECKFILTERS = "checkFilters";
@@ -42,9 +40,9 @@ public class AdminEventsResource {
         this.netLogger.info(netLog.start(POST_EVENT));
         
         
-        JSONObject response = null;
+        JsonObject response = null;
         try{
-            JSONObject request = JSONObject.fromObject(body);
+            JsonObject request = Json.createReader(new StringReader(body)).readObject();
             response = MaDDashGlobals.getInstance().getResourceManager().createEvent(request, uriInfo);
         }catch(Exception e){
             this.netLogger.error(netLog.error(POST_EVENT, e.getMessage()));

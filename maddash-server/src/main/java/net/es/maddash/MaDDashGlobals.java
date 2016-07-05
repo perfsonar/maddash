@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -14,6 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.UriBuilder;
 
@@ -21,23 +28,9 @@ import net.es.maddash.jobs.CheckSchedulerJob;
 import net.es.maddash.jobs.CleanDBJob;
 import net.es.maddash.jobs.EventCalendarJob;
 import net.es.maddash.utils.URIUtil;
+import net.es.maddash.www.MaDDashApplication;
 import net.es.maddash.www.WebServer;
-import net.es.maddash.www.rest.AdminEventResource;
-import net.es.maddash.www.rest.AdminEventsResource;
-import net.es.maddash.www.rest.AdminScheduleResource;
-import net.es.maddash.www.rest.CellResource;
-import net.es.maddash.www.rest.CheckResource;
-import net.es.maddash.www.rest.ChecksResource;
-import net.es.maddash.www.rest.ColumnsResource;
-import net.es.maddash.www.rest.DashboardsResource;
-import net.es.maddash.www.rest.EventResource;
-import net.es.maddash.www.rest.EventsResource;
-import net.es.maddash.www.rest.GridResource;
 import net.es.maddash.www.rest.GridsResource;
-import net.es.maddash.www.rest.RowResource;
-import net.es.maddash.www.rest.RowsResource;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.ho.yaml.Yaml;
@@ -48,10 +41,11 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.sun.jersey.api.core.ClassNamesResourceConfig;
-import com.sun.jersey.api.core.ResourceConfig;
+import static org.quartz.TriggerBuilder.*;
+import static org.quartz.JobBuilder.*;
+import static org.quartz.CronScheduleBuilder.*;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  * Singleton with global parameters. Initializes scheduler, database and various other settings 
  * 
@@ -78,7 +72,7 @@ public class MaDDashGlobals {
 
     //web related parameters
     private String webTitle;
-    private JSONArray dashboards;
+    private JsonArray dashboards;
     private String defaultDashboard;
 
     //properties
@@ -248,15 +242,26 @@ public class MaDDashGlobals {
             props.setProperty("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
             props.setProperty("org.quartz.threadPool.threadCount", this.threadPoolSize + "");
             try{
+                
+                //db maintenance job
                 SchedulerFactory schedFactory = new StdSchedulerFactory(props);
                 this.scheduler = schedFactory.getScheduler();
                 this.scheduler.start();
                 if(this.dbDataMaxAge >= 0L){
-                    CronTrigger cleanCronTrigger = new CronTrigger("CleanTrigger", "CLEAN", dbCleanSched);
-                    JobDetail cleanJobDetail = new JobDetail("CleanScheduler", "CLEAN", CleanDBJob.class);
+                    CronTrigger cleanCronTrigger = newTrigger()
+                            .withIdentity("CleanTrigger", "CLEAN")
+                            .withSchedule(cronSchedule(dbCleanSched))
+                            .build();
+                    JobDetail cleanJobDetail = newJob(CleanDBJob.class)
+                            .withIdentity("CleanScheduler", "CLEAN")
+                            .build();
                     this.scheduler.scheduleJob(cleanJobDetail, cleanCronTrigger);
                 }
+                
+                //notification jobs
+                ConfigLoader.loadNotifications(config, this.dataSource, this.scheduler);
             }catch(Exception e){
+                e.printStackTrace();
                 throw new RuntimeException(e.getMessage());
             }
             if(!disableChecks){
@@ -278,26 +283,9 @@ public class MaDDashGlobals {
         String resourceProto = null;
         int resourcePort = 0;
         String resourceHost = serverHost; 
-        String[] services = {
-                DashboardsResource.class.getName(),
-                GridsResource.class.getName(),
-                GridResource.class.getName(),
-                RowResource.class.getName(),
-                RowsResource.class.getName(),
-                CellResource.class.getName(),
-                CheckResource.class.getName(),
-                ChecksResource.class.getName(),
-                ColumnsResource.class.getName(),
-                AdminScheduleResource.class.getName(),
-                AdminEventsResource.class.getName(),
-                AdminEventResource.class.getName(),
-                EventsResource.class.getName(),
-                EventResource.class.getName()
-        };
-        ResourceConfig rc = new ClassNamesResourceConfig(services);
-
+        
         //create server
-        this.webServer = new WebServer(serverHost,rc);
+        this.webServer = new WebServer(serverHost, new MaDDashApplication());
 
         //configure HTTP
         if(config.containsKey(PROP_HTTP) && config.get(PROP_HTTP) != null){
@@ -321,8 +309,8 @@ public class MaDDashGlobals {
     }
 
     private void configureDashboards(List dashConfig) {
-        this.dashboards = new JSONArray();
-        HashMap<String,JSONArray> dashMap = new HashMap<String,JSONArray>();
+        JsonArrayBuilder dashboardBuilder = Json.createArrayBuilder();
+        HashMap<String,JsonArray> dashMap = new HashMap<String,JsonArray>();
         ArrayList<String> dashList = new ArrayList<String>();
 
             for(Map<String,Object> dashboard: (List<Map<String,Object>>)dashConfig){
@@ -334,29 +322,31 @@ public class MaDDashGlobals {
                 }
                 log.debug("Added dashboard " + (String)dashboard.get(PROP_DASHBOARDS_NAME));
                 dashList.add((String)dashboard.get(PROP_DASHBOARDS_NAME));
-                JSONArray grids = new JSONArray();
+                JsonArrayBuilder grids = Json.createArrayBuilder();
                 for(Map configGrid : (List<Map>)dashboard.get(PROP_DASHBOARDS_GRIDS)){
                     if(!configGrid.containsKey(PROP_DASHBOARDS_GRIDS_NAME) || 
                             configGrid.get(PROP_DASHBOARDS_GRIDS_NAME) == null){
                         throw new RuntimeException("Grid list is missing " + PROP_DASHBOARDS_GRIDS_NAME + " atribute");
                     }
                     String name = (String)configGrid.get(PROP_DASHBOARDS_GRIDS_NAME);
-                    JSONObject tmp = new JSONObject();
-                    tmp.put("name", name);
-                    tmp.put("uri", GridsResource.class.getAnnotation(Path.class).value() + "/" 
-                            + URIUtil.normalizeURIPart(name));
+                    JsonObject tmp = Json.createObjectBuilder()
+                                        .add("name", name)
+                                        .add("uri", GridsResource.class.getAnnotation(Path.class).value() + "/" 
+                                                        + URIUtil.normalizeURIPart(name))
+                                        .build();
                     grids.add(tmp);
                 }
-                dashMap.put((String)dashboard.get(PROP_DASHBOARDS_NAME), grids);
+                dashMap.put((String)dashboard.get(PROP_DASHBOARDS_NAME), grids.build());
             }
             Collections.sort(dashList);
             
             for(String name : dashList){
-                JSONObject tmp = new JSONObject();
-                tmp.put("name", name);
-                tmp.put("grids", dashMap.get(name));
-                this.dashboards.add(tmp);
+                JsonObjectBuilder tmp = Json.createObjectBuilder()
+                                    .add("name", name)
+                                    .add("grids", dashMap.get(name));
+                dashboardBuilder.add(tmp);
             }
+            this.dashboards = dashboardBuilder.build();
     }
 
     private void configureResourceURL(Map urlConfig, String proto, 
@@ -538,13 +528,34 @@ public class MaDDashGlobals {
                         "warningLabel VARCHAR(2000) NOT NULL, criticalLabel VARCHAR(2000) NOT NULL, " +
                         "unknownLabel VARCHAR(2000) NOT NULL, notRunLabel VARCHAR(2000) NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE dimensions (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
-                        "configIdent VARCHAR(2000) NOT NULL, keyName VARCHAR(2000) NOT NULL, value VARCHAR(2000) NOT NULL )", conn);
+                        "configIdent VARCHAR(2000) NOT NULL, keyName VARCHAR(2000) NOT NULL, value CLOB NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE events (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "name VARCHAR(2000) NOT NULL, description VARCHAR(2000) NOT NULL, startTime BIGINT NOT NULL, endTime BIGINT, changeStatus INTEGER NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE eventChecks (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         "eventId INTEGER NOT NULL, checkId INTEGER NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE checkStateDefs (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         " gridName VARCHAR(500) NOT NULL, stateValue INTEGER NOT NULL,  shortName VARCHAR(500) NOT NULL, description VARCHAR(2000) NOT NULL)", conn);
+                this.execSQLCreate("CREATE TABLE notifications (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        " name VARCHAR(500) NOT NULL, type VARCHAR(500) NOT NULL, params CLOB NOT NULL)", conn);
+                this.execSQLCreate("CREATE TABLE notificationProblems (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        "notificationId INTEGER NOT NULL, checksum VARCHAR(500) NOT NULL, expires BIGINT NOT NULL)", conn);
+                
+                //Update for 2.0 - convert dimension value to CLOB
+                //don't need data, but do copy to satisfy not null constraint
+                DatabaseMetaData dbMetadata = conn.getMetaData();
+                ResultSet dimensionColMeta = dbMetadata.getColumns(null, null, "DIMENSIONS", "VALUE");
+                while(dimensionColMeta.next()){
+                    if("DIMENSIONS".equals(dimensionColMeta.getString("TABLE_NAME")) &&
+                            "VALUE".equals(dimensionColMeta.getString("COLUMN_NAME")) &&
+                            dimensionColMeta.getInt("DATA_TYPE") == java.sql.Types.VARCHAR){
+                        System.out.println("Doing update of SQL");
+                        this.execSQLCreate("ALTER TABLE dimensions ADD COLUMN tmpValue CLOB", conn);
+                        this.execSQLCreate("UPDATE dimensions SET tmpValue = value", conn);
+                        this.execSQLCreate("ALTER TABLE dimensions ALTER COLUMN tmpValue NOT NULL", conn);
+                        this.execSQLCreate("ALTER TABLE dimensions DROP COLUMN value", conn);
+                        this.execSQLCreate("RENAME COLUMN dimensions.tmpValue to value", conn);
+                    }
+                }
                 
                 //Create indexes - always rebuilds indexes which can help performance.
                 //    checks indexes
@@ -585,6 +596,15 @@ public class MaDDashGlobals {
                 //checkStateDefs
                 this.execSQLCreate("DROP INDEX checkStateDefsGridName", conn);
                 this.execSQLCreate("CREATE INDEX checkStateDefsGridName ON checkStateDefs(gridName)", conn);
+                //notifyName
+                this.execSQLCreate("DROP INDEX notifyName", conn);
+                this.execSQLCreate("CREATE UNIQUE INDEX notifyName ON notifications(name, type)", conn);
+                //notifyProblems
+                this.execSQLCreate("DROP INDEX notifyProblems", conn);
+                this.execSQLCreate("CREATE INDEX notifyProblems ON notificationProblems(notificationId)", conn);
+                //notifyChecksum
+                this.execSQLCreate("DROP INDEX notifyChecksum", conn);
+                this.execSQLCreate("CREATE INDEX notifyChecksum ON notificationProblems(checksum)", conn);
                 }
             
             conn.close();
@@ -657,7 +677,7 @@ public class MaDDashGlobals {
     /**
      * @return the JSON of the dashboards configured
      */
-    public JSONArray getDashboards() {
+    public JsonArray getDashboards() {
         return this.dashboards;
     }
 

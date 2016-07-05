@@ -93,14 +93,14 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
             return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
                      "Default MA URL not defined. Please check config file", null);
         }
-        maUrl = this.replaceVars(maUrl, vars);
+        maUrl = this.replaceVars(maUrl, vars, rowVars, colVars);
         vars.put("%maUrl", maUrl);
         
         //get metadata key lookup URL
         String mdKeyLookupUrl = null;
         if(params.containsKey(PARAM_MD_KEY_LOOKUP) && params.get(PARAM_MD_KEY_LOOKUP) != null){
             mdKeyLookupUrl = (String)params.get(PARAM_MD_KEY_LOOKUP);
-            mdKeyLookupUrl = this.replaceVars(mdKeyLookupUrl, vars);
+            mdKeyLookupUrl = this.replaceVars(mdKeyLookupUrl, vars, rowVars, colVars);
         }
         
         //get graph url
@@ -141,7 +141,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
                     "Command not defined. Please check config file", null);
         }
         String command = (String)params.get(PARAM_COMMAND);
-        command = this.replaceVars(command, vars);
+        command = this.replaceVars(command, vars, rowVars, colVars);
         params.put(PARAM_COMMAND, command);
         
         //run command
@@ -185,7 +185,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
                 vars.put("%dstIP", ""+responseJSON.get("dstIP"));
                 vars.put("%eventType", ""+responseJSON.get("eventType"));
             }
-            graphUrl = this.replaceVars(graphUrl, vars);
+            graphUrl = this.replaceVars(graphUrl, vars, rowVars, colVars);
             nagiosResult.getStats().put("graphUrl", graphUrl);
         }catch(Exception e){
             netlogger.debug(netLog.error("maddash.PSNagiosCheck.getMdKey", null, mdKeyLookupUrl, netLogParams));
@@ -196,7 +196,13 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         return nagiosResult;
     }
 
-    private String replaceVars(String param, HashMap<String, String> vars) {
+    private String replaceVars(String param, Map<String, String> vars, Map<String, String> rowVars, Map<String, String> colVars) {
+        for(String rowVar : rowVars.keySet()){
+            param = param.replaceAll("%row." + rowVar, rowVars.get(rowVar));
+        }
+        for(String colVar : colVars.keySet()){
+            param = param.replaceAll("%col." + colVar, colVars.get(colVar));
+        }
         for(String var : vars.keySet()){
             param = param.replaceAll(var, vars.get(var));
         }

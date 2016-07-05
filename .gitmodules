@@ -1,0 +1,3 @@
+[submodule "maddash-server/madalert"]
+	path = maddash-server/madalert
+	url = https://github.com/perfsonar/madalert 

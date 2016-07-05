@@ -1,7 +1,7 @@
 package net.es.maddash.www.rest;
 
+import javax.json.JsonObject;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response.Status;
 
 import net.es.maddash.MaDDashGlobals;
 import net.es.maddash.NetLogger;
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
@@ -31,7 +30,7 @@ public class AdminEventResource {
         NetLogger netLog = NetLogger.getTlogger();
         this.netLogger.info(netLog.start(DELETE_EVENT));
         
-        JSONObject json = null;
+        JsonObject json = null;
         try{
             json = MaDDashGlobals.getInstance().getResourceManager().deleteEvent(eventId);
         }catch(Exception e){

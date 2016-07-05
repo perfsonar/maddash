@@ -16,6 +16,10 @@ import org.apache.log4j.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
+
+import static org.quartz.TriggerBuilder.*;
+import static org.quartz.JobBuilder.*;
 
 /**
  * Queries database for checks that need to be run. It will only pull a 
@@ -92,10 +96,10 @@ public class CheckSchedulerJob extends Thread{
                 String jobKey =  UUID.randomUUID().toString();
                 String triggerName = "runCheckTrigger-" + jobKey;
                 String jobName = "runCheckJob-" + jobKey;
-                SimpleTrigger trigger = new SimpleTrigger(triggerName, null, 
-                        new Date(), null, 0, 0L);
-                JobDetail jobDetail = new JobDetail(jobName, "RUN_CHECKS",
-                        RunCheckJob.class);
+                Trigger trigger = newTrigger()
+                        .withIdentity(triggerName)
+                        .startNow()
+                        .build();
                 JobDataMap dataMap = new JobDataMap();
                 dataMap.put("checkId", checksToRun.getInt(1));
                 dataMap.put("gridName", checksToRun.getString(2));
@@ -108,9 +112,12 @@ public class CheckSchedulerJob extends Thread{
                 dataMap.put("retryAttempts", checksToRun.getInt(9));
                 dataMap.put("timeout", checksToRun.getInt(10));
                 dataMap.put("statusMessage", checksToRun.getString(11));
-                dataMap.put("rowVars", DimensionUtil.getParams(checksToRun.getString(3), conn));
-                dataMap.put("colVars", DimensionUtil.getParams(checksToRun.getString(4), conn));
-                jobDetail.setJobDataMap(dataMap);
+                dataMap.put("rowVars", DimensionUtil.getParams(checksToRun.getString(3), checksToRun.getString(4), conn));
+                dataMap.put("colVars", DimensionUtil.getParams(checksToRun.getString(4), checksToRun.getString(3),conn));
+                JobDetail jobDetail = newJob(RunCheckJob.class)
+                        .withIdentity(jobName, "RUN_CHECKS")
+                        .usingJobData(dataMap)
+                        .build();
                 globals.updateScheduledChecks(checksToRun.getInt(1), true);
                 globals.getScheduler().scheduleJob(jobDetail, trigger);
                 schedJobCount++;
