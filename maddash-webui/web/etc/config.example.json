@@ -41,6 +41,28 @@
             }
         },
         {
+            "name": "Gray Unknown",
+            "colors": {
+                0: "#009E73", 
+                1: "#F0E442", 
+                2: "#CC79A7", 
+                3: "#A2A2A2", 
+                4: "#56B4E9",
+                5: "#000000"
+            }
+        },
+        {
+            "name": "Forest Rain",
+            "colors": {
+                0: "#33a02c", 
+                1: "#b2df8a", 
+                2: "#1f78b4", 
+                3: "#a6cee3", 
+                4: "#eeeeee",
+                5: "black"
+            }
+        },
+        {
             "name": "Heatwave",
             "colors": {
                 0: "#fecc5c", 
@@ -73,17 +95,7 @@
                 5: "black"
             }
         },
-        {
-            "name": "Forest Rain",
-            "colors": {
-                0: "#33a02c", 
-                1: "#b2df8a", 
-                2: "#1f78b4", 
-                3: "#a6cee3", 
-                4: "#eeeeee",
-                5: "black"
-            }
-        },
+        
         {
             "name": "Sea Breeze",
             "colors": {
