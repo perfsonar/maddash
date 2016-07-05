@@ -9,6 +9,50 @@
  */
 require(["dijit/MenuBarItem", "dojox/timing", "dojo/date/locale", "dijit/CheckedMenuItem", "dijit/MenuBar","dijit/PopupMenuBarItem","dijit/MenuSeparator","dijit/DropDownMenu","dijit/MenuItem","dijit/TitlePane","dijit/form/Slider","dojo/_base/connect"]);
 
+/**
+ * Function: maddashSetCookie
+ * Description: Utility function for setting a cookie
+ *   Parameters:
+ *       name: name of cookie to set
+ *       value: value to set
+ *       exdays: days until expiration
+ */
+function maddashSetCookie(name, value, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = name + "=" + value + "; " + expires;
+}
+
+/**
+ * Function: maddashDeleteCookie
+ * Description: Utility function for deleting a cookie
+ *   Parameters:
+ *       name: name of cookie to delete
+ */
+function maddashDeleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+}
+
+/**
+ * Function: maddashGetCookie
+ * Description: Utility function for getting a cookie
+ *   Parameters:
+ *       name: name of cookie to get
+ */
+function maddashGetCookie(name) {
+    var cookie = document.cookie.split(';');
+    for(var i = 0; i <cookie.length; i++) {
+        var c = cookie[i];
+        while (c.charAt(0)==' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name + "=") == 0) {
+            return c.substring(name.length + 1,c.length);
+        }
+    }
+    return "";
+}
 
 /**
  * Function: maddashCreateSpan
@@ -51,11 +95,26 @@ function maddashCreateStatusSpan(status, config){
 	    span = maddashCreateSpan("maddashStatusSummary", "CUSTOM");
 	}
 	
-	if(config != undefined && config.colors != undefined){
-	    span.style.color = config.colors[status];
-	}else{
-	    span.style.color = (new MaDDashGrid()).getColorScale()[status]
-	}
+	var savedColorProfile = maddashGetCookie("color");
+	var savedColorsFound = 0;
+    if(savedColorProfile && config && config.alternateColors){
+        for(var i = 0; i < config.alternateColors.length; i++){
+            if(config.alternateColors[i].name == savedColorProfile){
+                span.style.color = config.alternateColors[i].colors[status];
+                savedColorsFound = 1;
+                break;
+            }
+        }
+    }
+    
+    if(!savedColorsFound){
+        if(config != undefined && config.colors != undefined){
+            span.style.color = config.colors[status];
+        }else{
+            span.style.color = (new MaDDashGrid()).getColorScale()[status]
+        }
+    }	
+    
 	return span;	
 }
 
@@ -157,7 +216,7 @@ var MadDashTitleSpan = function(parent, link){
  *      gridSource: MaDDashDataSource that points to grids list URL(e.g. /maddash/grids)
  *
  */
-var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
+var MadDashNavMenu = function(parent, link, config, userConfig, gridSource, refreshSource){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.link = link;
@@ -166,6 +225,7 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 	this.refreshBoxes = [];
 	this.refreshTime = 0;
 	this.refreshTimer = null;
+	this.colorBoxes = [];
 	
 	this._followLink = function(href){
 		window.location = href;	
@@ -192,6 +252,25 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
 	        dojo.connect(this.refreshTimer, "onTick", this.refreshSource, 'render');
 	        this.refreshTimer.start();
 	    }
+	}
+	
+	this.setColorScale = function(scale){
+	    //uncheck boxes
+	    for(var i = 0; i < this.colorBoxes.length; i++){
+	        if(!scale || scale.name != this.colorBoxes[i].label){
+	            this.colorBoxes[i].set("checked", false);
+	        }
+	    }
+	    
+	    if(scale){
+            userConfig.colors = scale.colors;
+            maddashSetCookie("color", scale.name, 3650);
+        }else{
+            userConfig.colors = undefined;
+            maddashDeleteCookie("color");
+            this.colorBoxes[0].set("checked", true);
+        }
+	    this.refreshSource.render();
 	}
 	
 	this.render = function(data){
@@ -239,6 +318,38 @@ var MadDashNavMenu = function(parent, link, config, gridSource, refreshSource){
                 }});
             this.refreshBoxes.push(checkMenuItem);
             autoRefreshDropMenu.addChild(checkMenuItem);
+        }
+        
+        //set colors
+        if(config != undefined && config.data != undefined && config.data.alternateColors){
+            var colorsDropMenu = new dijit.DropDownMenu({});
+            settingsDropMenu.addChild(new dijit.PopupMenuItem({
+                    label: "Colors",
+                    popup: colorsDropMenu
+                }));
+                
+            //add user options
+            var savedColorProfile = maddashGetCookie("color");
+            var defaultCheckMenuItem = new dijit.CheckedMenuItem({
+                label: "Default", 
+                value: undefined,
+                checked: (savedColorProfile ? false : true),
+                onChange: function(checked){
+                    instance.setColorScale(undefined);
+            }});
+            this.colorBoxes.push(defaultCheckMenuItem);
+            colorsDropMenu.addChild(defaultCheckMenuItem);
+            for(var i = 0; i < config.data.alternateColors.length; i++){
+                var checkMenuItem = new dijit.CheckedMenuItem({
+                    label: config.data.alternateColors[i].name, 
+                    value: config.data.alternateColors[i],
+                    checked: savedColorProfile == config.data.alternateColors[i].name,
+                    onChange: function(checked){
+                        instance.setColorScale(checked ? this.value : undefined);
+                    }});
+                this.colorBoxes.push(checkMenuItem);
+                colorsDropMenu.addChild(checkMenuItem);
+            }
         }
         
         if(config != undefined && config.data != undefined && config.data.enableAdminUI){
@@ -600,7 +711,7 @@ var MaDDashGraphPane = function(parent){
  *      config: data object from MaDDashConfig that has grid style parameters
  *      clickHandler: optional function to be called when cell is clicked. Passed cell object.
  */
-var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
+var MaDDashDashboardPane = function(parent, type, name, config, userConfig, clickHandler){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.type = (type == null ? "dashboard" : type);
@@ -613,6 +724,17 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
 		if (data == null) {
 			console.log("data is null");
 			return;
+		}
+		
+		//figure out if we have any cookie data
+		var savedColorProfile = maddashGetCookie("color");
+		if(savedColorProfile && config && config.alternateColors){
+		    for(var i = 0; i < config.alternateColors.length; i++){
+		        if(config.alternateColors[i].name == savedColorProfile){
+		            userConfig.colors = config.alternateColors[i].colors;
+		            break;
+		        }
+		    }
 		}
 		
 		//get the list of grids that need to be drawn
@@ -679,7 +801,9 @@ var MaDDashDashboardPane = function(parent, type, name, config, clickHandler){
             var ds = new MaDDashDataSource(gridList[i].uri);
             
             var mdGrid = new MaDDashGrid(grid_id, legend_id, report_id);
-            if(config.colors != undefined){
+            if(userConfig.colors != undefined){
+                mdGrid.setColorScale(userConfig.colors);
+            }else if(config.colors != undefined){
                 mdGrid.setColorScale(config.colors);
             }
             if(this.clickHandler != undefined && this.clickHandler != null){
@@ -777,13 +901,18 @@ var MaDDashReportPane = function(parent, type, name, host, config){
 		
 		//start loading grids
 		if(dashFound){
-		    d3.select("#" + this.parent.id).append("div").attr("class", "maddashDashboardName").text(this.name + " Dashboard");
+		    d3.select("#" + this.parent.id)
+		        .append("div").attr("class", "maddashReportDashboardName")
+		        .append("a").attr("href", "index.cgi?dashboard=" + encodeURIComponent(this.name))
+		        .text(this.name + " Dashboard");
 		}
 		for(var i=0;i<gridList.length;i++){
             var report_id = "report-" + i;
             var container = d3.select("#" + this.parent.id).append("div")
                 .attr('class', function(){return 'report-container'});
-            container.append("div").attr("class", "maddashReportGridName").text(gridList[i].name);
+            container.append("div").attr("class", "maddashReportGridName")
+                .append("a").attr("href", "index.cgi?grid=" + encodeURIComponent(gridList[i].name))
+                .text(gridList[i].name);
             var reportDiv = container.append("div").attr("id", report_id)
             reportDiv.append("img").attr("src", "images/loader.gif").attr("height", "20")
                 .attr("width", "20").attr("class", "loader")

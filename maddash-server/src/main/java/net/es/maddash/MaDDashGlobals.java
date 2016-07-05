@@ -242,6 +242,8 @@ public class MaDDashGlobals {
             props.setProperty("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
             props.setProperty("org.quartz.threadPool.threadCount", this.threadPoolSize + "");
             try{
+                
+                //db maintenance job
                 SchedulerFactory schedFactory = new StdSchedulerFactory(props);
                 this.scheduler = schedFactory.getScheduler();
                 this.scheduler.start();
@@ -255,7 +257,11 @@ public class MaDDashGlobals {
                             .build();
                     this.scheduler.scheduleJob(cleanJobDetail, cleanCronTrigger);
                 }
+                
+                //notification jobs
+                ConfigLoader.loadNotifications(config, this.dataSource, this.scheduler);
             }catch(Exception e){
+                e.printStackTrace();
                 throw new RuntimeException(e.getMessage());
             }
             if(!disableChecks){
@@ -529,6 +535,10 @@ public class MaDDashGlobals {
                         "eventId INTEGER NOT NULL, checkId INTEGER NOT NULL )", conn);
                 this.execSQLCreate("CREATE TABLE checkStateDefs (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         " gridName VARCHAR(500) NOT NULL, stateValue INTEGER NOT NULL,  shortName VARCHAR(500) NOT NULL, description VARCHAR(2000) NOT NULL)", conn);
+                this.execSQLCreate("CREATE TABLE notifications (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        " name VARCHAR(500) NOT NULL, type VARCHAR(500) NOT NULL, params CLOB NOT NULL)", conn);
+                this.execSQLCreate("CREATE TABLE notificationProblems (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
+                        "notificationId INTEGER NOT NULL, checksum VARCHAR(500) NOT NULL, expires BIGINT NOT NULL)", conn);
                 
                 //Update for 2.0 - convert dimension value to CLOB
                 //don't need data, but do copy to satisfy not null constraint
@@ -586,6 +596,15 @@ public class MaDDashGlobals {
                 //checkStateDefs
                 this.execSQLCreate("DROP INDEX checkStateDefsGridName", conn);
                 this.execSQLCreate("CREATE INDEX checkStateDefsGridName ON checkStateDefs(gridName)", conn);
+                //notifyName
+                this.execSQLCreate("DROP INDEX notifyName", conn);
+                this.execSQLCreate("CREATE UNIQUE INDEX notifyName ON notifications(name, type)", conn);
+                //notifyProblems
+                this.execSQLCreate("DROP INDEX notifyProblems", conn);
+                this.execSQLCreate("CREATE INDEX notifyProblems ON notificationProblems(notificationId)", conn);
+                //notifyChecksum
+                this.execSQLCreate("DROP INDEX notifyChecksum", conn);
+                this.execSQLCreate("CREATE INDEX notifyChecksum ON notificationProblems(checksum)", conn);
                 }
             
             conn.close();

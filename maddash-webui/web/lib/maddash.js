@@ -83,13 +83,14 @@ var MaDDashDataSource = function(url, async){
 var MaDDashGrid = function(parentId, legendId, reportId){
     var instance = this;
     var colorscale = {
-        0: "green", 
-        1: "yellow", 
-        2: "red", 
-        3: "orange", 
-        4: "gray",
-        5: "black"
+        0: "#009E73", 
+        1: "#F0E442", 
+        2: "#CC79A7", 
+        3: "#E69F00", 
+        4: "#56B4E9",
+        5: "#000000"
         };
+
     this.parent = parentId;
     this.legend = legendId;
     this.report = reportId;
@@ -259,6 +260,13 @@ var MaDDashGrid = function(parentId, legendId, reportId){
         .attr("text-anchor", "start")
         .attr("dy", "1.5em")
         .attr("dx", "1em")
+        .attr("style", function(d,i){
+            if(data.report.sites[d].severity > 0){
+                return "fill: " + colorscale[parseInt(data.report.sites[d].severity)] + ";" ;
+            }else{
+                return "";
+            }
+        })
         .attr("transform", 
             function(d,i){
                 return "rotate(-90) translate(-" + (maxColSize + 10) + ", -3)";
@@ -307,6 +315,13 @@ var MaDDashGrid = function(parentId, legendId, reportId){
                 return "gtexterr";
             }else{
                 return "gtext";
+            }
+        })
+        .attr("style", function(d,i){
+            if(data.report.sites[data.rows[i].name].severity > 0){
+                return "fill: " + colorscale[parseInt(data.report.sites[data.rows[i].name].severity)]  + ";" ;
+            }else{
+                return "";
             }
         })
         .attr("transform", "translate("+ (maxRowSize-5) +",0)")

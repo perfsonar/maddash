@@ -69,14 +69,15 @@ print <<EOF;
 				var ds = new MaDDashDataSource("/maddash/dashboards"); 
 				var mnuds = new MaDDashDataSource("/maddash/dashboards"); 
 				var refreshSource = null;
+				var userConfig = {};
 				if($type == "grid"){
-				    gs.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, handleClick));
+				    gs.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, userConfig, handleClick));
 				    refreshSource = gs;
 				}else{
-				    ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, handleClick));
+				    ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, userConfig, handleClick));
 				    refreshSource = ds;
 				}
-				mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", config, gs, refreshSource));
+				mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", config, userConfig, gs, refreshSource));
 				refreshSource.connect(new MaDDashRefreshLabel("maddashRefreshStatus"));
 				
 				mnuds.render();

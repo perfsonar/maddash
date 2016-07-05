@@ -21,12 +21,92 @@
         ]
     },
     "colors": {
-        0: "green", 
-        1: "yellow", 
-        2: "red", 
-        3: "#990000", 
-        4: "gray",
-        5: "black"
-        }
+        0: "#009E73", 
+        1: "#F0E442", 
+        2: "#CC79A7", 
+        3: "#E69F00", 
+        4: "#56B4E9",
+        5: "#000000"
+        },
+    "alternateColors": [
+        {
+            "name": "Classic",
+            "colors": {
+                0: "green", 
+                1: "yellow", 
+                2: "red", 
+                3: "orange", 
+                4: "gray",
+                5: "black"
+            }
+        },
+        {
+            "name": "Gray Unknown",
+            "colors": {
+                0: "#009E73", 
+                1: "#F0E442", 
+                2: "#CC79A7", 
+                3: "#A2A2A2", 
+                4: "#56B4E9",
+                5: "#000000"
+            }
+        },
+        {
+            "name": "Forest Rain",
+            "colors": {
+                0: "#33a02c", 
+                1: "#b2df8a", 
+                2: "#1f78b4", 
+                3: "#a6cee3", 
+                4: "#eeeeee",
+                5: "black"
+            }
+        },
+        {
+            "name": "Heatwave",
+            "colors": {
+                0: "#fecc5c", 
+                1: "#fd8d3c", 
+                2: "#e31a1c", 
+                3: "#ffffb2", 
+                4: "#eeeeee",
+                5: "black"
+            }
+        },
+        {
+            "name": "Old Movie",
+            "colors": {
+                0: "#cccccc", 
+                1: "#969696", 
+                2: "#525252", 
+                3: "#f7f7f7", 
+                4: "#eeeeee",
+                5: "black"
+            }
+        },
+        {
+            "name": "Pastel",
+            "colors": {
+                0: "#8dd3c7", 
+                1: "#ffffb3", 
+                2: "#fb8072", 
+                3: "#bebada", 
+                4: "#eeeeee",
+                5: "black"
+            }
+        },
+        
+        {
+            "name": "Sea Breeze",
+            "colors": {
+                0: "#bae4bc", 
+                1: "#7bccc4", 
+                2: "#2b8cbe", 
+                3: "#f0f9e8", 
+                4: "#eeeeee",
+                5: "black"
+            }
+        },
+     ]
 }
 
