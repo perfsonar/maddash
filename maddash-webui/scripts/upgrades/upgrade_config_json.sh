@@ -1,33 +1,25 @@
+#!/bin/bash
+
+##
+# Script to insert default alternate colors for people upgrading to 2.X
+# Note that prior to 2.X the default json file was invalid json according to RFC so can't
+# read in JSON file, thus doing this ugly shell script
+
+#only releases that didn't store version (pre-2.0) need to be updated
+PREV_VERSION=$1
+if [ -n "$PREV_VERSION" ]; then
+    exit 0
+fi
+
+#skip if alternateColors already set
+grep -q "alternateColors" /etc/maddash/maddash-webui/config.json 
+if [ $? -eq 0 ]; then
+    exit 0
+fi
+
+TMPFILE=`mktemp`
+cat > $TMPFILE <<- EOF
 {
-    "title":"My perfSONAR Dashboard",
-    "defaultDashboard": "My Sites",
-    "enableAdminUI": true,
-    "grids":{
-        "OWAMP":{
-            "cellSize": 13,
-            "cellPadding": 3
-        }
-    },
-    "externalLinksMenu": {
-        "menuLinks": [
-            { 
-               "label": "ESnet",
-                "url": "http://www.es.net"
-            },
-            {
-               "label": "perfSONAR",
-               "url": "http://www.perfsonar.net"
-            }
-        ]
-    },
-    "colors": {
-        "0": "#009E73", 
-        "1": "#F0E442", 
-        "2": "#CC79A7", 
-        "3": "#E69F00", 
-        "4": "#56B4E9",
-        "5": "#000000"
-        },
     "alternateColors": [
         {
             "name": "Classic",
@@ -106,6 +98,8 @@
                 "5": "black"
             }
         }
-     ]
-}
-
+     ],
+EOF
+cp /etc/maddash/maddash-webui/config.json /etc/maddash/maddash-webui/config.v1.json
+sed 0,/{/s/// /etc/maddash/maddash-webui/config.json >> $TMPFILE
+mv -f $TMPFILE /etc/maddash/maddash-webui/config.json
