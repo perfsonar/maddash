@@ -5,9 +5,9 @@
 # Note that prior to 2.X the default json file was invalid json according to RFC so can't
 # read in JSON file, thus doing this ugly shell script
 
-#only releases that didn't store version (pre-2.0) need to be updated
+#only upgrades 1.x releases
 PREV_VERSION=$1
-if [ -n "$PREV_VERSION" ]; then
+if [[ ! "$PREV_VERSION" =~ ^1\. ]]; then
     exit 0
 fi
 
@@ -100,6 +100,8 @@ cat > $TMPFILE <<- EOF
         }
      ],
 EOF
-cp /etc/maddash/maddash-webui/config.json /etc/maddash/maddash-webui/config.v1.json
+cp -f /etc/maddash/maddash-webui/config.json /etc/maddash/maddash-webui/config.v1.json
 sed 0,/{/s/// /etc/maddash/maddash-webui/config.json >> $TMPFILE
 mv -f $TMPFILE /etc/maddash/maddash-webui/config.json
+chown maddash:maddash /etc/maddash/maddash-webui/config.json
+chmod 644 /etc/maddash/maddash-webui/config.json
