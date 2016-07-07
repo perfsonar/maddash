@@ -1,6 +1,7 @@
 %define package_name maddash-webui 
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
+%define upgrade_base /usr/lib/maddash/upgrades/%{package_name}
 %define relnum 0.3rc1
 
 Name:           %{package_name}
@@ -27,6 +28,12 @@ This package provides a web interface to display check results.
 /usr/sbin/groupadd maddash 2> /dev/null || :
 /usr/sbin/useradd -g maddash -r -s /sbin/nologin -c "MaDDash User" -d /tmp maddash 2> /dev/null || :
 
+#track previous version
+rm -rf %{_localstatedir}/lib/rpm-state
+mkdir -p %{_localstatedir}/lib/rpm-state
+rpm -q --queryformat "%%{RPMTAG_VERSION} %%{RPMTAG_RELEASE} " %{name} > %{_localstatedir}/lib/rpm-state/previous_version || :
+
+
 %prep
 %setup -q -n maddash-%{version}-%{relnum}
 
@@ -43,18 +50,25 @@ rm -rf %{buildroot}
 #Create directory structure for build root
 mkdir -p %{buildroot}/%{install_base}
 mkdir -p %{buildroot}/%{config_base}
+mkdir -p %{buildroot}/%{upgrade_base}
 mkdir -p %{buildroot}/etc/httpd/conf.d
 
 #Copy jar files and scripts
 install -m 755 %{package_name}/web/*.cgi %{buildroot}/%{install_base}/
 install -m 644 %{package_name}/etc/apache-maddash.conf  %{buildroot}/etc/httpd/conf.d/
 install -m 644 %{package_name}/web/etc/* %{buildroot}/%{config_base}/
+install -m 755 %{package_name}/scripts/upgrades/* %{buildroot}/%{upgrade_base}/
 cp -r %{package_name}/web/admin %{buildroot}/%{install_base}/admin
 cp -r %{package_name}/web/lib %{buildroot}/%{install_base}/lib
 cp -r %{package_name}/web/style %{buildroot}/%{install_base}/style
 cp -r %{package_name}/web/images %{buildroot}/%{install_base}/images
 
 %post
+if [ -f %{_localstatedir}/lib/rpm-state/previous_version ] ; then
+    PREV_VERSION=`cat %{_localstatedir}/lib/rpm-state/previous_version`
+    rm %{_localstatedir}/lib/rpm-state/previous_version
+fi
+
 mkdir -p %{install_base}/etc
 #create empty directory for config files. apache user files can go here
 touch %{config_base}/admin-users
@@ -76,6 +90,11 @@ if [ "$1" = "2" ]; then
     #update apache config
     sed -i "s:/opt/maddash:/usr/lib/maddash:g" /etc/httpd/conf.d/apache-maddash.conf
     grep -q "FollowSymLinks" /etc/httpd/conf.d/apache-maddash.conf || sed -i "s:+ExecCGI:FollowSymLinks +ExecCGI:g" /etc/httpd/conf.d/apache-maddash.conf
+    
+    #run upgrade scripts
+    for script in %{upgrade_base}/*; do
+        $script ${PREV_VERSION}
+    done
 fi
 
 #create symlink to config.json
@@ -92,6 +111,7 @@ service httpd restart
 %config(noreplace) %{config_base}/config.json
 %{config_base}/config.example.json
 %{install_base}/*
+%{upgrade_base}/*
 
 %preun
 
