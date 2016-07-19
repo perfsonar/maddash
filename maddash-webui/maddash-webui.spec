@@ -2,7 +2,7 @@
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define upgrade_base /usr/lib/maddash/upgrades/%{package_name}
-%define relnum 0.3rc1
+%define relnum 0.5rc1
 
 Name:           %{package_name}
 Version:        2.0

@@ -858,8 +858,9 @@ public class ConfigLoader {
                     insertNotifications.setString(2, notifyType);
                     insertNotifications.setClob(3, paramClob);
                     insertNotifications.executeUpdate();
-                    if(insertNotifications.getGeneratedKeys().next()){
-                        notificationId = insertNotifications.getGeneratedKeys().getInt(1);
+                    ResultSet genKeys = insertNotifications.getGeneratedKeys();
+                    if(genKeys.next()){
+                        notificationId = genKeys.getInt(1);
                     }else{
                         throw new RuntimeException("Notification insert failed to yield an auto-generated key");
                     }
