@@ -27,6 +27,46 @@ serverHost: "localhost"
 http: 
     port: 8881
 
+# notifications:
+#    - 
+#      ##
+#      #This will be the email subject
+#      name: "My Email Report"
+#      ##
+#      #This indicates this is an email notification, currently the only supported type
+#      type: "email"
+#      ##
+#      # A cron schedule in 'MIN HOUR DAY-OF-MONTH MONTH DAY-OF-WEEK' format."
+#      # the example runs every hour on the hour. Only sends email if new problem found
+#      schedule: "0 * * * ?"
+#      ##
+#      #Frequency with which to report the same problem. Example below will report a problem
+#      #  again only if it still exists after 24 hours.
+#      problemReportFrequency: 86400
+#      ##
+#      #The minimum severity a problem must be where 0=OK, 1=Warning, 2=Critical
+#      minimumSeverity: 1
+#      ##
+#      # parameters specific to email
+#      parameters:
+#        ##
+#        # The main address of your dashboard used to create links in email.
+#        dashboardUrl: "http://dashboard.domain.example"
+#        ##
+#        # information about the mail server. If not set will use 127.0.0.1 port 25 with 
+#        # no auth or SSL
+#        mailServer:
+#            address: "127.0.0.1"
+#            port: 25
+#        ##
+#        # Set from address in mailed reports
+#        from: "dashboard@domain.example"
+#        ##
+#        # Set list of to addresses in mailed reports
+#        to:
+#            - "email1@domain.example"
+#            - "email2@domain.example"
+
 ##
 # Activate https and set port and keystores
 #https:
