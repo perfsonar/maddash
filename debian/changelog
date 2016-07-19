@@ -1,9 +1,9 @@
-maddash (2.0~4.rc1-1) UNRELEASED; urgency=low
+maddash (2.0~5.rc1-1) perfsonar-jessie-staging; urgency=low
 
   * New upstream version.
   * Build now include maddalert submodule.
 
- -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Thu, 14 Jul 2016 13:50:03 +0000
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Tue, 19 Jul 2016 17:26:23 +0000
 
 maddash (1.3~beta-1) perfsonar-jessie-release; urgency=low
 
