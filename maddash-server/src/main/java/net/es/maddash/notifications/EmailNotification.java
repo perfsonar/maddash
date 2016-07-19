@@ -65,33 +65,31 @@ public class EmailNotification implements Notification{
         this.name = name;
         
         //setup mail server
+        this.serverAddress = DEFAULT_MAILSERVER_ADDR;
+        this.serverPort = DEFAULT_MAILSERVER_PORT;
+        this.serverUsername = DEFAULT_MAILSERVER_USER;
+        this.serverPassword = DEFAULT_MAILSERVER_PASS;
+        this.serverSSL = DEFAULT_MAILSERVER_SSL;
         if(params.containsKey(PROP_MAILSERVER)){
             JsonObject mailServerParams = params.getJsonObject(PROP_MAILSERVER);
             if(mailServerParams.containsKey(PROP_MAILSERVER_ADDR) && !mailServerParams.isNull(PROP_MAILSERVER_ADDR) ){
                 this.serverAddress = mailServerParams.getString(PROP_MAILSERVER_ADDR);
-            }else{
-                this.serverAddress = DEFAULT_MAILSERVER_ADDR;
             }
+            
             if(mailServerParams.containsKey(PROP_MAILSERVER_PORT) && !mailServerParams.isNull(PROP_MAILSERVER_PORT) ){
                 this.serverPort = mailServerParams.getInt(PROP_MAILSERVER_PORT);
-            }else{
-                this.serverPort = DEFAULT_MAILSERVER_PORT;
             }
+            
             if(mailServerParams.containsKey(PROP_MAILSERVER_USER) && !mailServerParams.isNull(PROP_MAILSERVER_USER) ){
                 this.serverUsername = mailServerParams.getString(PROP_MAILSERVER_USER);
-            }else{
-                this.serverUsername = DEFAULT_MAILSERVER_USER;
             }
+            
             if(mailServerParams.containsKey(PROP_MAILSERVER_PASS) && !mailServerParams.isNull(PROP_MAILSERVER_PASS) ){
                 this.serverPassword = mailServerParams.getString(PROP_MAILSERVER_PASS);
-            }else{
-                this.serverPassword = DEFAULT_MAILSERVER_PASS;
             }
             
             if(mailServerParams.containsKey(PROP_MAILSERVER_SSL) && !mailServerParams.isNull(PROP_MAILSERVER_SSL) ){
                 this.serverSSL = mailServerParams.getInt(PROP_MAILSERVER_SSL) > 0;
-            }else{
-                this.serverSSL = DEFAULT_MAILSERVER_SSL;
             }
         }
         
