@@ -104,7 +104,7 @@ public class ResourceManager {
             HashMap<String,String> nameMap = new HashMap<String,String>();
             conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet sqlResults = stmt.executeQuery("SELECT DISTINCT c.rowName, d.value FROM checks " +
+            ResultSet sqlResults = stmt.executeQuery("SELECT c.rowName, d.value FROM checks " +
                     "AS c INNER JOIN dimensions AS d ON d.configIdent=c.rowName WHERE d.keyName='label'");
             while(sqlResults.next()){
                 nameMap.put(sqlResults.getString(1), sqlResults.getString(2));
@@ -151,7 +151,7 @@ public class ResourceManager {
             HashMap<String,String> nameMap = new HashMap<String,String>();
             conn = MaDDashGlobals.getInstance().getDataSource().getConnection();
             Statement stmt = conn.createStatement();
-            ResultSet sqlResults = stmt.executeQuery("SELECT DISTINCT c.colName, d.value FROM checks " +
+            ResultSet sqlResults = stmt.executeQuery("SELECT c.colName, d.value FROM checks " +
                     "AS c INNER JOIN dimensions AS d ON d.configIdent=c.colName WHERE d.keyName='label'");
             while(sqlResults.next()){
                 nameMap.put(sqlResults.getString(1), sqlResults.getString(2));

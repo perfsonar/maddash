@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 
 public class RESTUtil {
     
@@ -152,33 +156,48 @@ public class RESTUtil {
     
     static public String buildWhereClauseFromPost(String sql, JsonObject jsonCheckFilters, List<String> sqlParams){
         HashMap<String, List<String>> checkFilterDBMap = RESTUtil.createAdminFilterMap();
+        
         for(String jsonField : checkFilterDBMap.keySet()){
-            if(!"*".equals(RESTUtil.checkField(jsonField, jsonCheckFilters, false, false, "*") +"")){
-                if(sqlParams.isEmpty()){
-                    sql += " WHERE";
-                }else{
-                    sql += " AND";
+            //determine type of filter
+            JsonArray fieldArray = null;
+            if(!jsonCheckFilters.containsKey(jsonField) || jsonCheckFilters.isNull(jsonField)){
+                continue;
+            }else if(jsonCheckFilters.get(jsonField).getValueType().equals(ValueType.STRING)){
+                if("*".equals(jsonCheckFilters.getString(jsonField))){
+                    continue;
                 }
-                boolean openParen = false;
-                for(int i = 0 ; i < jsonCheckFilters.getJsonArray(jsonField).size(); i++){
-                    if(i == 0){
-                        sql += " (";
-                        openParen = true;
-                    }else{
+                fieldArray = Json.createArrayBuilder().add(jsonCheckFilters.getString(jsonField)).build();
+            }else if(jsonCheckFilters.get(jsonField).getValueType().equals(ValueType.ARRAY)){
+                fieldArray = jsonCheckFilters.getJsonArray(jsonField);
+            }else{
+                throw new RuntimeException("Invalid type for filter " + jsonField + ": " + jsonCheckFilters.get(jsonField).getValueType());
+            }
+            
+            if(sqlParams.isEmpty()){
+                sql += " WHERE";
+            }else{
+                sql += " AND";
+            }
+            boolean openParen = false;
+            
+            for(int i = 0 ; i < fieldArray.size(); i++){
+                if(i == 0){
+                    sql += " (";
+                    openParen = true;
+                }else{
+                    sql += " OR";
+                }
+                
+                for(int j = 0 ; j < checkFilterDBMap.get(jsonField).size(); j++){
+                    if(j > 0){
                         sql += " OR";
                     }
-                    
-                    for(int j = 0 ; j < checkFilterDBMap.get(jsonField).size(); j++){
-                        if(j > 0){
-                            sql += " OR";
-                        }
-                        sql += " " + checkFilterDBMap.get(jsonField).get(j) + "=?";
-                        sqlParams.add(jsonCheckFilters.getJsonArray(jsonField).getString(i));
-                    }
+                    sql += " " + checkFilterDBMap.get(jsonField).get(j) + "=?";
+                    sqlParams.add(fieldArray.getString(i));
                 }
-                if(openParen){
-                    sql += " )";
-                }
+            }
+            if(openParen){
+                sql += " )";
             }
         }
 
