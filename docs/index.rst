@@ -36,6 +36,7 @@ API
    api_cells
    api_checks
    api_events
+   api_reports
    api_type_params
    api_misc
    
