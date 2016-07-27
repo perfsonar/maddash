@@ -166,6 +166,7 @@ public class NotifyJob implements Job{
                     newProblems.add(p);
                 }
             }
+            conn.close();
             
             //create notifier and send reports
             Collections.sort(newProblems, new NotifyProblemComparator());
