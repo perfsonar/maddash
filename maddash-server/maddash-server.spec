@@ -116,10 +116,6 @@ fi
     
 #Configure service to start when machine boots
 %if 0%{?el7}
-if [ "$1" = "1" ]; then
-    #if new install, then enable
-    systemctl enable %{package_name}.service
-fi
 %systemd_post %{package_name}.service
 %else
 /sbin/chkconfig --add %{package_name}
