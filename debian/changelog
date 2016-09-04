@@ -1,8 +1,8 @@
-maddash (2.0~8.rc1-1~bpo70+1) perfsonar-wheezy-staging; urgency=low
+maddash (2.0~8.rc1w-1~bpo70+1) perfsonar-wheezy-staging; urgency=low
 
   * Backport to Wheezy.
 
- -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Wed, 27 Jul 2016 01:36:29 +0000
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Sun, 04 Sep 2016 22:07:20 +0000
 
 maddash (2.0~8.rc1-1) perfsonar-jessie-staging; urgency=low
 
