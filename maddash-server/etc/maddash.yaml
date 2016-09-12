@@ -166,7 +166,7 @@ checks:
             #This is the URL to the graph script. You should be able to change the 
             #hostname(example.mydomain.local) to your toolkit hostname and leave the rest of the 
             #URL untouched. 
-            graphUrl: "http://example.mydomain.local/perfsonar-graphs/graphWidget.cgi?url=%maUrl&dest=%col&source=%row"
+            graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
             #The Nagios command to execute. The -w and -c options define the thresholds. 
             #The -r option specifies the time range to query.
             command: "/usr/lib/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 1800 -l -p -s %row -d %col"
@@ -194,7 +194,7 @@ checks:
         params:
             maUrl: 
                 default: "http://%row/esmond/perfsonar/archive"
-            graphUrl: "http://example.mydomain.local/perfsonar-graphs/graphWidget.cgi?url=%maUrl&dest=%row&source=%col"
+            graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
             command: "/usr/lib/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -p -s %col -d %row"
         checkInterval: 1800
         retryInterval: 300
@@ -214,7 +214,7 @@ checks:
         params:
             maUrl:
                 default: "http://%row/esmond/perfsonar/archive"
-            graphUrl: "http://example.mydomain.local/perfsonar-graphs/graphWidget.cgi?url=%maUrl&dest=%col&source=%row"
+            graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
             #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
             command:  "/usr/lib/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %row -d %col"
         checkInterval: 28800
@@ -231,7 +231,7 @@ checks:
         params:
             maUrl:
                 default: "http://%row/esmond/perfsonar/archive"
-            graphUrl: "http://example.mydomain.local/perfsonar-graphs/graphWidget.cgi?url=%maUrl&dest=%row&source=%col"
+            graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
             #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
             command:  "/usr/lib/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %col -d %row"
         checkInterval: 28800

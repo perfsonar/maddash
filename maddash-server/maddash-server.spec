@@ -136,6 +136,7 @@ if [ "$1" = "2" ]; then
     
     #fix graph URL
     sed -i "s:/serviceTest:/perfsonar-graphs:g" %{config_base}/maddash.yaml
+    sed -i "s:graphWidget.cgi::g" %{config_base}/maddash.yaml
     
     #restart service
     %if 0%{?el7}
