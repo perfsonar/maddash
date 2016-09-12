@@ -13,7 +13,7 @@ BuildArch:      noarch
 Requires:       maddash-server
 Requires:       maddash-webui
 Requires:       nagios-plugins-perfsonar
-Requires:       perfsonar-graphs
+Requires:       perfsonar-graphs >= 4.0
 
 %description
 MaDDash is a framework for scheduling service checks and displaying results in a grid. This package installs a default set of modules that can be used to perform basic maddash functions. 
