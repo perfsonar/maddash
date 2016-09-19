@@ -1,0 +1,5 @@
+# Uncorrect JS detection by lintian, already reported to lintian devs.
+# see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=744972
+# and https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=808756
+maddash source: source-is-missing maddash-webui/web/lib/jquery.min.js
+maddash source: source-is-missing maddash-webui/web/lib/jquery-ui.min.js
