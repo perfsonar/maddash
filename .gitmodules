@@ -1,3 +1,6 @@
 [submodule "maddash-server/madalert"]
 	path = maddash-server/madalert
 	url = https://github.com/perfsonar/madalert 
+[submodule "toolkit-building"]
+	path = toolkit-building
+	url = https://github.com/perfsonar/toolkit-building.git
