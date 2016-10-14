@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -e
+
+curl -s http://localhost/maddash-webui/ | grep -C 10 'Monitoring and Debugging'
