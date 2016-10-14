@@ -17,3 +17,16 @@
 +log4j.appender.NETLOGGER.File=/var/log/maddash/maddash-server.netlogger.log
  log4j.appender.NETLOGGER.layout=org.apache.log4j.PatternLayout
  log4j.appender.NETLOGGER.layout.ConversionPattern=level=%p %m%n
+--- a/maddash-webui/etc/apache-maddash.conf
++++ b/maddash-webui/etc/apache-maddash.conf
+@@ -1,8 +1,8 @@
+ ##
+ #Setup path to web user interface
+ #
+-Alias /maddash-webui /usr/lib/maddash/maddash-webui 
+-<Directory "/usr/lib/maddash/maddash-webui/">
++Alias /maddash-webui /usr/share/maddash/maddash-webui
++<Directory "/usr/share/maddash/maddash-webui/">
+     Options +Indexes +FollowSymLinks +ExecCGI
+     DirectoryIndex index.cgi index.html
+     AddHandler cgi-script .cgi
