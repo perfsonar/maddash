@@ -2,6 +2,9 @@
 
 set -e
 
+curl -v http://localhost:8881/maddash/dashboards
+curl -v http://localhost:8881/maddash/grids
+
 curl -s http://localhost:8881/maddash/dashboards | grep -C 20 '^{"dashboards":\[.*\]}'
 
 curl -s http://localhost:8881/maddash/grids | grep -C 20 '^{"grids":\[.*\]}'

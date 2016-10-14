@@ -1,2 +1,2 @@
 Depends: @, curl
-Tests: webui, server
+Tests: server, webui
