@@ -39,7 +39,7 @@ case "$1" in
             a2enmod -q cgi
             a2enmod -q rewrite
             a2enmod -q proxy_http
-            a2enmod -q version
+            [ -e /etc/apache2/mods-available/version.load ] && a2enmod -q version
 
             ln -sf /etc/maddash/maddash-webui/apache-maddash.conf /etc/apache2/conf.d/
 
