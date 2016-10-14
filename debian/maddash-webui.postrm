@@ -25,11 +25,13 @@ case "$1" in
         rm -f /etc/maddash/maddash-webui/admin-users
 
         # reload apache
-        rm -f /etc/apache2/conf.d/apache-maddash.conf
-        if which invoke-rc.d > /dev/null; then
-            invoke-rc.d apache2 reload
-        else
-            /etc/init.d/apache2 reload
+        if ! [ -e /usr/share/apache2/apache2-maintscript-helper ]; then
+            rm -f /etc/apache2/conf.d/apache-maddash.conf
+            if which invoke-rc.d > /dev/null; then
+                invoke-rc.d apache2 reload
+            else
+                /etc/init.d/apache2 reload
+            fi
         fi
     ;;
 
