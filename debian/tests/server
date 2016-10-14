@@ -2,8 +2,6 @@
 
 set -e
 
-service maddash-server status
-
 cnt=0
 while ! ss -tnl | grep -q :8881; do
     sleep 1
