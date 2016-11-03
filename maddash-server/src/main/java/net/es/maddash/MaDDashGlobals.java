@@ -26,6 +26,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import net.es.maddash.jobs.CheckSchedulerJob;
 import net.es.maddash.jobs.CleanDBJob;
+import net.es.maddash.jobs.ConfigWatcherJob;
 import net.es.maddash.jobs.EventCalendarJob;
 import net.es.maddash.utils.URIUtil;
 import net.es.maddash.www.MaDDashApplication;
@@ -66,6 +67,7 @@ public class MaDDashGlobals {
     private Map<String, Class> checkTypeClassMap;
     private HashMap<Integer, Boolean> scheduledChecks; 
     private CheckSchedulerJob checkShedJob;
+    private ConfigWatcherJob configWatcherJob;
     private EventCalendarJob eventCalJob;
     private WebServer webServer;
     private String resourceURL;
@@ -146,16 +148,6 @@ public class MaDDashGlobals {
             throw new RuntimeException(e.getMessage());
         }
         
-        //create resource manager
-        this.resourceManager = new ResourceManager();
-        
-        //set server host
-        String serverHost = DEFAULT_HOST;
-        if(config.containsKey(PROP_SERVER_HOST) && config.get(PROP_SERVER_HOST) != null){
-            serverHost = (String) config.get(PROP_SERVER_HOST);
-        }
-        log.debug("Server host is " + serverHost);
-
         this.jobBatchSize = DEFAULT_JOB_BATCH_SIZE;
         if(config.containsKey(PROP_JOB_BATCH_SIZE) && config.get(PROP_JOB_BATCH_SIZE) != null){
             this.jobBatchSize = (Integer) config.get(PROP_JOB_BATCH_SIZE);
@@ -167,7 +159,111 @@ public class MaDDashGlobals {
             this.threadPoolSize = (Integer) config.get(PROP_JOB_THREAD_POOL_SIZE);
         }
         log.debug("threadPoolSize is " + this.threadPoolSize);
+        
+        //create resource manager
+        this.resourceManager = new ResourceManager();
+        
+        //set server host
+        String serverHost = DEFAULT_HOST;
+        if(config.containsKey(PROP_SERVER_HOST) && config.get(PROP_SERVER_HOST) != null){
+            serverHost = (String) config.get(PROP_SERVER_HOST);
+        }
+        log.debug("Server host is " + serverHost);
 
+        //init database
+        boolean skipTableBuild = false;
+        if(config.containsKey(PROP_SKIP_TABLE_BUILD) && config.get(PROP_SKIP_TABLE_BUILD) != null){
+            skipTableBuild = (((Integer) config.get(PROP_SKIP_TABLE_BUILD)) != 0 ? true : false);
+        }
+        String dbFile = DEFAULT_DB;
+        if(config.containsKey(PROP_DATABASE) && config.get(PROP_DATABASE) != null){
+            dbFile = (String) config.get(PROP_DATABASE);
+        }
+        try {
+            this.initDatabase(dbFile, skipTableBuild);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        } 
+        
+        this.load(config);
+        
+        //load file watcher thread
+        try{
+            this.configWatcherJob = new ConfigWatcherJob("MaDDashYAMLWatcherJob", configFile);
+            this.configWatcherJob.start();
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+        
+        //init event calendar
+        this.eventCalJob = new EventCalendarJob();
+        this.eventCalJob.start();
+        
+        /*
+         * NOTE: PackagesResourceConfig does not appear to work
+         * with one-jar class loader so loading individually for now
+         */
+        String resourceProto = null;
+        int resourcePort = 0;
+        String resourceHost = serverHost; 
+        
+        //create server
+        this.webServer = new WebServer(serverHost, new MaDDashApplication());
+
+        //configure HTTP
+        if(config.containsKey(PROP_HTTP) && config.get(PROP_HTTP) != null){
+            resourcePort = this.configureHttp((Map)config.get(PROP_HTTP));
+            resourceProto = "http";
+        }
+
+        //configure HTTPS
+        if(config.containsKey(PROP_HTTPS) && config.get(PROP_HTTPS) != null){
+            resourcePort = this.configureHttps((Map)config.get(PROP_HTTPS));
+            resourceProto = "https";
+        }
+
+        //determine url
+        Map urlConfig = null;
+        if(config.containsKey(PROP_RESOURCE_URL)){
+            urlConfig = (Map) config.get(PROP_RESOURCE_URL);
+        }
+        this.configureResourceURL(urlConfig, resourceProto, 
+                resourceHost, resourcePort);
+    }
+    public void reload(){
+        //stop current stuff
+        this.stop();
+        
+        //reload config file
+        if(configFile == null){
+            throw new RuntimeException("No config file set.");
+        }
+        Map config = null;
+        try {
+            config = (Map) Yaml.load(new File(configFile));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        //start scheduler and web server
+        this.load(config);
+        
+        //clean-up dereferenced stuff
+        System.gc();
+    }
+    
+    private void stop(){
+        try {
+            if(this.scheduler != null){
+                this.scheduler.shutdown(true);
+            }
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error shutting down scheduler: " + e.getMessage());
+        }
+    }
+    
+    private void load(Map config) {
         String dbCleanSched = CLEAN_DB_SCHEDULE;
         if(config.containsKey(PROP_DB_CLEAN_SCHED) && config.get(PROP_DB_CLEAN_SCHED) != null){
             dbCleanSched = (String) config.get(PROP_DB_CLEAN_SCHED);
@@ -191,39 +287,6 @@ public class MaDDashGlobals {
             disableChecks = (((Integer) config.get(PROP_DISABLE_CHECKS)) != 0 ? true : false);
         }
         log.debug("disableChecks is " + disableChecks);
-
-        //init database
-        boolean skipTableBuild = false;
-        if(config.containsKey(PROP_SKIP_TABLE_BUILD) && config.get(PROP_SKIP_TABLE_BUILD) != null){
-            skipTableBuild = (((Integer) config.get(PROP_SKIP_TABLE_BUILD)) != 0 ? true : false);
-        }
-        String dbFile = DEFAULT_DB;
-        if(config.containsKey(PROP_DATABASE) && config.get(PROP_DATABASE) != null){
-            dbFile = (String) config.get(PROP_DATABASE);
-        }
-        try {
-            this.initDatabase(dbFile, skipTableBuild);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        } 
-
-        //set web parameters
-       /* Map webConfig = null;
-        if(!config.containsKey(PROP_WEB) || config.get(PROP_WEB) == null){
-            throw new RuntimeException("Dashboard does not contain a " + PROP_WEB +  " property");
-        }
-        webConfig = (Map) config.get(PROP_WEB);
-        this.webTitle = DEFAULT_WEB_TITLE;
-        if(webConfig.containsKey(PROP_WEB_TITLE) && webConfig.get(PROP_WEB_TITLE) != null){
-            this.webTitle = (String) webConfig.get(PROP_WEB_TITLE);
-        }
-        log.debug("webTitle is " + this.webTitle);
-
-        this.defaultDashboard = null;
-        if(webConfig.containsKey(PROP_WEB_DEFAULT) && webConfig.get(PROP_WEB_DEFAULT) != null){
-            this.defaultDashboard = (String) webConfig.get(PROP_WEB_DEFAULT);
-        }
-        log.debug("defaultDashboard is " + this.defaultDashboard); */
         
         //load dashboards
         if(config.containsKey(PROP_DASHBOARDS) && config.get(PROP_DASHBOARDS) != null){
@@ -265,47 +328,16 @@ public class MaDDashGlobals {
                 throw new RuntimeException(e.getMessage());
             }
             if(!disableChecks){
-                //job that checks for new jobs is in own thread
-                this.checkShedJob = new CheckSchedulerJob("MaDDashCheckSchedulerJob");
-                this.checkShedJob.start();
+                //can't disable once enabled currently
+                if(this.checkShedJob == null){
+                    //job that checks for new jobs is in own thread
+                    this.checkShedJob = new CheckSchedulerJob("MaDDashCheckSchedulerJob");
+                    this.checkShedJob.start();
+                }
             }
             this.scheduledChecks = new HashMap<Integer,Boolean>();
         }
         
-        //init event calendar
-        this.eventCalJob = new EventCalendarJob();
-        this.eventCalJob.start();
-        
-        /*
-         * NOTE: PackagesResourceConfig does not appear to work
-         * with one-jar class loader so loading individually for now
-         */
-        String resourceProto = null;
-        int resourcePort = 0;
-        String resourceHost = serverHost; 
-        
-        //create server
-        this.webServer = new WebServer(serverHost, new MaDDashApplication());
-
-        //configure HTTP
-        if(config.containsKey(PROP_HTTP) && config.get(PROP_HTTP) != null){
-            resourcePort = this.configureHttp((Map)config.get(PROP_HTTP));
-            resourceProto = "http";
-        }
-
-        //configure HTTPS
-        if(config.containsKey(PROP_HTTPS) && config.get(PROP_HTTPS) != null){
-            resourcePort = this.configureHttps((Map)config.get(PROP_HTTPS));
-            resourceProto = "https";
-        }
-
-        //determine url
-        Map urlConfig = null;
-        if(config.containsKey(PROP_RESOURCE_URL)){
-            urlConfig = (Map) config.get(PROP_RESOURCE_URL);
-        }
-        this.configureResourceURL(urlConfig, resourceProto, 
-                resourceHost, resourcePort);
     }
 
     private void configureDashboards(List dashConfig) {
