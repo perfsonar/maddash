@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reports.html">Reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
@@ -152,9 +153,7 @@
 <p>This document is intended to get you started as quickly as possible with a basic setup. See other sections of the documentation for more details on the steps performed here.</p>
 <ol class="arabic">
 <li><p class="first">Login to a CentOS 6 or later host and setup your yum environment (move to step 2 if you are on a host running the perfSONAR Toolkit 3.3 or later, your yum is already setup!):</p>
-<div class="highlight-python"><div class="highlight"><pre>wget http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.4-2.noarch.rpm
-wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-yum localinstall Internet2-repo-0.4-2.noarch.rpm epel-release-6-8.noarch.rpm
+<div class="highlight-python"><div class="highlight"><pre>yum install epel-release http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.6-1.noarch.rpm
 yum clean all
 </pre></div>
 </div>

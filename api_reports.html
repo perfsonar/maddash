@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Reports &mdash; MaDDash 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-3.1.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/esnet/esnet.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="MaDDash 1.1 documentation" href="index.html" />
+    <link rel="next" title="Appendix: Check Type Specific Parameters" href="api_type_params.html" />
+    <link rel="prev" title="Events" href="api_events.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          <!-- LOGO: logo-esnet-ball-sm.png _static/logo-esnet-ball-sm.png --><img src="_static/logo-esnet-ball-sm.png">
+          MaDDash</a>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Section <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_server.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config_webui.html">Customizing the Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running and Managing MaDDash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_ui.html">Administrator Web Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_config.html">Advanced: perfSONAR Auto-Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="api_intro.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_dashboards.html">Dashboards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_grids.html">Grids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_rows.html">Rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Reports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="api_events.html" title="Previous Chapter: Events">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      <span class="hidden-sm">
+        Events
+      </span>
+    </a>
+  </li>
+  <li>
+    <a href="api_type_params.html" title="Next Chapter: Appendix: Check Type Specific Parameters">
+      <span class="hidden-sm">
+        Appendix: Check ...
+      </span>
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </a>
+  </li>
+              
+            
+            <li class="divider-vertical"></li>
+            
+                <li><a href="genindex.html">Index</a></li>
+                <li><a href="https://www.es.net">ESnet</a></li>
+            
+            <li><a href="https://github.com/esnet/maddash"><img src="_static/esnet/icon-github.png" height="20" width="20"></a></li>
+            
+            
+            
+          </ul>
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Reports</a><ul>
+<li><a class="reference internal" href="#retrieving-a-report">Retrieving a report</a><ul>
+<li><a class="reference internal" href="#request">Request</a></li>
+<li><a class="reference internal" href="#response">Response</a><ul>
+<li><a class="reference internal" href="#report-object">Report Object</a></li>
+<li><a class="reference internal" href="#problem-object">Problem Object</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    <div class="col-md-9">
+      
+  <div class="section" id="reports">
+<h1>Reports<a class="headerlink" href="#reports" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="retrieving-a-report">
+<h2>Retrieving a report<a class="headerlink" href="#retrieving-a-report" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="request">
+<h3>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h3>
+<p>The request is a HTTP GET to the report URL. See below for full summary.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><em>URL</em></td>
+<td>/maddash/report</td>
+</tr>
+<tr class="row-even"><td><em>HTTP Method</em></td>
+<td>GET</td>
+</tr>
+</tbody>
+</table>
+<p><em>URL Parameters</em></p>
+<p>One and only one of the following is <em>required</em>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>json</em></td>
+<td>A full URL where the JSON describing a grid can be accessed. This can be an external URL. Example: <em>http://myhost.example/maddash/grids/Latency%20Grid</em></td>
+</tr>
+<tr class="row-odd"><td><em>grid</em></td>
+<td>The URL encoded name of a grid stored in the local MaDDash instance. Example: <em>Latency%20Grid</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="response">
+<h3>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h3>
+<p><em>Type:</em> application/json</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="19%" />
+<col width="4%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>mesh</em></td>
+<td>object</td>
+<td>Yes</td>
+<td>An object containing  details about the grid</td>
+</tr>
+<tr class="row-odd"><td><em>mesh.name</em></td>
+<td>string</td>
+<td>Yes</td>
+<td>The name of the grid</td>
+</tr>
+<tr class="row-even"><td><em>mesh.location</em></td>
+<td>string</td>
+<td>No</td>
+<td>The URL where the grid JSON can be retrieved. Only displayed if <em>json</em> query parameter used.</td>
+</tr>
+<tr class="row-odd"><td><em>global</em></td>
+<td><a class="reference internal" href="#api-reports-report-object"><em>Report Object</em></a></td>
+<td>Yes</td>
+<td>A report object describing any configured patterns that match the entire grid.</td>
+</tr>
+<tr class="row-even"><td><em>sites</em></td>
+<td>A hash of <a class="reference internal" href="#api-reports-report-object"><em>Report Object</em></a> arrays</td>
+<td>Yes</td>
+<td>A hash where the key is the name of the row or column in the grid (as displayed in the grid if labels are used) and the value is an array of report objects affecting that row/column.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="report-object">
+<span id="api-reports-report-object"></span><h4>Report Object<a class="headerlink" href="#report-object" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="19%" />
+<col width="4%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>stats</em></td>
+<td>array of integers</td>
+<td>Yes</td>
+<td>A count of the number of boxes matching the status represented by the array index. 0=OK, 1=WARN, 2=CRITICAL, 3-UNKNOWN, 4=NOT YET RUN, 5=MAINTENANCE and anything else is a custom state.</td>
+</tr>
+<tr class="row-odd"><td><em>severity</em></td>
+<td>integer</td>
+<td>Yes</td>
+<td>The overall severity of the problems found. 0=OK, 1=WARN, 2=CRITICAL.</td>
+</tr>
+<tr class="row-even"><td><em>problems</em></td>
+<td>array of <a class="reference internal" href="#api-reports-problem-object"><em>Problem Object</em></a></td>
+<td>No</td>
+<td>A list of problems found by this report</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="problem-object">
+<span id="api-reports-problem-object"></span><h4>Problem Object<a class="headerlink" href="#problem-object" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="19%" />
+<col width="4%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>name</em></td>
+<td>string</td>
+<td>Yes</td>
+<td>A description of the problem</td>
+</tr>
+<tr class="row-odd"><td><em>severity</em></td>
+<td>integer</td>
+<td>Yes</td>
+<td>The severity of the problems found. 0=OK, 1=WARN, 2=CRITICAL.</td>
+</tr>
+<tr class="row-even"><td><em>category</em></td>
+<td>string</td>
+<td>Yes</td>
+<td>A string that categorizes the problem. May be useful for filtering problems by type.</td>
+</tr>
+<tr class="row-odd"><td><em>solutions</em></td>
+<td>array of strings</td>
+<td>No</td>
+<td>A list of potential ways to address the problem</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="example">
+<h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s">&quot;mesh&quot;</span><span class="p">:{</span>
+      <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;ESnet - ESnet to DOE Site Throughput Testing&quot;</span>
+   <span class="p">},</span>
+   <span class="s">&quot;global&quot;</span><span class="p">:{</span>
+      <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+         <span class="mi">87</span><span class="p">,</span>
+         <span class="mi">1</span><span class="p">,</span>
+         <span class="mi">0</span><span class="p">,</span>
+         <span class="mi">8</span><span class="p">,</span>
+         <span class="mi">0</span><span class="p">,</span>
+         <span class="mi">8</span>
+      <span class="p">],</span>
+      <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+   <span class="p">},</span>
+   <span class="s">&quot;sites&quot;</span><span class="p">:{</span>
+      <span class="s">&quot;star-pt1.es.net&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">22</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">2</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;hous-pt1.es.net&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">22</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">2</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;perfsonar.nersc.gov&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;ps-bandwidth.hep.pnnl.gov&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;psonar5.deemz.net (FNAL)&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;perfsonar.ornl.gov&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;sunn-pt1.es.net&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">22</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">2</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;wash-pt1.es.net&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">21</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">2</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;psnr-farm10.slac.stanford.edu&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;speedtest2.pnl.gov&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">7</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;ps-border1-bwctl.lbl.gov&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;anlborder-ps.it.anl.gov&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;gdoperf.ucllnl.org&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;jlab4.jlab.org&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;lhcmon.bnl.gov&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s">&quot;perfsonar1.ccs.ornl.gov&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">8</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span>
+         <span class="s">&quot;problems&quot;</span><span class="p">:[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;Site is down&quot;</span><span class="p">,</span>
+               <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span>
+               <span class="s">&quot;category&quot;</span><span class="p">:</span><span class="s">&quot;CONFIGURATION&quot;</span><span class="p">,</span>
+               <span class="s">&quot;solutions&quot;</span><span class="p">:[</span>
+                  <span class="s">&quot;Verify the host is up&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;Verify the local and remote sites allow access to TCP port 4823, TCP/UDP ports 6001-6200, and TCP/UDP ports 5001-5900&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;If recently added to the mesh, verify the mesh config file has been downloaded by the end-hosts since the update. It may also take several hours for the first BWCTL test to run on this host.&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;If recently removed from the mesh, verify that /usr/lib/perfsonar/bin/generate_gui_configuration has run recently and you are looking at an accurate test mesh&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;Verify NTP is synced on this host&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;Verify that your measurement archive(s) are running&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;Verify no firewall is blocking maddash from reaching your measurement archive(s)&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;Verify that regular testing is running (/etc/init.d/perfsonar-regulartesting status)&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;Verify your hosts are able to reach their configured measurement archive and that there are no errors in /var/log/perfsonar/regulartesting.log&quot;</span>
+               <span class="p">]</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="s">&quot;portalz.pppl.gov&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">8</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-1">
+        <a href="http://www.es.net/"><img src="_static/esnet/logo-esnet.png" alt="[ESnet]"></a>
+      </div>
+      <div class="col-md-11">
+        <p class="pull-right">
+        <a href="#">Back to top</a>
+        
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/api_reports.txt"
+     rel="nofollow">Source</a>
+</div>
+        
+        </p>
+        <p>
+            &copy; Copyright 2014, Andy Lake.<br/>
+          Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+  </body>
+</html>

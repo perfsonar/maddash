@@ -6,9 +6,7 @@ This document is intended to get you started as quickly as possible with a basic
 
 #. Login to a CentOS 6 or later host and setup your yum environment (move to step 2 if you are on a host running the perfSONAR Toolkit 3.3 or later, your yum is already setup!)::
 
-    wget http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.4-2.noarch.rpm
-    wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-    yum localinstall Internet2-repo-0.4-2.noarch.rpm epel-release-6-8.noarch.rpm
+    yum install epel-release http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.6-1.noarch.rpm
     yum clean all
 
 #. Run the following command as a privileged user to install the software::

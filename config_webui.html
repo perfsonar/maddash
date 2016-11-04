@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reports.html">Reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
@@ -143,7 +144,11 @@
 <li><a class="reference internal" href="#">Customizing the Web Interface</a><ul>
 <li><a class="reference internal" href="#web-server">Web Server</a></li>
 <li><a class="reference internal" href="#visual-customizations">Visual Customizations</a><ul>
-<li><a class="reference internal" href="#customizing-dashboard-colors">Customizing Dashboard Colors</a></li>
+<li><a class="reference internal" href="#customizing-dashboard-colors">Customizing Dashboard Colors</a><ul>
+<li><a class="reference internal" href="#customizing-the-default-color-profile">Customizing the Default Color Profile</a></li>
+<li><a class="reference internal" href="#customizing-user-selectable-color-profiles">Customizing User Selectable Color Profiles</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#adding-a-custom-list-of-external-links">Adding a Custom List of External Links</a></li>
 <li><a class="reference internal" href="#grids-properties">grids properties</a></li>
 </ul>
@@ -168,9 +173,9 @@
 <table border="1" class="docutils">
 <colgroup>
 <col width="7%" />
-<col width="5%" />
+<col width="7%" />
 <col width="4%" />
-<col width="84%" />
+<col width="82%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -193,24 +198,29 @@
 <tr class="row-even"><td>colors</td>
 <td>JSON object</td>
 <td>No</td>
-<td>See <a class="reference internal" href="#config-webui-vizcustom-colors"><em>Customizing Dashboard Colors</em></a></td>
+<td>The default color profile for grids. See <a class="reference internal" href="#config-webui-vizcustom-colors"><em>Customizing Dashboard Colors</em></a></td>
 </tr>
-<tr class="row-odd"><td>enableAdminUI</td>
+<tr class="row-odd"><td>alternateColors</td>
+<td>JSON object array</td>
+<td>No</td>
+<td>A list of color profile objects describing alternate color options that are seletcable under the <em>Settings &gt; Colors</em> menu. See <a class="reference internal" href="#config-webui-vizcustom-colors"><em>Customizing Dashboard Colors</em></a></td>
+</tr>
+<tr class="row-even"><td>enableAdminUI</td>
 <td>Boolean</td>
 <td>No</td>
 <td>A &#8216;true&#8217; or &#8216;false&#8217; value indicating you want <em>Server Settings...</em> to appear in the <em>Settings</em> menu of the web interface. Note this does NOT disable direct access to the administrator UI, just removes it from the menu.</td>
 </tr>
-<tr class="row-even"><td>addNodeURL</td>
+<tr class="row-odd"><td>addNodeURL</td>
 <td>String</td>
 <td>No</td>
 <td>A URL where users may find more information about adding a node to your dashboard(s). If populated an extra item will be added to the menu bar displayed for users.</td>
 </tr>
-<tr class="row-odd"><td>externalLinksMenu</td>
+<tr class="row-even"><td>externalLinksMenu</td>
 <td>JSON object</td>
 <td>No</td>
 <td>See <a class="reference internal" href="#config-webui-vizcustom-extlinks"><em>Adding a Custom List of External Links</em></a></td>
 </tr>
-<tr class="row-even"><td>grids</td>
+<tr class="row-odd"><td>grids</td>
 <td>JSON object</td>
 <td>No</td>
 <td>Custom layout features for individual grids. See <a class="reference internal" href="#grids-props"><em>grids properties</em></a> section.</td>
@@ -219,35 +229,132 @@
 </table>
 <div class="section" id="customizing-dashboard-colors">
 <span id="config-webui-vizcustom-colors"></span><h3>Customizing Dashboard Colors<a class="headerlink" href="#customizing-dashboard-colors" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="customizing-the-default-color-profile">
+<h4>Customizing the Default Color Profile<a class="headerlink" href="#customizing-the-default-color-profile" title="Permalink to this headline">¶</a></h4>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Color customization was added in version 1.2 of MaDDash and not supported in previous versions.</p>
 </div>
-<p>You may customize the colors used by the dashboards for each check state using the <em>colors</em> option. This option takes the form of an object consisting of key/value pairs. The key is the state value and the value is the color to be displayed for that state value.  See <a class="reference internal" href="api_grids.html#status-codes"><em>Status-Codes</em></a> for a complete listing of status codes and their meanings.  The value is the color as a CSS color name (e.g. black) or hexadecimal (e.g. #000000). For example, the default value look like the following:</p>
+<p>You may customize the colors used by the dashboards for each check state using the <em>colors</em> option. This option takes the form of an object consisting of key/value pairs. The key is the state value and the value is the color to be displayed for that state value.  See <a class="reference internal" href="api_grids.html#status-codes"><em>Status-Codes</em></a> for a complete listing of status codes and their meanings.  The value is the color as a CSS color name (e.g. black) or hexadecimal (e.g. #000000). For example, the default value looks like the following:</p>
 <div class="highlight-python"><div class="highlight"><pre>&quot;colors&quot;: {
-    0: &quot;green&quot;,
-    1: &quot;yellow&quot;,
-    2: &quot;red&quot;,
-    3: &quot;orange&quot;,
-    4: &quot;gray&quot;,
-    5: &quot;black&quot;
- }
+    &quot;0&quot;: &quot;#009E73&quot;,
+    &quot;1&quot;: &quot;#F0E442&quot;,
+    &quot;2&quot;: &quot;#CC79A7&quot;,
+    &quot;3&quot;: &quot;#E69F00&quot;,
+    &quot;4&quot;: &quot;#56B4E9&quot;,
+    &quot;5&quot;: &quot;#000000&quot;
+}
 </pre></div>
 </div>
-<p>If you wanted to change everything in the OK state to be blue instead of green you could provide something like the following:</p>
+<p>If you wanted to change everything in the UNKNOWN state to be shade of gray instead of orange you could provide something like the following:</p>
 <div class="highlight-python"><div class="highlight"><pre>&quot;colors&quot;: {
-    0: &quot;blue&quot;,
-    1: &quot;yellow&quot;,
-    2: &quot;red&quot;,
-    3: &quot;orange&quot;,
-    4: &quot;gray&quot;,
-    5: &quot;black&quot;
- }
+    &quot;0&quot;: &quot;#009E73&quot;,
+    &quot;1&quot;: &quot;#F0E442&quot;,
+    &quot;2&quot;: &quot;#CC79A7&quot;,
+    &quot;3&quot;: &quot;#A2A2A2&quot;,
+    &quot;4&quot;: &quot;#56B4E9&quot;,
+    &quot;5&quot;: &quot;#000000&quot;
+}
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">It should be noted you must define states 0-5 every time you provide the colors. It is not enough to just define the subset you want to change. In addition, some checks may have custom states greater than 5. You may optionally include any states greater than five  in the configuration, but 0-5 are always required. See documentation for a specific check if you are unsure if it has any custom states.</p>
+</div>
+</div>
+<div class="section" id="customizing-user-selectable-color-profiles">
+<h4>Customizing User Selectable Color Profiles<a class="headerlink" href="#customizing-user-selectable-color-profiles" title="Permalink to this headline">¶</a></h4>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">User selectable color profiles were added in version 2.0 of MaDDash and not supported in previous versions.</p>
+</div>
+<p>You can also add a list of color options from which users can select via the <em>Settings &gt; Colors</em> menu. Selecting an item from this menu will set a cookie that saves the choice for future visits as well. An example configuration is show below:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;alternateColors&quot;: [
+    {
+        &quot;name&quot;: &quot;Classic&quot;,
+        &quot;colors&quot;: {
+            &quot;0&quot;: &quot;green&quot;,
+            &quot;1&quot;: &quot;yellow&quot;,
+            &quot;2&quot;: &quot;red&quot;,
+            &quot;3&quot;: &quot;orange&quot;,
+            &quot;4&quot;: &quot;gray&quot;,
+            &quot;5&quot;: &quot;black&quot;
+        }
+    },
+    {
+        &quot;name&quot;: &quot;Gray Unknown&quot;,
+        &quot;colors&quot;: {
+            &quot;0&quot;: &quot;#009E73&quot;,
+            &quot;1&quot;: &quot;#F0E442&quot;,
+            &quot;2&quot;: &quot;#CC79A7&quot;,
+            &quot;3&quot;: &quot;#A2A2A2&quot;,
+            &quot;4&quot;: &quot;#56B4E9&quot;,
+            &quot;5&quot;: &quot;#000000&quot;
+        }
+    },
+    {
+        &quot;name&quot;: &quot;Forest Rain&quot;,
+        &quot;colors&quot;: {
+            &quot;0&quot;: &quot;#33a02c&quot;,
+            &quot;1&quot;: &quot;#b2df8a&quot;,
+            &quot;2&quot;: &quot;#1f78b4&quot;,
+            &quot;3&quot;: &quot;#a6cee3&quot;,
+            &quot;4&quot;: &quot;#eeeeee&quot;,
+            &quot;5&quot;: &quot;black&quot;
+        }
+    },
+    {
+        &quot;name&quot;: &quot;Heatwave&quot;,
+        &quot;colors&quot;: {
+            &quot;0&quot;: &quot;#fecc5c&quot;,
+            &quot;1&quot;: &quot;#fd8d3c&quot;,
+            &quot;2&quot;: &quot;#e31a1c&quot;,
+            &quot;3&quot;: &quot;#ffffb2&quot;,
+            &quot;4&quot;: &quot;#eeeeee&quot;,
+            &quot;5&quot;: &quot;black&quot;
+        }
+    },
+    {
+        &quot;name&quot;: &quot;Old Movie&quot;,
+        &quot;colors&quot;: {
+            &quot;0&quot;: &quot;#cccccc&quot;,
+            &quot;1&quot;: &quot;#969696&quot;,
+            &quot;2&quot;: &quot;#525252&quot;,
+            &quot;3&quot;: &quot;#f7f7f7&quot;,
+            &quot;4&quot;: &quot;#eeeeee&quot;,
+            &quot;5&quot;: &quot;black&quot;
+        }
+    },
+    {
+        &quot;name&quot;: &quot;Pastel&quot;,
+        &quot;colors&quot;: {
+            &quot;0&quot;: &quot;#8dd3c7&quot;,
+            &quot;1&quot;: &quot;#ffffb3&quot;,
+            &quot;2&quot;: &quot;#fb8072&quot;,
+            &quot;3&quot;: &quot;#bebada&quot;,
+            &quot;4&quot;: &quot;#eeeeee&quot;,
+            &quot;5&quot;: &quot;black&quot;
+        }
+    },
+    {
+        &quot;name&quot;: &quot;Sea Breeze&quot;,
+        &quot;colors&quot;: {
+            &quot;0&quot;: &quot;#bae4bc&quot;,
+            &quot;1&quot;: &quot;#7bccc4&quot;,
+            &quot;2&quot;: &quot;#2b8cbe&quot;,
+            &quot;3&quot;: &quot;#f0f9e8&quot;,
+            &quot;4&quot;: &quot;#eeeeee&quot;,
+            &quot;5&quot;: &quot;black&quot;
+        }
+    }
+ ]
+</pre></div>
+</div>
+<p>In the example each object has a <em>name</em> and a <em>colors</em> array. The name is how the profile will be displayed in the <em>Colors</em> menu. The colors is exactly the same form as when you define the color set, essentially an object mapping states to CSS color names or hexadecimal colors values.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If no alternateColors are listed then the <em>Colors</em> menu will not be displayed under the <em>Settings</em> menu</p>
+</div>
 </div>
 </div>
 <div class="section" id="adding-a-custom-list-of-external-links">
@@ -339,10 +446,10 @@
 <p>The following properties are available:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="17%" />
-<col width="10%" />
-<col width="11%" />
-<col width="62%" />
+<col width="12%" />
+<col width="7%" />
+<col width="8%" />
+<col width="73%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -365,7 +472,7 @@
 <tr class="row-even"><td>textBlockSize</td>
 <td>Integer</td>
 <td>No</td>
-<td>The length of the text blocks at the top of the grid</td>
+<td><strong>NO LONGER SUPPORTED in 2.0</strong> This option as been obsoleted by auto-sizing and is ignored</td>
 </tr>
 </tbody>
 </table>

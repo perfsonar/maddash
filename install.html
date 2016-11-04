@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reports.html">Reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
@@ -169,19 +170,11 @@
 </div>
 <div class="section" id="yum-repository-setup">
 <h2>Yum Repository Setup<a class="headerlink" href="#yum-repository-setup" title="Permalink to this headline">¶</a></h2>
-<p>Installation is currently supported via an RPM distribution through yum. We need to point at MaDash&#8217;s home yum repository. As noted earlier perfSONAR Toolkits will already contain this configuration meaning this section can be skipped if installing on a toolkit host. Otherwise we start by downloading an RPM to add the new yum repository:</p>
-<div class="highlight-python"><div class="highlight"><pre>wget http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.4-2.noarch.rpm
+<p>Installation is currently supported via an RPM distribution through yum. We need to point at MaDash&#8217;s home yum repository and the <a class="reference external" href="http://fedoraproject.org/wiki/EPEL">EPEL</a> repository for a few dependencies. As noted earlier perfSONAR Toolkits will already contain this configuration meaning this section can be skipped if installing on a toolkit host. The command to install these repositories is:</p>
+<div class="highlight-python"><div class="highlight"><pre>yum install epel-release http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.6-1.noarch.rpm
 </pre></div>
 </div>
-<p>You will also need to point at the <a class="reference external" href="http://fedoraproject.org/wiki/EPEL">EPEL</a> repository to satisfy some package dependencies. Download it as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre>wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-</pre></div>
-</div>
-<p>Next we install that new RPM:</p>
-<div class="highlight-python"><div class="highlight"><pre>yum localinstall Internet2-repo-0.4-2.noarch.rpm epel-release-6-8.noarch.rpm
-</pre></div>
-</div>
-<p>Finally we refresh our yum cache so it uses the new repository immediately:</p>
+<p>Finally we refresh our yum cache so it uses the new repositories immediately:</p>
 <div class="highlight-python"><div class="highlight"><pre>yum clean all
 </pre></div>
 </div>

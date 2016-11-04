@@ -13,53 +13,149 @@ Visual Customizations
 =====================
 The interface provides some customization options in the JSON config file */etc/maddash/maddash-webui/config.json*. It provides the following options:
 
-+------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Name             | Type        | Required | Description                                                                                                                                                                                                               |
-+==================+=============+==========+===========================================================================================================================================================================================================================+ 
-| title            | String      | Yes      | The title displayed at the very top of the web page                                                                                                                                                                       |
-+------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
-| defaultDashboard | String      | Yes      | The name of the default dashboard to display when someone visits /maddash-webui. It MUST match the name of a dashboard defined in your maddash-server.yaml file.                                                          | 
-+------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| colors           | JSON object | No       | See :ref:`config-webui-vizcustom-colors`                                                                                                                                                                                  |
-+------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| enableAdminUI    | Boolean     | No       | A 'true' or 'false' value indicating you want *Server Settings...* to appear in the *Settings* menu of the web interface. Note this does NOT disable direct access to the administrator UI, just removes it from the menu.|
-+------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| addNodeURL       | String      | No       | A URL where users may find more information about adding a node to your dashboard(s). If populated an extra item will be added to the menu bar displayed for users.                                                       |
-+------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| externalLinksMenu| JSON object | No       | See :ref:`config-webui-vizcustom-extlinks`                                                                                                                                                                                |
-+------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| grids            | JSON object | No       | Custom layout features for individual grids. See :ref:`grids-props` section.                                                                                                                                              | 
-+------------------+-------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++------------------+-------------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Name             | Type              | Required | Description                                                                                                                                                                                                               |
++==================+===================+==========+===========================================================================================================================================================================================================================+ 
+| title            | String            | Yes      | The title displayed at the very top of the web page                                                                                                                                                                       |
++------------------+-------------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+ 
+| defaultDashboard | String            | Yes      | The name of the default dashboard to display when someone visits /maddash-webui. It MUST match the name of a dashboard defined in your maddash-server.yaml file.                                                          | 
++------------------+-------------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| colors           | JSON object       | No       | The default color profile for grids. See :ref:`config-webui-vizcustom-colors`                                                                                                                                             |
++------------------+-------------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| alternateColors  | JSON object array | No       | A list of color profile objects describing alternate color options that are seletcable under the *Settings > Colors* menu. See :ref:`config-webui-vizcustom-colors`                                                       |
++------------------+-------------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| enableAdminUI    | Boolean           | No       | A 'true' or 'false' value indicating you want *Server Settings...* to appear in the *Settings* menu of the web interface. Note this does NOT disable direct access to the administrator UI, just removes it from the menu.|
++------------------+-------------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| addNodeURL       | String            | No       | A URL where users may find more information about adding a node to your dashboard(s). If populated an extra item will be added to the menu bar displayed for users.                                                       |
++------------------+-------------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| externalLinksMenu| JSON object       | No       | See :ref:`config-webui-vizcustom-extlinks`                                                                                                                                                                                |
++------------------+-------------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| grids            | JSON object       | No       | Custom layout features for individual grids. See :ref:`grids-props` section.                                                                                                                                              | 
++------------------+-------------------+----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _config-webui-vizcustom-colors:
 
 Customizing Dashboard Colors
 ----------------------------
+
+Customizing the Default Color Profile
++++++++++++++++++++++++++++++++++++++
 .. note:: Color customization was added in version 1.2 of MaDDash and not supported in previous versions.
 
-You may customize the colors used by the dashboards for each check state using the *colors* option. This option takes the form of an object consisting of key/value pairs. The key is the state value and the value is the color to be displayed for that state value.  See :ref:`status-codes` for a complete listing of status codes and their meanings.  The value is the color as a CSS color name (e.g. black) or hexadecimal (e.g. #000000). For example, the default value look like the following::
+You may customize the colors used by the dashboards for each check state using the *colors* option. This option takes the form of an object consisting of key/value pairs. The key is the state value and the value is the color to be displayed for that state value.  See :ref:`status-codes` for a complete listing of status codes and their meanings.  The value is the color as a CSS color name (e.g. black) or hexadecimal (e.g. #000000). For example, the default value looks like the following::
 
     "colors": {
-        0: "green",
-        1: "yellow",
-        2: "red",
-        3: "orange",
-        4: "gray",
-        5: "black"
-     }
+        "0": "#009E73", 
+        "1": "#F0E442", 
+        "2": "#CC79A7", 
+        "3": "#E69F00", 
+        "4": "#56B4E9",
+        "5": "#000000"
+    }
 
-If you wanted to change everything in the OK state to be blue instead of green you could provide something like the following::
+If you wanted to change everything in the UNKNOWN state to be shade of gray instead of orange you could provide something like the following::
 
     "colors": {
-        0: "blue",
-        1: "yellow",
-        2: "red",
-        3: "orange",
-        4: "gray",
-        5: "black"
-     }
+        "0": "#009E73", 
+        "1": "#F0E442", 
+        "2": "#CC79A7", 
+        "3": "#A2A2A2", 
+        "4": "#56B4E9",
+        "5": "#000000"
+    }
 
 .. note:: It should be noted you must define states 0-5 every time you provide the colors. It is not enough to just define the subset you want to change. In addition, some checks may have custom states greater than 5. You may optionally include any states greater than five  in the configuration, but 0-5 are always required. See documentation for a specific check if you are unsure if it has any custom states.
+
+
+Customizing User Selectable Color Profiles
+++++++++++++++++++++++++++++++++++++++++++
+.. note:: User selectable color profiles were added in version 2.0 of MaDDash and not supported in previous versions.
+
+You can also add a list of color options from which users can select via the *Settings > Colors* menu. Selecting an item from this menu will set a cookie that saves the choice for future visits as well. An example configuration is show below::
+    
+    "alternateColors": [
+        {
+            "name": "Classic",
+            "colors": {
+                "0": "green", 
+                "1": "yellow", 
+                "2": "red", 
+                "3": "orange", 
+                "4": "gray",
+                "5": "black"
+            }
+        },
+        {
+            "name": "Gray Unknown",
+            "colors": {
+                "0": "#009E73", 
+                "1": "#F0E442", 
+                "2": "#CC79A7", 
+                "3": "#A2A2A2", 
+                "4": "#56B4E9",
+                "5": "#000000"
+            }
+        },
+        {
+            "name": "Forest Rain",
+            "colors": {
+                "0": "#33a02c", 
+                "1": "#b2df8a", 
+                "2": "#1f78b4", 
+                "3": "#a6cee3", 
+                "4": "#eeeeee",
+                "5": "black"
+            }
+        },
+        {
+            "name": "Heatwave",
+            "colors": {
+                "0": "#fecc5c", 
+                "1": "#fd8d3c", 
+                "2": "#e31a1c", 
+                "3": "#ffffb2", 
+                "4": "#eeeeee",
+                "5": "black"
+            }
+        },
+        {
+            "name": "Old Movie",
+            "colors": {
+                "0": "#cccccc", 
+                "1": "#969696", 
+                "2": "#525252", 
+                "3": "#f7f7f7", 
+                "4": "#eeeeee",
+                "5": "black"
+            }
+        },
+        {
+            "name": "Pastel",
+            "colors": {
+                "0": "#8dd3c7", 
+                "1": "#ffffb3", 
+                "2": "#fb8072", 
+                "3": "#bebada", 
+                "4": "#eeeeee",
+                "5": "black"
+            }
+        },
+        {
+            "name": "Sea Breeze",
+            "colors": {
+                "0": "#bae4bc", 
+                "1": "#7bccc4", 
+                "2": "#2b8cbe", 
+                "3": "#f0f9e8", 
+                "4": "#eeeeee",
+                "5": "black"
+            }
+        }
+     ]
+
+In the example each object has a *name* and a *colors* array. The name is how the profile will be displayed in the *Colors* menu. The colors is exactly the same form as when you define the color set, essentially an object mapping states to CSS color names or hexadecimal colors values.
+
+.. note::  If no alternateColors are listed then the *Colors* menu will not be displayed under the *Settings* menu
 
 .. _config-webui-vizcustom-extlinks:
 
@@ -126,13 +222,13 @@ grids are specified as follows (where *gridName* is the name of the grid you wan
 
 The following properties are available:
 
-+---------------+---------+----------+--------------------------------------------------------+
-| Name          | Type    | Required | Description                                            | 
-+===============+=========+==========+========================================================+
-| cellSize      | Integer | No       | The height and width in pixels of one cell in the grid | 
-+---------------+---------+----------+--------------------------------------------------------+
-| cellPadding   | Integer | No       | The space between cells of the grid                    |
-+---------------+---------+----------+--------------------------------------------------------+ 
-| textBlockSize | Integer | No       | The length of the text blocks at the top of the grid   |
-+---------------+---------+----------+--------------------------------------------------------+
++---------------+---------+----------+--------------------------------------------------------------------------------------------+
+| Name          | Type    | Required | Description                                                                                | 
++===============+=========+==========+============================================================================================+
+| cellSize      | Integer | No       | The height and width in pixels of one cell in the grid                                     | 
++---------------+---------+----------+--------------------------------------------------------------------------------------------+
+| cellPadding   | Integer | No       | The space between cells of the grid                                                        |
++---------------+---------+----------+--------------------------------------------------------------------------------------------+ 
+| textBlockSize | Integer | No       | **NO LONGER SUPPORTED in 2.0** This option as been obsoleted by auto-sizing and is ignored |
++---------------+---------+----------+--------------------------------------------------------------------------------------------+
  

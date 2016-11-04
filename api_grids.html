@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reports.html">Reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
@@ -185,6 +186,26 @@
 </tr>
 <tr class="row-even"><td><em>HTTP Method</em></td>
 <td>GET</td>
+</tr>
+</tbody>
+</table>
+<p><em>URL Parameters</em></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><em>resultsPerPage</em></td>
+<td>The maximum number of results to return in the history object. Defaults to 10.</td>
+</tr>
+<tr class="row-odd"><td><em>page</em></td>
+<td>The page of results to display. It will start with the result at numResults <cite>*</cite> page (starting with 0 and ordered from newest to oldest check result). Defaults to 0.</td>
 </tr>
 </tbody>
 </table>
@@ -308,82 +329,87 @@
 <td>Yes</td>
 <td>A Unix timestamp (in seconds) indicating when the most recent check was run</td>
 </tr>
-<tr class="row-odd"><td><em>rows</em></td>
+<tr class="row-odd"><td><em>report</em></td>
+<td><a class="reference internal" href="api_reports.html#api-reports-report-object"><em>Report Object</em></a></td>
+<td>No</td>
+<td>A report object listing details of any report patterns that match the grid</td>
+</tr>
+<tr class="row-even"><td><em>rows</em></td>
 <td>array of objects</td>
 <td>Yes</td>
 <td>The ordered list of rows in the dashboard</td>
 </tr>
-<tr class="row-even"><td><em>rows[n].name</em></td>
+<tr class="row-odd"><td><em>rows[n].name</em></td>
 <td>string</td>
 <td>Yes</td>
 <td>The name of the row</td>
 </tr>
-<tr class="row-odd"><td><em>rows[n].props</em></td>
+<tr class="row-even"><td><em>rows[n].props</em></td>
 <td>object</td>
 <td>Yes</td>
-<td>A list of key/value pairs that further describe the row. The keys and values are taken from <a class="reference internal" href="config_server.html#group-member-props"><em>Group Member Properties</em></a>.</td>
+<td>A list of key/value pairs that further describe the row. The keys and values are taken from <a class="reference internal" href="config_server.html#group-member-props"><em>groupMembers</em></a>.</td>
 </tr>
-<tr class="row-even"><td><em>rows[n].uri</em></td>
+<tr class="row-odd"><td><em>rows[n].uri</em></td>
 <td>string</td>
 <td>Yes</td>
 <td>The uri of the row</td>
 </tr>
-<tr class="row-odd"><td><em>columnNames</em></td>
+<tr class="row-even"><td><em>columnNames</em></td>
 <td>array of strings</td>
 <td>Yes</td>
 <td>A ordered list of column names</td>
 </tr>
-<tr class="row-even"><td><em>columnProps</em></td>
+<tr class="row-odd"><td><em>columnProps</em></td>
 <td>array of objects</td>
 <td>Yes</td>
-<td>A ordered list of objects containing key value pairs that further describe columns. The keys and values are taken from <a class="reference internal" href="config_server.html#group-member-props"><em>Group Member Properties</em></a>.</td>
+<td>A ordered list of objects containing key value pairs that further describe columns. The keys and values are taken from <a class="reference internal" href="config_server.html#group-member-props"><em>groupMembers</em></a>.</td>
 </tr>
-<tr class="row-odd"><td><em>checkNames</em></td>
+<tr class="row-even"><td><em>checkNames</em></td>
 <td>array of strings</td>
 <td>Yes</td>
 <td>The ordered list of check names</td>
 </tr>
-<tr class="row-even"><td><em>grid</em></td>
+<tr class="row-odd"><td><em>grid</em></td>
 <td>3-dimenisional array of objects</td>
 <td>Yes</td>
 <td>The full grid. The first dimension of the array is the rows, the second dimension is the array of cells in row, and the third is the array of checks. The order of each MUST match the order in the <em>rows</em>, <em>columnNames</em> and <em>checkNames</em> field.</td>
 </tr>
-<tr class="row-odd"><td><em>grid[n]</em></td>
+<tr class="row-even"><td><em>grid[n]</em></td>
 <td>2-dimenional array</td>
 <td>Yes</td>
 <td>A row in the grid</td>
 </tr>
-<tr class="row-even"><td><em>grid[n][m]</em></td>
+<tr class="row-odd"><td><em>grid[n][m]</em></td>
 <td>2-dimenional array</td>
 <td>Yes</td>
 <td>A cell in the grid. If null then no checks are configured for this cell.</td>
-</tr>
-<tr class="row-odd"><td><em>grid[n][m][l]</em></td>
-<td>array or objects</td>
-<td>Yes</td>
-<td>A check in the grid</td>
 </tr>
 <tr class="row-even"><td><em>grid[n][m][l]</em></td>
 <td>array or objects</td>
 <td>Yes</td>
 <td>A check in the grid</td>
 </tr>
-<tr class="row-odd"><td><em>grid[n][m][l].prevCheckTime</em></td>
+<tr class="row-odd"><td><em>grid[n][m][l]</em></td>
+<td>array or objects</td>
+<td>Yes</td>
+<td>A check in the grid</td>
+</tr>
+<tr class="row-even"><td><em>grid[n][m][l].prevCheckTime</em></td>
 <td>long</td>
 <td>Yes</td>
 <td>The Unix timestamp (in seconds) when this check was last run</td>
 </tr>
-<tr class="row-even"><td><em>grid[n][m][l].message</em></td>
+<tr class="row-odd"><td><em>grid[n][m][l].message</em></td>
 <td>string</td>
 <td>Yes</td>
 <td>A human-readable message describing the last result of the check</td>
 </tr>
-<tr class="row-odd"><td><em>grid[n][m][l].status</em></td>
+<tr class="row-even"><td><em>grid[n][m][l].status</em></td>
 <td>int</td>
 <td>Yes</td>
 <td>The status of the last result of a check. See the <a class="reference internal" href="#status-codes"><em>Status-Codes</em></a> table.</td>
 </tr>
-<tr class="row-even"><td><em>grid[n][m][l].uri</em></td>
+<tr class="row-odd"><td><em>grid[n][m][l].uri</em></td>
 <td>string</td>
 <td>Yes</td>
 <td>The URI where details on the check can be retrieved</td>
@@ -429,1521 +455,1045 @@
 </div>
 <div class="section" id="id4">
 <h4>Example<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python"><div class="highlight"><pre>{
-   &quot;name&quot;:&quot;ESnet BWCTL Tests - Other Sites&quot;,
-   &quot;statusLabels&quot;:[
-      &quot;Throughput &gt; 500Mbps&quot;,
-      &quot;Throughput 100-500Mbps&quot;,
-      &quot;Throughput &lt; 100Mbps&quot;,
-      &quot;Unable to retrieve data&quot;,
-      &quot;Check has not yet run&quot;
-   ]
-   &quot;rows&quot;:[
-      {
-         &quot;name&quot;:&quot;albu-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net&quot;,
-         &quot;props&quot;:{ &quot;pstoolkiturl&quot;: &quot;http://albu-pt1.es.net&quot;}
-      },
-      {
-         &quot;name&quot;:&quot;ameslab-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;aofa-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;atla-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;bois-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;bost-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;clev-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;denv-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;doe-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;elpa-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;eqx-ash-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;eqx-chi-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;eqx-sj-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;forr-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;inl-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;kans-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;lasv-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;lvk-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;newy-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;nrel-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;orau-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;osti-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;paix-pa-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;pantex-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;snla-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;srs-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      },
-      {
-         &quot;name&quot;:&quot;star-pt1.es.net&quot;,
-         &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net&quot;,
-         &quot;props&quot;:{}
-      }
-   ],
-   &quot;columnNames&quot;:[
-      &quot;chic-pt1.es.net&quot;,
-      &quot;hous-pt1.es.net&quot;,
-      &quot;sunn-pt1.es.net&quot;,
-      &quot;wash-pt1.es.net&quot;
-   ],
-   &quot;columnProps&quot;:[
-      { &quot;pstoolkiturl&quot;: &quot;http://chic-pt1.es.net&quot; },
-      {},
-      {},
-      {}
-   ],
-   &quot;checkNames&quot;:[
-      &quot;BWCTL 500Mbps&quot;,
-      &quot;BWCTL 500Mbps Reverse&quot;
-   ],
-   &quot;grid&quot;:[
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.17823Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 2.0626646Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=albu-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.009612776Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.020105Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00592367Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=albu-pt1.es.net dst=wash-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.003148915Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/albu-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.634649666666667Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.938077666666667Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=ameslab-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00716801333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.597662Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.004773255Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=ameslab-pt1.es.net dst=wash-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.3389416Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/ameslab-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00494619666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 2.58350125Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00409102Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.004451315Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00241175666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00267422Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0099413725Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 8.73781Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/aofa-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.5751425Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00781735666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.38536Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00812078Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.23377Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0028477425Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.3594175Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0149236666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/atla-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.73704333333333Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 2.09773Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.27852Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.998152Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.67863Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.06777Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.3927725Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0027046275Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bois-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.791905Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 2.83113966666667Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.76754Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00379118Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.55229Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0025877Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.41688Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 5.04567Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/bost-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.54274625Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 7.603265Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=clev-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.005621675Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=clev-pt1.es.net dst=sunn-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00333158Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 8.15189Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 7.75722333333333Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/clev-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.520729Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=chic-pt1.es.net dst=denv-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=denv-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=hous-pt1.es.net dst=denv-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=denv-pt1.es.net dst=sunn-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=sunn-pt1.es.net dst=denv-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.94622Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00395194Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/denv-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=doe-pt1.es.net dst=chic-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.842569Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=doe-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00560588Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=doe-pt1.es.net dst=sunn-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0032604Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=doe-pt1.es.net dst=wash-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=wash-pt1.es.net dst=doe-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/doe-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.184879Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.878407Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 8.15883Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 4.107858Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 7.425585Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 6.86251333333333Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 7.25624Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00370766Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/elpa-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=eqx-ash-pt1.es.net dst=chic-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.901612Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00784455Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.005918082Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=eqx-ash-pt1.es.net dst=sunn-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0031396175Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=eqx-ash-pt1.es.net dst=wash-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.9680565Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-ash-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.964757Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.971136666666667Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=eqx-chi-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00899921Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=eqx-chi-pt1.es.net dst=sunn-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.004578594Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.780606Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0113187666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-chi-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.133310066666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.07402125Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=eqx-sj-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0932506Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.93886Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.880244333333333Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0946440666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0131815Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/eqx-sj-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=forr-pt1.es.net dst=chic-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.847902Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=forr-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00554567Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=forr-pt1.es.net dst=sunn-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00283377285714286Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.950016Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.9216755Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/forr-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.039643692Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0022998975Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0137376Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.01198498Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0807381666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.033507625Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0370316975Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0021112875Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/inl-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 1.77843166666667Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.7190424Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.017272Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 5.182695Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 7.58797Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 5.7492875Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 7.65898Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00660182333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/kans-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0314442666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0945527Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0407865Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.199800325Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.253574Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.38944925Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0220093Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0137269333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lasv-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=lvk-pt1.es.net dst=chic-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00471271Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=lvk-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0012273435Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=lvk-pt1.es.net dst=sunn-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00478651Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=lvk-pt1.es.net dst=wash-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00335475333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/lvk-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=newy-pt1.es.net dst=chic-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 3.75108Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=newy-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0044793Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=newy-pt1.es.net dst=sunn-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00227202Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 9.1444Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=wash-pt1.es.net dst=newy-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/newy-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.75031775Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.363561857142857Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=nrel-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.441041Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.639120666666667Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.338216Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.827476Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.004740694Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/nrel-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=orau-pt1.es.net dst=chic-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0085492Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00523397Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00703606Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.688418Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00338299333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.787215Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.01410902Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/orau-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.789644333333333Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0086786075Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=osti-pt1.es.net dst=hous-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00670083Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.862314Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00296268666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.8913125Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.009695305Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/osti-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0379188Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0431594666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0610763Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.2634005Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.8634445Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.8333906Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0963184333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0179318533333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/paix-pa-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.247959333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.484714Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.2672575Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.4345552Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.271495333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.452931833333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.139357Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00370091666666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/pantex-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.184086333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.522807Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.2401876Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0109487333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.1454495Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00877121333333333Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.1745234Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0038363725Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/snla-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0120399466666667Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0039317Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0196306Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00486644Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.00413815Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=sunn-pt1.es.net dst=srs-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.0128307475Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.006279425Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/srs-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ],
-      [
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 7.871965Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 7.02195Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net/chic-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.608953Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.007868612Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net/hous-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; No throughput data returned for direction where src=star-pt1.es.net dst=sunn-pt1.es.net&quot;,
-               &quot;status&quot;:&quot;3&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 0.003939425Gbps &quot;,
-               &quot;status&quot;:&quot;1&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net/sunn-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ],
-         [
-            {
-               &quot;message&quot;:&quot; Average throughput is 5.01062333333333Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps&quot;
-            },
-            {
-               &quot;message&quot;:&quot; Average throughput is 5.066662Gbps &quot;,
-               &quot;status&quot;:&quot;0&quot;,
-               &quot;uri&quot;:&quot;/maddash/ESnet+BWCTL+Tests+-+Other+Sites/star-pt1.es.net/wash-pt1.es.net/BWCTL+500Mbps+Reverse&quot;
-            }
-         ]
-      ]
-   ]
-}
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing&quot;</span><span class="p">,</span>
+   <span class="s">&quot;statusLabels&quot;</span><span class="p">:[</span>
+      <span class="s">&quot;Throughput &gt;= 5000Mbps&quot;</span><span class="p">,</span>
+      <span class="s">&quot;Throughput &lt; 5000Mbps&quot;</span><span class="p">,</span>
+      <span class="s">&quot;Throughput &lt;= 1000Mbps&quot;</span><span class="p">,</span>
+      <span class="s">&quot;Unable to retrieve data&quot;</span><span class="p">,</span>
+      <span class="s">&quot;Check has not yet run&quot;</span>
+   <span class="p">],</span>
+   <span class="s">&quot;lastUpdateTime&quot;</span><span class="p">:</span><span class="mi">1468948423</span><span class="p">,</span>
+   <span class="s">&quot;columnNames&quot;</span><span class="p">:[</span>
+      <span class="s">&quot;chic-pt1.es.net&quot;</span><span class="p">,</span>
+      <span class="s">&quot;hous-pt1.es.net&quot;</span><span class="p">,</span>
+      <span class="s">&quot;sunn-pt1.es.net&quot;</span><span class="p">,</span>
+      <span class="s">&quot;wash-pt1.es.net&quot;</span>
+   <span class="p">],</span>
+   <span class="s">&quot;columnProps&quot;</span><span class="p">:[</span>
+      <span class="p">{</span>
+         <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+         <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;chic-pt1.es.net&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+         <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;hous-pt1.es.net&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+         <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;sunn-pt1.es.net&quot;</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+         <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;wash-pt1.es.net&quot;</span>
+      <span class="p">}</span>
+   <span class="p">],</span>
+   <span class="s">&quot;checkNames&quot;</span><span class="p">:[</span>
+      <span class="s">&quot;Throughput&quot;</span><span class="p">,</span>
+      <span class="s">&quot;Throughput Reverse&quot;</span>
+   <span class="p">],</span>
+   <span class="s">&quot;grid&quot;</span><span class="p">:[</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.929Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945208</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/albq-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.731Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945101</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/albq-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.584Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945102</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/albq-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.932Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945219</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/albq-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.596Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945157</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/albq-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.732Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945906</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/albq-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.898Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945168</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/albq-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.300Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945324</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/albq-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.597Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468942249</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/aofa-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.435Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945344</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/aofa-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.269Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468942186</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/aofa-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.829Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945350</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/aofa-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.931Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945351</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/aofa-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.207Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468946160</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/aofa-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.781Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468942233</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/aofa-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.686Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945379</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/aofa-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.691Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945344</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/atla-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.758Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945278</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/atla-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.065Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945342</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/atla-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.644Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945288</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/atla-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.818Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945948</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/atla-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.420Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468948423</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/atla-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.662Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945345</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/atla-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.768Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945324</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/atla-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.780Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944616</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bois-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.555Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945225</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bois-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.461Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468942357</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bois-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.916Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945268</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bois-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.906Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944840</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bois-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.253Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468946139</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bois-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.702Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944563</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bois-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 6.525Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945154</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bois-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.923Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945056</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bost-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.086Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945112</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bost-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.548Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945151</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bost-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.818Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945215</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bost-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.520Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945161</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bost-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.006Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945845</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bost-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.073Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944956</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bost-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.921Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944902</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bost-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.182Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945326</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/denv-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.066Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945283</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/denv-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.845Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945279</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/denv-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.695Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945282</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/denv-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.484Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945285</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/denv-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.584Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945765</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/denv-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.984Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945226</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/denv-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 6.703Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468942233</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/denv-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.470Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945326</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/elpa-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.880Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945334</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/elpa-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.883Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945290</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/elpa-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.929Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945324</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/elpa-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.909Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945282</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/elpa-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.924Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468946097</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/elpa-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.359Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945283</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/elpa-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 6.837Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945327</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/elpa-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.848Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945354</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/kans-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.890Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945344</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/kans-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.857Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945269</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/kans-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.932Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945353</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/kans-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.633Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945227</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/kans-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.088Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945750</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/kans-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.781Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945323</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/kans-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.195Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945278</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/kans-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.823Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945207</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/nash-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.379Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945103</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/nash-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.525Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945287</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/nash-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.936Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945222</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/nash-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.453Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945213</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/nash-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.360Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468946139</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/nash-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.443Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945347</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/nash-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.740Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945285</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/nash-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.832Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944463</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/newy-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.788Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944899</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/newy-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.009Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944565</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/newy-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.233Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944216</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/newy-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.939Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944491</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/newy-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.970Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945770</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/newy-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.202Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944903</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/newy-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.925Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944492</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/newy-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.875Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945051</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/pnwg-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.316Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945092</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/pnwg-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 6.421Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945096</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/pnwg-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.232Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945169</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/pnwg-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.285Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945093</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/pnwg-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.925Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468946010</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/pnwg-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 6.699Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945804</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/pnwg-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 6.746Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945265</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/pnwg-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">],</span>
+      <span class="p">[</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.509Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944886</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/star-pt1.es.net/chic-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 9.644Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944484</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/star-pt1.es.net/chic-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.648Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944373</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/star-pt1.es.net/hous-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.551Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944348</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/star-pt1.es.net/hous-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 6.960Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944346</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/star-pt1.es.net/sunn-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 7.628Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468945753</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/star-pt1.es.net/sunn-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">],</span>
+         <span class="p">[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.174Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944478</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/star-pt1.es.net/wash-pt1.es.net/Throughput&quot;</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+               <span class="s">&quot;message&quot;</span><span class="p">:</span><span class="s">&quot; Average throughput is 8.064Gbps &quot;</span><span class="p">,</span>
+               <span class="s">&quot;status&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;prevCheckTime&quot;</span><span class="p">:</span><span class="mi">1468944981</span><span class="p">,</span>
+               <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/star-pt1.es.net/wash-pt1.es.net/Throughput+Reverse&quot;</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">]</span>
+   <span class="p">],</span>
+   <span class="s">&quot;rows&quot;</span><span class="p">:[</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;albq-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/albq-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;albq-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;aofa-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/aofa-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;aofa-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;atla-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/atla-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;atla-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;bois-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bois-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;bois-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;bost-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/bost-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;bost-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;denv-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/denv-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;denv-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;elpa-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/elpa-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;elpa-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;kans-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/kans-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;kans-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;nash-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/nash-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;nash-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;newy-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/newy-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;newy-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;pnwg-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/pnwg-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;pnwg-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;star-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;uri&quot;</span><span class="p">:</span><span class="s">&quot;/maddash/grids/ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing/star-pt1.es.net&quot;</span><span class="p">,</span>
+         <span class="s">&quot;props&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;added_by_mesh_agent&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span><span class="p">,</span>
+            <span class="s">&quot;label&quot;</span><span class="p">:</span><span class="s">&quot;star-pt1.es.net&quot;</span>
+         <span class="p">}</span>
+      <span class="p">}</span>
+   <span class="p">],</span>
+   <span class="s">&quot;report&quot;</span><span class="p">:{</span>
+      <span class="s">&quot;mesh&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;ESnet - 100G ESnet Hub to 100G ESnet Hub Throughput Testing&quot;</span>
+      <span class="p">},</span>
+      <span class="s">&quot;global&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+            <span class="mi">96</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">],</span>
+         <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+         <span class="s">&quot;problems&quot;</span><span class="p">:[</span>
+            <span class="p">{</span>
+               <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;Entire grid has OK status.&quot;</span><span class="p">,</span>
+               <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+               <span class="s">&quot;category&quot;</span><span class="p">:</span><span class="s">&quot;PERFORMANCE&quot;</span><span class="p">,</span>
+               <span class="s">&quot;solutions&quot;</span><span class="p">:[</span>
+
+           <span class="p">]</span>
+            <span class="p">}</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="s">&quot;sites&quot;</span><span class="p">:{</span>
+         <span class="s">&quot;star-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;hous-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">24</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;bois-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;sunn-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">24</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;wash-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">24</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;bost-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;kans-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;atla-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;pnwg-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;nash-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;aofa-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;elpa-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;chic-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">24</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;newy-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;albq-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">},</span>
+         <span class="s">&quot;denv-pt1.es.net&quot;</span><span class="p">:{</span>
+            <span class="s">&quot;stats&quot;</span><span class="p">:[</span>
+               <span class="mi">8</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span><span class="p">,</span>
+               <span class="mi">0</span>
+            <span class="p">],</span>
+            <span class="s">&quot;severity&quot;</span><span class="p">:</span><span class="mi">0</span>
+         <span class="p">}</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

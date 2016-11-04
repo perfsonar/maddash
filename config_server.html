@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api_cells.html">Cells</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_checks.html">Checks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reports.html">Reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_type_params.html">Appendix: Check Type Specific Parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_misc.html">Miscellaneous Operations</a></li>
 </ul>
@@ -142,6 +143,7 @@
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
 <li><a class="reference internal" href="#">Configuration</a><ul>
 <li><a class="reference internal" href="#groups">groups</a></li>
+<li><a class="reference internal" href="#groupmembers">groupMembers</a></li>
 <li><a class="reference internal" href="#checks">checks</a><ul>
 <li><a class="reference internal" href="#general-parameters">General Parameters</a></li>
 <li><a class="reference internal" href="#type-specific-parameters">Type-specific Parameters</a><ul>
@@ -156,14 +158,10 @@
 </li>
 <li><a class="reference internal" href="#grids">grids</a></li>
 <li><a class="reference internal" href="#dashboards">dashboards</a></li>
-<li><a class="reference internal" href="#global-properties">Global Properties</a><ul>
 <li><a class="reference internal" href="#general-properties">General Properties</a></li>
-<li><a class="reference internal" href="#group-member-properties">Group Member Properties</a></li>
 <li><a class="reference internal" href="#web-server-properties">Web Server Properties</a><ul>
 <li><a class="reference internal" href="#http-properties">http properties</a></li>
 <li><a class="reference internal" href="#https-properties">https properties</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -195,6 +193,53 @@
 </pre></div>
 </div>
 <p>All groups go under the <em>group</em> block. In the example above <em>groupName</em> can replaced with any alphanumeric string that does not contain whitespace. For example &#8220;myOwampHosts&#8221;, &#8220;campusHosts&#8221;, or any other string that meets the requirements. This name will be used later in the configuration, so its important to make note of it. In the above example, you should change <em>member</em> to the name of the host or other resource you want in the list.</p>
+</div>
+<div class="section" id="groupmembers">
+<span id="group-member-props"></span><h2>groupMembers<a class="headerlink" href="#groupmembers" title="Permalink to this headline">¶</a></h2>
+<p><strong>groupMembers</strong> are  used to further describe members of a group. Any custom property may be added but only the values listed are understood by the default MaDDash interface. There is also a special <em>map</em> propert that can be used to dynamically set values based on the value of the opposing row/column. groupMembers take the following format where <em>&#8220;member&#8221;</em> is the name of the member referenced:</p>
+<div class="highlight-python"><div class="highlight"><pre>groupMembers:
+    - id: &quot;member&quot;
+      ...member properties...
+</pre></div>
+</div>
+<p>Below are the list of well-known properties:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="5%" />
+<col width="2%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Required</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>id</td>
+<td>String</td>
+<td>Yes</td>
+<td>The group member this is referencing. For example, the hostname or address of a single item in a <em>group</em> list</td>
+</tr>
+<tr class="row-odd"><td>label</td>
+<td>String</td>
+<td>No</td>
+<td>The value to show when displaying information about the referenced group member.</td>
+</tr>
+<tr class="row-even"><td>pstoolkiturl</td>
+<td>String</td>
+<td>No</td>
+<td>The URL of the perfSONAR Toolkit web page.</td>
+</tr>
+<tr class="row-odd"><td>map</td>
+<td>YAML Object</td>
+<td>No</td>
+<td>Defines properties that change depending on the opposing row/column. The keys of this object are other groupMembers underneath which is a custom set of parameters that can be accessed in template strings using %row.map.&lt;property&gt; and  %col.map.&lt;property&gt; respectively. The reserved key <em>default</em> can be used to define a set of properties that apply to hosts not explicitly listed otherwise.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="checks">
 <h2>checks<a class="headerlink" href="#checks" title="Permalink to this headline">¶</a></h2>
@@ -356,6 +401,18 @@
 <tr class="row-odd"><td>%col</td>
 <td>The column in the grid associated with this check at the time its run</td>
 </tr>
+<tr class="row-even"><td>%row.&lt;prop&gt;</td>
+<td>Custom properties defined in the groupMembers section.</td>
+</tr>
+<tr class="row-odd"><td>%col.&lt;prop&gt;</td>
+<td>Custom properties defined in the groupMembers section.</td>
+</tr>
+<tr class="row-even"><td>%row.map.&lt;prop&gt;</td>
+<td>Custom properties defined in the groupMembers section that change depending on opposing row or column.</td>
+</tr>
+<tr class="row-odd"><td>%col.map.&lt;prop&gt;</td>
+<td>Custom properties defined in the groupMembers section that change depending on opposing row or column.</td>
+</tr>
 <tr class="row-even"><td>%maUrl</td>
 <td>The url of the measurement archive. You can&#8217;t use this in the maUrl parameters as this is generated from that template.</td>
 </tr>
@@ -508,11 +565,8 @@
 </tbody>
 </table>
 </div>
-<div class="section" id="global-properties">
-<h2>Global Properties<a class="headerlink" href="#global-properties" title="Permalink to this headline">¶</a></h2>
-<p>The following list some global properties available for controlling the behavior of the maddash-server instance.</p>
 <div class="section" id="general-properties">
-<h3>General Properties<a class="headerlink" href="#general-properties" title="Permalink to this headline">¶</a></h3>
+<h2>General Properties<a class="headerlink" href="#general-properties" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="5%" />
@@ -553,52 +607,11 @@
 <td>No</td>
 <td>If set to 1 then the database tables will not be built and indexes will not be built/rebuilt. The first time you run the server it must be set to 0. After that, you may find that setting it to 1 significantly speeds-up boot time. Keeping it on though has the advantage of rebuilding indexes on startup which can improve query performance.</td>
 </tr>
-<tr class="row-odd"><td>groupMembers</td>
-<td>YAML Array of Objects</td>
-<td>No</td>
-<td>An optional YAML array containing additional information about the items listed under &#8220;groups&#8221;. See the <a class="reference internal" href="#group-member-props"><em>Group Member Properties</em></a> section</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="group-member-properties">
-<span id="group-member-props"></span><h3>Group Member Properties<a class="headerlink" href="#group-member-properties" title="Permalink to this headline">¶</a></h3>
-<p>The following are properties used to further describe members of a group. Any custom property may be added but only the values listed are understood by the default MaDDash interface.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="10%" />
-<col width="6%" />
-<col width="7%" />
-<col width="78%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Type</th>
-<th class="head">Required</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>id</td>
-<td>String</td>
-<td>Yes</td>
-<td>The group member this is referencing. For example, the hostname or address of a single item in a <em>group</em> list</td>
-</tr>
-<tr class="row-odd"><td>label</td>
-<td>String</td>
-<td>No</td>
-<td>The value to show when displaying information about the referenced group member.</td>
-</tr>
-<tr class="row-even"><td>pstoolkiturl</td>
-<td>String</td>
-<td>No</td>
-<td>The URL of the perfSONAR Toolkit web page.</td>
-</tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="web-server-properties">
-<h3>Web Server Properties<a class="headerlink" href="#web-server-properties" title="Permalink to this headline">¶</a></h3>
+<h2>Web Server Properties<a class="headerlink" href="#web-server-properties" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="12%" />
@@ -632,7 +645,7 @@
 </tbody>
 </table>
 <div class="section" id="http-properties">
-<span id="http-props"></span><h4>http properties<a class="headerlink" href="#http-properties" title="Permalink to this headline">¶</a></h4>
+<span id="http-props"></span><h3>http properties<a class="headerlink" href="#http-properties" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="5%" />
@@ -662,7 +675,7 @@
 </table>
 </div>
 <div class="section" id="https-properties">
-<span id="https-props"></span><h4>https properties<a class="headerlink" href="#https-properties" title="Permalink to this headline">¶</a></h4>
+<span id="https-props"></span><h3>https properties<a class="headerlink" href="#https-properties" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="4%" />
@@ -705,7 +718,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </div>
 </div>
