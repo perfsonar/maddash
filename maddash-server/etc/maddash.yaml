@@ -556,7 +556,7 @@ reports:
                                         type: matchFirst
                                         rules: 
                                             - 
-                                                type:rule
+                                                type: rule
                                                 selector:
                                                     type: check
                                                     rowIndex: 1
@@ -573,7 +573,7 @@ reports:
                                                         - "Verify that bwctl-server is running on the host with '/etc/init.d/bwctl-server status'"
                                                         - "Verify the limits defined in /etc/bwctl-server/bwctl-server.limits are properly defined and not being exceeded by the tests"
                                             - 
-                                                type:rule
+                                                type: rule
                                                 selector:
                                                     type: check
                                                     rowIndex: 1
@@ -590,7 +590,7 @@ reports:
                                                         - "Verify that the local site has TCP port 4823 open on the host and router firewalls to all hosts in the mesh"
                                                         - "Verify the limits defined in /etc/bwctl-server/bwctl-server.limits are properly defined and not being exceeded by the tests"
                                             - 
-                                                type:rule
+                                                type: rule
                                                 selector:
                                                     type: check
                                                     rowIndex: 1
@@ -607,7 +607,7 @@ reports:
                                                         - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
                                                         - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
                                             - 
-                                                type:rule
+                                                type: rule
                                                 selector:
                                                     type: check
                                                     colIndex: 0
@@ -822,7 +822,7 @@ reports:
                                         type: matchFirst
                                         rules: 
                                             - 
-                                                type:rule
+                                                type: rule
                                                 selector:
                                                     type: check
                                                     rowIndex: 1
@@ -838,7 +838,7 @@ reports:
                                                         - "Verify that the local site has TCP port 861 open on the host and router firewalls"
                                                         - "Verify that owamp-server is running on the host with '/etc/init.d/owamp-server status'"
                                             - 
-                                                type:rule
+                                                type: rule
                                                 selector:
                                                     type: check
                                                     rowIndex: 1
@@ -854,7 +854,7 @@ reports:
                                                     solutions:
                                                         - "Verify that the local site has TCP port 861 open on the host and router firewalls to all hosts in the mesh"
                                             - 
-                                                type:rule
+                                                type: rule
                                                 selector:
                                                     type: check
                                                     rowIndex: 1
@@ -871,7 +871,7 @@ reports:
                                                         - "Verify that /etc/perfsonar/regulartesting.conf contains the proper tests"
                                                         - "Restart perfsonar-regulartesting, it may not have picked-up configuration changes (/etc/init.d/perfsonar-regulartesting restart)"
                                             - 
-                                                type:rule
+                                                type: rule
                                                 selector:
                                                     type: check
                                                     colIndex: 0
