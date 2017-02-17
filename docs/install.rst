@@ -14,19 +14,11 @@ Note that the `perfSONAR Toolkit <http://www.perfsonar.net>` version 3.3 and lat
 
 Yum Repository Setup
 ====================
-Installation is currently supported via an RPM distribution through yum. We need to point at MaDash's home yum repository. As noted earlier perfSONAR Toolkits will already contain this configuration meaning this section can be skipped if installing on a toolkit host. Otherwise we start by downloading an RPM to add the new yum repository::
+Installation is currently supported via an RPM distribution through yum. We need to point at MaDash's home yum repository and the `EPEL <http://fedoraproject.org/wiki/EPEL>`_ repository for a few dependencies. As noted earlier perfSONAR Toolkits will already contain this configuration meaning this section can be skipped if installing on a toolkit host. The command to install these repositories is::
 
-    wget http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.4-2.noarch.rpm
+    yum install epel-release http://software.internet2.edu/rpms/el6/x86_64/RPMS.main/Internet2-repo-0.6-1.noarch.rpm
 
-You will also need to point at the `EPEL <http://fedoraproject.org/wiki/EPEL>`_ repository to satisfy some package dependencies. Download it as follows::
-
-    wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-
-Next we install that new RPM::
-
-    yum localinstall Internet2-repo-0.4-2.noarch.rpm epel-release-6-8.noarch.rpm
-
-Finally we refresh our yum cache so it uses the new repository immediately::
+Finally we refresh our yum cache so it uses the new repositories immediately::
 
     yum clean all
 

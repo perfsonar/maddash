@@ -29,7 +29,7 @@ All groups go under the *group* block. In the example above *groupName* can repl
 
 groupMembers
 =============
-**groupMembers** are properties used to further describe members of a group. Any custom property may be added but only the values listed are understood by the default MaDDash interface. There is also a special *map* propert that can be used to dynamically set values based on the value of the opposing row/column. groupMembers take the following format where *"member" is the name of the member referenced::
+**groupMembers** are  used to further describe members of a group. Any custom property may be added but only the values listed are understood by the default MaDDash interface. There is also a special *map* propert that can be used to dynamically set values based on the value of the opposing row/column. groupMembers take the following format where *"member"* is the name of the member referenced::
 
     groupMembers:
         - id: "member"
