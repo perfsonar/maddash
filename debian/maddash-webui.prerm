@@ -18,7 +18,7 @@ set -e
 
 
 case "$1" in
-    remove|upgrade|deconfigure)
+    remove|deconfigure)
         # reload apache
         if [ -e /usr/share/apache2/apache2-maintscript-helper ]; then
             . /usr/share/apache2/apache2-maintscript-helper
@@ -26,6 +26,9 @@ case "$1" in
             apache2_invoke disconf apache-maddash
             rm -f /etc/apache2/conf-available/apache-maddash.conf
         fi
+    ;;
+
+    upgrade)
     ;;
 
     failed-upgrade)
