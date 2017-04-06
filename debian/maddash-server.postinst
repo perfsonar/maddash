@@ -25,6 +25,7 @@ case "$1" in
                     --no-create-home --disabled-login maddash
         fi
 
+        chown maddash:maddash /etc/maddash/maddash-server/maddash.yaml
         chown maddash:maddash /var/lib/maddash
         chown maddash:maddash /var/log/maddash
 
