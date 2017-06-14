@@ -1,3 +1,9 @@
+maddash (2.0-2) perfsonar-jessie-release; urgency=low
+
+  * Add libcgi-pm-perl dependency.
+
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Wed, 14 Jun 2017 14:53:07 +0000
+
 maddash (2.0-1) perfsonar-jessie-release; urgency=low
 
   * New upstream version.
