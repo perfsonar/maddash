@@ -255,7 +255,7 @@ public class EmailNotification implements Notification{
         msg.append("<title></title>");
         msg.append("</head>");
         msg.append("<body marginheight=\"0\" marginwidth=\"0\">");
-        msg.append("<div class=\"reportMainTitle\" style=\"color: #FFFFFF;background-color: #0066CC;font-size: 24px; font-weight: bolder; margin: 0px 0px 0px 0px; padding: 20px 20px 20px 5px;\">MaDDash: Test Email Report</div>");
+        msg.append("<div class=\"reportMainTitle\" style=\"color: #FFFFFF;background-color: #0066CC;font-size: 24px; font-weight: bolder; margin: 0px 0px 0px 0px; padding: 20px 20px 20px 5px;\">" + this.name  + "</div>");
         msg.append("<div style=\"margin: 0px 0px 0px 0px; border: 1px solid #b5bcc7; background-color: #efefef; text-align: left; padding: 6px 10px 6px 10px;\"><a href=\""+ (this.dashboardUrl == null ? "#" : this.dashboardUrl) + "\" style=\"color: #000000; size: 16px; text-decoration: none;\">&#8689; View Dashboard</a></div>");
         String prevGrid = "";
         String prevSite = "";

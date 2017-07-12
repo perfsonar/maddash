@@ -5,7 +5,7 @@
 %define relnum 1
 
 Name:           %{package_name}
-Version:        2.0
+Version:        2.0.1
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash Web Interface 
 License:        distributable, see LICENSE
@@ -17,6 +17,7 @@ BuildArch:      noarch
 BuildRequires:  wget
 BuildRequires:  java-1.8.0-openjdk
 Requires:       perl
+Requires:       perl-URI
 Requires:       httpd 
 Requires:       mod_ssl
 

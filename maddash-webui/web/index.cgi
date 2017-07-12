@@ -2,13 +2,21 @@
 
 use strict;
 use CGI;
+use URI::Escape qw/uri_escape uri_unescape/;
+
+sub sanitize_input {
+    my $input = shift;
+    $input =~ s/\+/ /g;#get rid of any spaces encoded as + signs
+    return uri_escape(uri_unescape($input));
+}
+
 
 my $cgi = new CGI();
 
 print $cgi->header;
 
-my $dashParam = $cgi->param("dashboard");
-my $gridParam = $cgi->param("grid");
+my $dashParam = sanitize_input($cgi->param("dashboard"));
+my $gridParam = sanitize_input($cgi->param("grid"));
 
 my $type = "null";
 my $name = "null";

@@ -2,6 +2,7 @@
 
 use strict;
 use CGI;
+use URI::Escape qw/uri_escape uri_unescape/;
 
 my $cgi = new CGI();
 
@@ -10,7 +11,19 @@ print $cgi->header;
 #this is detailOwamp.cgi
 
 my $uri = $cgi->param("uri");
+
 if($uri){
+
+#sanitize uri
+my @uri_parts = split '/', $uri;
+my $first_part = 1;
+my $encoded_uri = "";
+foreach my $uri_part(@uri_parts){
+    $uri_part =~ s/\+/ /g;#get rid of any spaces encoded as + signs
+    $encoded_uri .= '/' unless($first_part);
+    $encoded_uri .= uri_escape(uri_unescape($uri_part));
+    $first_part = 0;
+}
 
 print <<EOF;
 <!DOCTYPE HTML>
@@ -37,7 +50,7 @@ print <<EOF;
 			    
 			    
                 
-                var ds = new MaDDashDataSource("$uri");
+                var ds = new MaDDashDataSource("$encoded_uri");
                 //ds.connect(new MaDDashCheckNav("maddashCheckNav", "/maddash-webui", ""));
                 ds.connect(new MaDDashCheckTitle("maddashCheckTitle"));
                 ds.connect(new MaDDashQuickStatus("maddashQuickStatus", config.data));
