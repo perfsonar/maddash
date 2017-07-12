@@ -715,7 +715,7 @@ var MaDDashDashboardPane = function(parent, type, name, config, userConfig, clic
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.type = (type == null ? "dashboard" : type);
-	this.name = ((name == null && this.type == "dashboard")? config.defaultDashboard : name);
+	this.name = ((name == null && this.type == "dashboard")? config.defaultDashboard : decodeURIComponent(name));
     this.clickHandler = clickHandler;
     
 	this.render = function(data){
@@ -845,8 +845,8 @@ var MaDDashReportPane = function(parent, type, name, host, config){
 	var instance = this;
 	this.parent = _maddashSetParent(parent);
 	this.type = (type == null ? "dashboard" : type);
-	this.name = ((name == null && this.type == "dashboard")? config.defaultDashboard : name);
-    this.host = host;
+	this.name = ((name == null && this.type == "dashboard")? config.defaultDashboard : decodeURIComponent(name));
+    this.host = decodeURIComponent(host);
     
 	this.render = function(data){
 
