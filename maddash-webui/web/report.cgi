@@ -3,18 +3,24 @@
 use strict;
 use CGI;
 use URI::Escape;
+
+sub sanitize_input {
+    my $input = shift;
+    $input =~ s/\+/ /g;#get rid of any spaces encoded as + signs
+    return uri_escape(uri_unescape($input));
+}
  
 my $cgi = new CGI();
 
 print $cgi->header;
 
-my $dashParam = $cgi->param("dashboard");
-my $gridParam = $cgi->param("grid");
-my $hostParam = $cgi->param("host");
+my $dashParam = sanitize_input($cgi->param("dashboard"));
+my $gridParam = sanitize_input($cgi->param("grid"));
+my $hostParam = sanitize_input($cgi->param("host"));
 
 my $type = "null";
 my $name = "null";
-my $host = $hostParam ? '"' . uri_escape($hostParam) . '"': "null";
+my $host = $hostParam ? '"' . $hostParam . '"': "null";
 if($dashParam && $gridParam){
 	print "<h1>You cannot provide both a <i>dashboard</i> and <i>grid</i> parameter. Please only specify one.</h1>";
 }elsif($dashParam){
