@@ -35,7 +35,7 @@ Description: Scheduler and REST server for network monitoring - beta
 
 Package: maddash-webui
 Architecture: all
-Depends: apache2, perl, ${shlibs:Depends}, ${misc:Depends}
+Depends: apache2, perl, liburi-perl, ${shlibs:Depends}, ${misc:Depends}
 Description: Web interface for displaying monitoring results - beta
  MaDDash is a framework for scheduling service checks and displaying results in
  a grid.
