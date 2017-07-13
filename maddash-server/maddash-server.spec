@@ -152,8 +152,9 @@ fi
 %files
 %defattr(-,maddash,maddash,-)
 %config(noreplace) %{config_base}/*
+%config(noreplace) %{install_base}/bin/*.env
 %{install_base}/target/*
-%{install_base}/bin/*
+%{install_base}/bin/*.sh
 %{install_base}/sql/*
 %if 0%{?el7}
 %{_unitdir}/%{package_name}.service
