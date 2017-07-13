@@ -1,3 +1,10 @@
+maddash (2.0.1-1) perfsonar-jessie-release; urgency=low
+
+  * New upstream version.
+  * Adding dependency to liburi-perl
+
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Thu, 13 Jul 2017 00:41:26 +0000
+
 maddash (2.0-2) perfsonar-jessie-release; urgency=low
 
   * Add libcgi-pm-perl dependency.
