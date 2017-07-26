@@ -2,10 +2,10 @@
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define upgrade_base /usr/lib/maddash/upgrades/%{package_name}
-%define relnum 1
+%define relnum 0.1.rc1
 
 Name:           %{package_name}
-Version:        2.0.1
+Version:        2.0.2
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash Web Interface 
 License:        distributable, see LICENSE
