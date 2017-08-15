@@ -1,8 +1,8 @@
-maddash (2.0.2~1.rc1-1) perfsonar-jessie-staging; urgency=low
+maddash (2.0.2-1) perfsonar-jessie-release; urgency=low
 
   * New upstream version.
 
- -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Wed, 26 Jul 2017 14:54:01 +0200
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Tue, 15 Aug 2017 10:32:24 +0100
 
 maddash (2.0.1-1) perfsonar-jessie-release; urgency=low
 
