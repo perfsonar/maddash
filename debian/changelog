@@ -1,3 +1,9 @@
+maddash (2.0.2-2) perfsonar-jessie-release; urgency=low
+
+  * Adding perfsonar-toolkit-graphs dependency to maddash-webui.
+
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Fri, 20 Oct 2017 15:16:11 +0000
+
 maddash (2.0.2-1) perfsonar-jessie-release; urgency=low
 
   * New upstream version.
