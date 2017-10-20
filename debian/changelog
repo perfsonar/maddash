@@ -1,3 +1,9 @@
+maddash (2.0.2-2~bpo70+1) perfsonar-wheezy-release; urgency=low
+
+  * Backport to Wheezy.
+
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Fri, 20 Oct 2017 15:21:01 +0000
+
 maddash (2.0.2-2) perfsonar-jessie-release; urgency=low
 
   * Adding perfsonar-toolkit-graphs dependency to maddash-webui.
