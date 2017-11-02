@@ -1,7 +1,7 @@
 Index: maddash/maddash-server/etc/log4j.properties
 ===================================================================
---- maddash.orig/maddash-server/etc/log4j.properties	2017-10-20 15:16:11.000000000 +0000
-+++ maddash/maddash-server/etc/log4j.properties	2017-10-20 15:21:01.000000000 +0000
+--- maddash.orig/maddash-server/etc/log4j.properties	2017-11-02 15:27:17.000000000 +0000
++++ maddash/maddash-server/etc/log4j.properties	2017-11-02 15:29:55.000000000 +0000
 @@ -5,7 +5,7 @@
  log4j.appender.MADDASH=org.apache.log4j.RollingFileAppender
  log4j.appender.MADDASH.MaxFileSize=1MB
@@ -21,8 +21,8 @@ Index: maddash/maddash-server/etc/log4j.properties
  log4j.appender.NETLOGGER.layout.ConversionPattern=level=%p %m%n
 Index: maddash/maddash-webui/etc/apache-maddash.conf
 ===================================================================
---- maddash.orig/maddash-webui/etc/apache-maddash.conf	2017-10-20 15:16:11.000000000 +0000
-+++ maddash/maddash-webui/etc/apache-maddash.conf	2017-10-20 15:21:01.000000000 +0000
+--- maddash.orig/maddash-webui/etc/apache-maddash.conf	2017-11-02 15:27:17.000000000 +0000
++++ maddash/maddash-webui/etc/apache-maddash.conf	2017-11-02 15:29:55.000000000 +0000
 @@ -1,8 +1,8 @@
  ##
  #Setup path to web user interface
@@ -36,8 +36,8 @@ Index: maddash/maddash-webui/etc/apache-maddash.conf
      AddHandler cgi-script .cgi
 Index: maddash/maddash-server/etc/maddash.yaml
 ===================================================================
---- maddash.orig/maddash-server/etc/maddash.yaml	2017-10-20 15:16:11.000000000 +0000
-+++ maddash/maddash-server/etc/maddash.yaml	2017-10-20 15:21:01.000000000 +0000
+--- maddash.orig/maddash-server/etc/maddash.yaml	2017-11-02 15:27:17.000000000 +0000
++++ maddash/maddash-server/etc/maddash.yaml	2017-11-02 15:29:55.000000000 +0000
 @@ -169,7 +169,7 @@
              graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
              #The Nagios command to execute. The -w and -c options define the thresholds. 

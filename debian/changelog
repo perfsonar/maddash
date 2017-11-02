@@ -1,8 +1,14 @@
-maddash (2.0.2-2~bpo70+1) perfsonar-wheezy-release; urgency=low
+maddash (2.0.2-3~bpo70+1) perfsonar-wheezy-release; urgency=low
 
   * Backport to Wheezy.
 
- -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Fri, 20 Oct 2017 15:21:01 +0000
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Thu, 02 Nov 2017 15:29:55 +0000
+
+maddash (2.0.2-3) perfsonar-jessie-release; urgency=low
+
+  * Remove mention of beta release.
+
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Thu, 02 Nov 2017 15:27:16 +0000
 
 maddash (2.0.2-2) perfsonar-jessie-release; urgency=low
 
