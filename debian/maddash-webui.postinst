@@ -31,6 +31,8 @@ case "$1" in
             apache2_invoke enmod cgi
             apache2_invoke enmod rewrite
             apache2_invoke enmod proxy_http
+            apache2_invoke enmod ssl
+            apache2_invoke ensite default-ssl
 
             ln -sf /etc/maddash/maddash-webui/apache-maddash.conf /etc/apache2/conf-available/
 
@@ -39,6 +41,8 @@ case "$1" in
             a2enmod -q cgi
             a2enmod -q rewrite
             a2enmod -q proxy_http
+            a2enmod -q ssl
+            a2ensite -q default-ssl
             [ -e /etc/apache2/mods-available/version.load ] && a2enmod -q version
 
             ln -sf /etc/maddash/maddash-webui/apache-maddash.conf /etc/apache2/conf.d/
