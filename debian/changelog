@@ -1,3 +1,9 @@
+maddash (2.0.2-4) perfsonar-jessie-release; urgency=medium
+
+  * Enable ssl in maddash-webui.
+
+ -- Valentin Vidic <Valentin.Vidic@CARNet.hr>  Thu, 16 Nov 2017 13:25:52 +0100
+
 maddash (2.0.2-3) perfsonar-jessie-release; urgency=low
 
   * Remove mention of beta release.
