@@ -1,14 +1,14 @@
-maddash (2.0.2-3~bpo70+2) perfsonar-wheezy-release; urgency=medium
-
-  * Enable ssl in maddash-webui.
-
- -- Valentin Vidic <Valentin.Vidic@CARNet.hr>  Thu, 16 Nov 2017 13:22:59 +0100
-
-maddash (2.0.2-3~bpo70+1) perfsonar-wheezy-release; urgency=low
+maddash (2.0.2-4~bpo70+1) perfsonar-wheezy-release; urgency=medium
 
   * Backport to Wheezy.
 
- -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Thu, 02 Nov 2017 15:29:55 +0000
+ -- Valentin Vidic <Valentin.Vidic@CARNet.hr>  Thu, 16 Nov 2017 13:22:59 +0100
+
+maddash (2.0.2-4) perfsonar-jessie-release; urgency=medium
+
+  * Enable ssl in maddash-webui.
+
+ -- Valentin Vidic <Valentin.Vidic@CARNet.hr>  Thu, 16 Nov 2017 13:25:52 +0100
 
 maddash (2.0.2-3) perfsonar-jessie-release; urgency=low
 
