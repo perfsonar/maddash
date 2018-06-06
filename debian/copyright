@@ -3,11 +3,11 @@ Upstream-Name: maddash
 Source: http://software.es.net/maddash/
 
 Files: *
-Copyright: 2009-2014 The Regents of the University of California
+Copyright: 2009-2018 The Regents of the University of California
 License: BSD-3-Clause
 
 Files: debian/*
-Copyright: 2014 GEANT
+Copyright: 2014-2018 perfSONAR project
 License: Apache-2.0
 
 License: Apache-2.0
