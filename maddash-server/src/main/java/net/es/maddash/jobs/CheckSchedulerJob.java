@@ -84,7 +84,8 @@ public class CheckSchedulerJob extends Thread{
             selStmt.setLong(1, time);
             selStmt.setInt(2, CheckConstants.RESULT_MAINTENANCE);
             selStmt.setInt(3, globals.getJobBatchSize());
-            selStmt.setMaxRows(globals.getJobBatchSize());
+            //Below is redundant with above and may cause ArrayIndexOutofBounds errors
+            //selStmt.setMaxRows(globals.getJobBatchSize());
             ResultSet checksToRun = selStmt.executeQuery();
             netlogger.debug(netLog.end("maddash.CheckSchedulerJob.execute.queryDb"));
             
