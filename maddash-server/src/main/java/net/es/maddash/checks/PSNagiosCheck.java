@@ -96,6 +96,33 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         maUrl = this.replaceVars(maUrl, vars, rowVars, colVars);
         vars.put("%maUrl", maUrl);
         
+        //get reverse MA URL
+        String maUrlReverse = null;
+        if(maUrlMap.containsKey(colName) && maUrlMap.get(colName) != null){
+            Map<String,String> colMaUrlMap = (Map<String,String>) maUrlMap.get(colName);
+            if(colMaUrlMap.containsKey(rowName) && colMaUrlMap.get(rowName) != null){
+                maUrlReverse = (String) colMaUrlMap.get(rowName);
+            }else if(colMaUrlMap.containsKey(PROP_MAURL_DEFAULT) && colMaUrlMap.get(PROP_MAURL_DEFAULT) != null){
+                maUrlReverse = (String) colMaUrlMap.get(PROP_MAURL_DEFAULT);
+            }
+        }
+        if(maUrlReverse == null){
+            maUrlReverse = (String) maUrlMap.get(PROP_MAURL_DEFAULT);
+        }
+        //if still not set then use maURL
+        if(maUrlReverse == null){
+            maUrlReverse = maUrl;
+        }else{
+           //replace values swapping row and col vars
+            HashMap<String, String> varsReverse = new HashMap<String, String>();
+            varsReverse.put("%row", colName);
+            varsReverse.put("%col", rowName);
+            varsReverse.putAll(eventTypes);
+            maUrlReverse = this.replaceVars(maUrlReverse, varsReverse, colVars, rowVars);
+        }
+        System.out.println(maUrl+ ", " + maUrlReverse);
+        vars.put("%maUrlReverse", maUrlReverse);
+        
         //get metadata key lookup URL
         String mdKeyLookupUrl = null;
         if(params.containsKey(PARAM_MD_KEY_LOOKUP) && params.get(PARAM_MD_KEY_LOOKUP) != null){
