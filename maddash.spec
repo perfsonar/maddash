@@ -1,8 +1,8 @@
 %define install_base /usr/lib/maddash
-%define relnum 1
+%define relnum 0.1.b1
 
 Name:           maddash
-Version:        2.0.2
+Version:        2.0.3
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash  
 License:        distributable, see LICENSE
