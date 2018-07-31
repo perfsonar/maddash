@@ -86,7 +86,9 @@ public class DBMesh extends BaseMesh{
                 lastLabelState = 5;
             }else{
                 //grid not found
-                return;
+                String msg = "Unable to find grid with name " + gridName;
+                netlogger.error(netLog.error("maddash.ResourceManager.getGrid",msg));
+                throw new RuntimeException(msg);
             }
             
             //get custom states
