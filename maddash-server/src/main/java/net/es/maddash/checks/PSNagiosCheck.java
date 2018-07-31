@@ -120,7 +120,6 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
             varsReverse.putAll(eventTypes);
             maUrlReverse = this.replaceVars(maUrlReverse, varsReverse, colVars, rowVars);
         }
-        System.out.println(maUrl+ ", " + maUrlReverse);
         vars.put("%maUrlReverse", maUrlReverse);
         
         //get metadata key lookup URL
