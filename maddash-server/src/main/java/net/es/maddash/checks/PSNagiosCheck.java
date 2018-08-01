@@ -58,12 +58,12 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
     private final String PROP_GRAPHURL_DEFAULT = "default";
     
     public CheckResult check(String gridName, String rowName, String colName,
-            Map params,  Map<String,String> rowVars, Map<String,String> colVars, int timeout) {
+            Map params,  TemplateVariableMap rowVars, TemplateVariableMap colVars, int timeout) {
         HashMap<String, String> netLogParams = new HashMap<String, String>();
         NetLogger netLog = NetLogger.getTlogger();
         
         //initialize replacement vars
-        HashMap<String, String> vars = new HashMap<String, String>();
+        TemplateVariableMap vars = new TemplateVariableMap();
         vars.put("%row", rowName);
         vars.put("%col", colName);
         vars.putAll(eventTypes);
@@ -114,7 +114,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
             maUrlReverse = maUrl;
         }else{
            //replace values swapping row and col vars
-            HashMap<String, String> varsReverse = new HashMap<String, String>();
+            TemplateVariableMap varsReverse = new TemplateVariableMap();
             varsReverse.put("%row", colName);
             varsReverse.put("%col", rowName);
             varsReverse.putAll(eventTypes);
@@ -222,7 +222,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         return nagiosResult;
     }
 
-    private String replaceVars(String param, Map<String, String> vars, Map<String, String> rowVars, Map<String, String> colVars) {
+    private String replaceVars(String param, TemplateVariableMap vars, TemplateVariableMap rowVars, TemplateVariableMap colVars) {
         for(String rowVar : rowVars.keySet()){
             param = param.replaceAll("%row." + rowVar, rowVars.get(rowVar));
         }

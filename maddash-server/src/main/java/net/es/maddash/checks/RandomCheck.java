@@ -11,7 +11,7 @@ import java.util.Random;
 public class RandomCheck implements Check{
 
     public CheckResult check(String gridName, String rowName, String colName,
-            Map params, Map rowVars, Map colVars, int timeout) {
+            Map params, TemplateVariableMap rowVars, TemplateVariableMap colVars, int timeout) {
         Random rand = new Random();
         int resultCode = rand.nextInt(CheckConstants.RESULT_UNKNOWN+1);
         return new CheckResult(resultCode, "Random result", null);

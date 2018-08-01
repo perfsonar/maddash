@@ -19,5 +19,5 @@ public interface Check {
      * @return the result of the check
      */
     public CheckResult check(String gridName, String rowName, String colName, 
-    		Map params, Map<String,String> rowVars, Map<String,String> colVars, int timeout);
+    		Map params, TemplateVariableMap rowVars, TemplateVariableMap colVars, int timeout);
 }
