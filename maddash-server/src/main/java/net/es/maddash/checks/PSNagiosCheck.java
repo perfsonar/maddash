@@ -224,11 +224,13 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
 
     private String replaceVars(String param, TemplateVariableMap vars, TemplateVariableMap rowVars, TemplateVariableMap colVars) {
         for(String rowVar : rowVars.keySet()){
-            param = param.replaceAll("%row." + rowVar, rowVars.get(rowVar));
+            param = param.replaceAll("%row\\." + rowVar, rowVars.get(rowVar));
         }
+        param = param.replaceAll("%row\\.\\w+", ""); //clear out leftovers
         for(String colVar : colVars.keySet()){
-            param = param.replaceAll("%col." + colVar, colVars.get(colVar));
+            param = param.replaceAll("%col\\." + colVar, colVars.get(colVar));
         }
+        param = param.replaceAll("%col\\.\\w+", ""); //clear out leftovers
         for(String var : vars.keySet()){
             param = param.replaceAll(var, vars.get(var));
         }
