@@ -106,9 +106,11 @@ groups:
 #     - Map to create special mapped template variables dependent on the opposing row or column
 #     - Any custom value accessible in template variables %row.<prop> and %col.<prop> respectively
 groupMembers:
-    - id: "chic-pt1.es.net"
+    - added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
+      id: "chic-pt1.es.net"
       label: "Chicago Tester" 
     - id: "nettest.lbl.gov"
+      added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
       label: "LBL Toolkit"
       pstoolkiturl: "http://nettest.lbl.gov/toolkit" 
       # The special map property can be used to create template variables that change depending on opposing row or column
@@ -130,6 +132,7 @@ checks:
     # It looks at data for the last 30 minutes and runs every 30 minutes. It will go 
     # critical if there is any loss. There is no warning level.
     owampLossCheck :
+        added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
         #A descriptive name of the check
         name: "Loss"
         #A description of the check
@@ -188,6 +191,7 @@ checks:
     # It just swaps the source and destination of the other OWAMP check to get data for 
     # the reverse direction. The parameters have the same meaning as the previous example
     owampLossRevCheck :
+        added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
         name: "Loss Reverse"
         description: "Loss from %col to %row (according to %row MA)"
         type: "net.es.maddash.checks.PSNagiosCheck"
@@ -208,6 +212,7 @@ checks:
     # parameter's -w property to change the warning level and -c parameter to change the 
     # critical level. All units are in Gbps (e.g. .1 = 100Mbps).
     bwctlCheck :
+        added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
         name: "Throughput"
         description: "Throughput from %row to %col (according to %row MA)"
         type: "net.es.maddash.checks.PSNagiosCheck"
@@ -225,6 +230,7 @@ checks:
     # Same as the BWCTL check above but tests in the reverse direction (from the column 
     # host to the row host).
     bwctlRevCheck :
+        added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
         name: "Throughput Reverse"
         description: "Throughput from %col to %row (according to %row MA)"
         type: "net.es.maddash.checks.PSNagiosCheck"
@@ -246,6 +252,7 @@ grids:
       #The first item in the list is a grid for the loss checks between the OWAMP hosts
       # defined. The first property "name" defines the title that will display on the dashboard.
     - name: "OWAMP"
+      added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
       # Define the hosts that will be listed down the left side of the grid. This MUST be a 
       # value defined in the 'groups' section of this config file.
       rows: "myOwampHosts"
@@ -316,6 +323,7 @@ grids:
     #Below is a second grid that defines the throughput checks to the BWCTL hosts defined.
     # The parameters have the same meaning as the OWAMP check above so they are not repeated here.
     - name: "BWCTL"
+      added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
       rows: "myBwctlHosts"
       columns: "myBwctlHosts"
       checks: 
@@ -347,6 +355,7 @@ dashboards:
     #The following defines a dashboard that shows the BWCTL and OWAMP results on the same 
     # page. The 'name' parameter defines the title that will displayed on the dashboard
     - name: "My Sites"
+      added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
       # Defines the list of grids that belong to this dashboard. Each 'name' must 
       # correspond to the name defined under the 'grids' sections of this config file. 
       grids:
@@ -355,10 +364,11 @@ dashboards:
 
 #'reports' provide a way to define patterns that can be used to alert on certain types of problems
 # Since every dashboard is different, reports provide a flexible way to define patterns
-defaultReport: "grid_up_down_report"
+#defaultReport: "grid_up_down_report"
 reports:
     -
         id: "grid_up_down_report"
+        added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
         rule:
             type: matchFirst
             rules:
@@ -388,6 +398,7 @@ reports:
                         message: "No issues found"
     -
         id: "throughput_mesh_report"
+        added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
         rule:
             type: matchFirst
             rules:
@@ -657,6 +668,7 @@ reports:
                                             message: "Incoming throughput is below warning or critical thresholds to a majority of sites"
     -
         id: "loss_mesh_report"
+        added_by_psconfig: 1 # remove this if you want to keep after psconfig runs
         rule:
             type: matchFirst
             rules:
