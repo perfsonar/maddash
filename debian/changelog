@@ -1,3 +1,9 @@
+maddash (2.0.3~2.b1-1) perfsonar-jessie-staging; urgency=medium
+
+  * New upstream version.
+
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Fri, 03 Aug 2018 14:13:51 +0000
+
 maddash (2.0.2-4) perfsonar-jessie-release; urgency=medium
 
   * Enable ssl in maddash-webui.
