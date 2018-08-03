@@ -24,7 +24,7 @@ public class NagiosCheck implements Check{
     final static public String PARAM_COMMAND = "command";
     
     public CheckResult check(String gridName, String rowName, String colName,
-            Map params, Map<String,String> rowVars, Map<String,String> colVars, int timeout) {
+            Map params, TemplateVariableMap rowVars, TemplateVariableMap colVars, int timeout) {
         if(!params.containsKey(PARAM_COMMAND) || params.get(PARAM_COMMAND) == null){
             return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
                     "Command not defined. Please check config file", null);

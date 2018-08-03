@@ -58,12 +58,12 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
     private final String PROP_GRAPHURL_DEFAULT = "default";
     
     public CheckResult check(String gridName, String rowName, String colName,
-            Map params,  Map<String,String> rowVars, Map<String,String> colVars, int timeout) {
+            Map params,  TemplateVariableMap rowVars, TemplateVariableMap colVars, int timeout) {
         HashMap<String, String> netLogParams = new HashMap<String, String>();
         NetLogger netLog = NetLogger.getTlogger();
         
         //initialize replacement vars
-        HashMap<String, String> vars = new HashMap<String, String>();
+        TemplateVariableMap vars = new TemplateVariableMap();
         vars.put("%row", rowName);
         vars.put("%col", colName);
         vars.putAll(eventTypes);
@@ -95,6 +95,32 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         }
         maUrl = this.replaceVars(maUrl, vars, rowVars, colVars);
         vars.put("%maUrl", maUrl);
+        
+        //get reverse MA URL
+        String maUrlReverse = null;
+        if(maUrlMap.containsKey(colName) && maUrlMap.get(colName) != null){
+            Map<String,String> colMaUrlMap = (Map<String,String>) maUrlMap.get(colName);
+            if(colMaUrlMap.containsKey(rowName) && colMaUrlMap.get(rowName) != null){
+                maUrlReverse = (String) colMaUrlMap.get(rowName);
+            }else if(colMaUrlMap.containsKey(PROP_MAURL_DEFAULT) && colMaUrlMap.get(PROP_MAURL_DEFAULT) != null){
+                maUrlReverse = (String) colMaUrlMap.get(PROP_MAURL_DEFAULT);
+            }
+        }
+        if(maUrlReverse == null){
+            maUrlReverse = (String) maUrlMap.get(PROP_MAURL_DEFAULT);
+        }
+        //if still not set then use maURL
+        if(maUrlReverse == null){
+            maUrlReverse = maUrl;
+        }else{
+           //replace values swapping row and col vars
+            TemplateVariableMap varsReverse = new TemplateVariableMap();
+            varsReverse.put("%row", colName);
+            varsReverse.put("%col", rowName);
+            varsReverse.putAll(eventTypes);
+            maUrlReverse = this.replaceVars(maUrlReverse, varsReverse, colVars, rowVars);
+        }
+        vars.put("%maUrlReverse", maUrlReverse);
         
         //get metadata key lookup URL
         String mdKeyLookupUrl = null;
@@ -196,13 +222,15 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         return nagiosResult;
     }
 
-    private String replaceVars(String param, Map<String, String> vars, Map<String, String> rowVars, Map<String, String> colVars) {
+    private String replaceVars(String param, TemplateVariableMap vars, TemplateVariableMap rowVars, TemplateVariableMap colVars) {
         for(String rowVar : rowVars.keySet()){
-            param = param.replaceAll("%row." + rowVar, rowVars.get(rowVar));
+            param = param.replaceAll("%row\\." + rowVar, rowVars.get(rowVar));
         }
+        param = param.replaceAll("%row\\.\\w+", ""); //clear out leftovers
         for(String colVar : colVars.keySet()){
-            param = param.replaceAll("%col." + colVar, colVars.get(colVar));
+            param = param.replaceAll("%col\\." + colVar, colVars.get(colVar));
         }
+        param = param.replaceAll("%col\\.\\w+", ""); //clear out leftovers
         for(String var : vars.keySet()){
             param = param.replaceAll(var, vars.get(var));
         }

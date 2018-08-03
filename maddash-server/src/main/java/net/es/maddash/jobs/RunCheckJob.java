@@ -13,6 +13,7 @@ import net.es.maddash.NetLogger;
 import net.es.maddash.checks.Check;
 import net.es.maddash.checks.CheckConstants;
 import net.es.maddash.checks.CheckResult;
+import net.es.maddash.checks.TemplateVariableMap;
 import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
@@ -49,8 +50,16 @@ public class RunCheckJob implements Job{
         String colName = dataMap.getString("colName");
         Class checkClass = (Class) dataMap.get("checkType");
         String checkParams = dataMap.getString("checkParams");
-        Map<String,String> rowVars = (Map<String,String>)dataMap.get("rowVars");
-        Map<String,String> colVars = (Map<String,String>)dataMap.get("colVars");
+        Map<String,String> rowVarsUnsorted = (Map<String,String>)dataMap.get("rowVars");
+        Map<String,String> colVarsUnsorted = (Map<String,String>)dataMap.get("colVars");
+        TemplateVariableMap rowVars = new TemplateVariableMap();
+        if(rowVarsUnsorted != null){
+            rowVars.putAll(rowVarsUnsorted);
+        }
+        TemplateVariableMap colVars = new TemplateVariableMap();
+        if(colVarsUnsorted != null){
+            colVars.putAll(colVarsUnsorted);
+        }
         int timeout = dataMap.getInt("timeout");
         
         //load check

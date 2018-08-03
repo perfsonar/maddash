@@ -15,6 +15,7 @@ import net.es.maddash.utils.DimensionUtil;
 import org.apache.log4j.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 
@@ -84,7 +85,8 @@ public class CheckSchedulerJob extends Thread{
             selStmt.setLong(1, time);
             selStmt.setInt(2, CheckConstants.RESULT_MAINTENANCE);
             selStmt.setInt(3, globals.getJobBatchSize());
-            selStmt.setMaxRows(globals.getJobBatchSize());
+            //Below is redundant with above and may cause ArrayIndexOutofBounds errors
+            //selStmt.setMaxRows(globals.getJobBatchSize());
             ResultSet checksToRun = selStmt.executeQuery();
             netlogger.debug(netLog.end("maddash.CheckSchedulerJob.execute.queryDb"));
             
@@ -125,6 +127,15 @@ public class CheckSchedulerJob extends Thread{
             conn.close();
             netlogger.info(netLog.end("maddash.CheckSchedulerJob.execute"));
             log.debug("Scheduled " + schedJobCount + "/" + totalJobCount + " new jobs");
+        }catch(SchedulerException e){
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch(SQLException e2){}
+            }
+            String msg = "The scheduler threw an exception. This often happens during configuration reloading and can be ignored. Exact error is: " + e.getMessage();
+            netlogger.warn(netLog.error("maddash.CheckSchedulerJob.execute", msg));
+            log.warn(msg);
         }catch(Exception e){
             if(conn != null){
                 try{
