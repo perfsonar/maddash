@@ -188,13 +188,13 @@ public class MaDDashGlobals {
         this.load(config);
         
         //load file watcher thread
-        try{
+        /* try{
             this.configWatcherJob = new ConfigWatcherJob("MaDDashYAMLWatcherJob", configFile);
             this.configWatcherJob.start();
         }catch(Exception e){
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
-        }
+        } */
         
         //init event calendar
         this.eventCalJob = new EventCalendarJob();
