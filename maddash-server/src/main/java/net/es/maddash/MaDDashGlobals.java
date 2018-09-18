@@ -257,6 +257,7 @@ public class MaDDashGlobals {
             if(this.checkShedJob != null) {
                 this.checkShedJob.disableRunning();
                 this.checkShedJob.join();
+                this.checkShedJob = null;
             }
             if(this.scheduler != null){
                 this.scheduler.shutdown(true);
