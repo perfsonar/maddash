@@ -188,13 +188,13 @@ public class MaDDashGlobals {
         this.load(config);
         
         //load file watcher thread
-        /* try{
+        try{
             this.configWatcherJob = new ConfigWatcherJob("MaDDashYAMLWatcherJob", configFile);
             this.configWatcherJob.start();
         }catch(Exception e){
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
-        } */
+        }
         
         //init event calendar
         this.eventCalJob = new EventCalendarJob();
@@ -254,12 +254,19 @@ public class MaDDashGlobals {
     
     private void stop(){
         try {
+            if(this.checkShedJob != null) {
+                this.checkShedJob.disableRunning();
+                this.checkShedJob.join();
+            }
             if(this.scheduler != null){
                 this.scheduler.shutdown(true);
             }
         } catch (SchedulerException e) {
             e.printStackTrace();
             throw new RuntimeException("Error shutting down scheduler: " + e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Interrupted while stopping: " + e.getMessage());
         }
     }
     
