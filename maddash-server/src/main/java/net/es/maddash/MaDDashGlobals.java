@@ -340,6 +340,12 @@ public class MaDDashGlobals {
                     //job that checks for new jobs is in own thread
                     this.checkShedJob = new CheckSchedulerJob("MaDDashCheckSchedulerJob");
                     this.checkShedJob.start();
+                }else{
+                    try {
+                        this.checkShedJob.start();
+                    }catch(IllegalThreadStateException e){
+                        //thread is already started so do nothing
+                    }
                 }
             }
             this.scheduledChecks = new HashMap<Integer,Boolean>();
