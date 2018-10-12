@@ -38,25 +38,34 @@ public class CheckSchedulerJob extends Thread{
     Logger log = Logger.getLogger(CheckSchedulerJob.class);
     Logger netlogger = Logger.getLogger("netlogger");
     long DEFAULT_SLEEP_TIME = 20000;
-    
+    boolean running = true;
+
     public CheckSchedulerJob(String name){
         super(name);
     }
-    
+
+    public void disableRunning(){
+        this.running = false;
+    }
+
     public void run(){
-        while(true){
+        this.running = true;
+        while(this.running){
             try{
                 this.execute();
             }catch(Exception e){
                 log.error("Error executing CheckSchedulerJob: " + e.getMessage());
             }finally{
                 try {
-                    Thread.sleep(DEFAULT_SLEEP_TIME);
+                    if(this.running) {
+                        Thread.sleep(DEFAULT_SLEEP_TIME);
+                    }
                 } catch (InterruptedException e) {
                     log.error("Interrupt exception: " + e.getMessage());
                 }
             }
         }
+        log.debug("CheckSchedulerJob stopped");
     }
     
     synchronized public void execute() {

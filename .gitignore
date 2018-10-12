@@ -11,6 +11,13 @@ maddash-server/.classpath
 maddash-server/.project
 maddash-server/.settings
 
+#IntelliJ Idea
+.idea
+common-libs/common-libs.iml
+maddash-server/.idea/
+maddash-server/maddash-server.iml
+maddash.iml
+
 #Build directories and files
 common-libs/target
 maddash-server/target
@@ -23,5 +30,3 @@ maddash-server/run
 maddash-server/data
 maddash-server/maddash-server.log
 maddash-server/maddash-server.netlogger.log
-
-
