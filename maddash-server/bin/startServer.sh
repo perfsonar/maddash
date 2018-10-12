@@ -10,7 +10,7 @@ fi
 pidfile=$1
 jarfile=$2
 shift 2
-vers="2.0.3"
+vers="2.0.4"
 shortname=maddash-server
 
 if [ -z "$pidfile" ]; then
