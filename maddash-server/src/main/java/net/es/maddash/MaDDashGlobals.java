@@ -254,12 +254,20 @@ public class MaDDashGlobals {
     
     private void stop(){
         try {
+            if(this.checkShedJob != null) {
+                this.checkShedJob.disableRunning();
+                this.checkShedJob.join();
+                this.checkShedJob = null;
+            }
             if(this.scheduler != null){
                 this.scheduler.shutdown(true);
             }
         } catch (SchedulerException e) {
             e.printStackTrace();
             throw new RuntimeException("Error shutting down scheduler: " + e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Interrupted while stopping: " + e.getMessage());
         }
     }
     
@@ -333,6 +341,12 @@ public class MaDDashGlobals {
                     //job that checks for new jobs is in own thread
                     this.checkShedJob = new CheckSchedulerJob("MaDDashCheckSchedulerJob");
                     this.checkShedJob.start();
+                }else{
+                    try {
+                        this.checkShedJob.start();
+                    }catch(IllegalThreadStateException e){
+                        //thread is already started so do nothing
+                    }
                 }
             }
             this.scheduledChecks = new HashMap<Integer,Boolean>();

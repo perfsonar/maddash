@@ -5,10 +5,10 @@
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
-%define relnum 0.1.b1 
+%define relnum 1 
 
 Name:           %{package_name}
-Version:        2.0.3
+Version:        2.0.4
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
