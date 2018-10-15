@@ -1,14 +1,14 @@
-%define package_name maddash-server 
+%define package_name maddash-server
 %define mvn_project_list common-libs,%{package_name}
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
-%define relnum 1 
+%define relnum 1
 
 Name:           %{package_name}
-Version:        2.0.4
+Version:        2.0.5
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
@@ -18,7 +18,7 @@ Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  java-1.7.0-openjdk
 BuildRequires:  java-1.7.0-openjdk-devel
-BuildRequires:  sed 
+BuildRequires:  sed
 BuildArch:      noarch
 Requires:       java-1.7.0-openjdk
 %if 0%{?el7}
@@ -34,7 +34,7 @@ Requires:       chkconfig
 %endif
 
 %description
-MaDDash is a framework for scheduling service checks and displaying results in a grid. 
+MaDDash is a framework for scheduling service checks and displaying results in a grid.
 This package provides a server that schedules the checks and publishes the results
 via REST interface.
 
@@ -56,7 +56,7 @@ mvn -DskipTests --projects %{mvn_project_list} clean package
 rm -rf %{buildroot}
 
 #Run install target
-mvn -DskipTests --projects %{mvn_project_list} install 
+mvn -DskipTests --projects %{mvn_project_list} install
 
 #Create directory structure for build root
 mkdir -p %{buildroot}/%{install_base}/target
@@ -113,7 +113,7 @@ chown maddash:maddash %{install_base}/target/%{package_name}.jar
 if [ -d "/usr/lib64" ]; then
     sed -i "s:/usr/lib/nagios/plugins:/usr/lib64/nagios/plugins:g" %{config_base}/maddash.yaml
 fi
-    
+
 #Configure service to start when machine boots
 %if 0%{?el7}
 %systemd_post %{package_name}.service
@@ -130,14 +130,14 @@ fi
 if [ "$1" = "2" ]; then
     ##Upgrade database
     # %{install_base}/bin/update_db.sh -d %{data_dir} -f %{install_base}/sql/upgrade-1.0rc1-tables.sql
-    
+
     #Update old nagios check paths
     sed -i "s:/opt/perfsonar_ps/nagios/bin:/usr/lib/nagios/plugins:g" %{config_base}/maddash.yaml
-    
+
     #fix graph URL
     sed -i "s:/serviceTest:/perfsonar-graphs:g" %{config_base}/maddash.yaml
     sed -i "s:graphWidget.cgi::g" %{config_base}/maddash.yaml
-    
+
     #restart service
     %if 0%{?el7}
     %else

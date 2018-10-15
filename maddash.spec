@@ -2,9 +2,9 @@
 %define relnum 1
 
 Name:           maddash
-Version:        2.0.4
+Version:        2.0.5
 Release:        %{relnum}%{?dist}
-Summary:        MaDDash  
+Summary:        MaDDash
 License:        distributable, see LICENSE
 Group:          Development/Libraries
 URL:            http://code.google.com/p/esnet-perfsonar
@@ -16,7 +16,7 @@ Requires:       nagios-plugins-perfsonar
 Requires:       perfsonar-graphs >= 4.0
 
 %description
-MaDDash is a framework for scheduling service checks and displaying results in a grid. This package installs a default set of modules that can be used to perform basic maddash functions. 
+MaDDash is a framework for scheduling service checks and displaying results in a grid. This package installs a default set of modules that can be used to perform basic maddash functions.
 
 %pre
 
@@ -35,4 +35,3 @@ echo "%{version}-%{release}" >  %{buildroot}/%{install_base}/VERSION
 
 %files
 %{install_base}/VERSION
-

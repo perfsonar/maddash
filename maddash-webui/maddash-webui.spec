@@ -1,13 +1,13 @@
-%define package_name maddash-webui 
+%define package_name maddash-webui
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define upgrade_base /usr/lib/maddash/upgrades/%{package_name}
 %define relnum 1
 
 Name:           %{package_name}
-Version:        2.0.4
+Version:        2.0.5
 Release:        %{relnum}%{?dist}
-Summary:        MaDDash Web Interface 
+Summary:        MaDDash Web Interface
 License:        distributable, see LICENSE
 Group:          Development/Libraries
 URL:            http://code.google.com/p/esnet-perfsonar
@@ -18,11 +18,11 @@ BuildRequires:  wget
 BuildRequires:  java-1.8.0-openjdk
 Requires:       perl
 Requires:       perl-URI
-Requires:       httpd 
+Requires:       httpd
 Requires:       mod_ssl
 
 %description
-MaDDash is a framework for scheduling service checks and displaying results in a grid. 
+MaDDash is a framework for scheduling service checks and displaying results in a grid.
 This package provides a web interface to display check results.
 
 %pre
@@ -87,11 +87,11 @@ if [ "$1" = "2" ]; then
         mv %{config_base}/config.json %{config_base}/config.json.bak
         mv /opt/maddash/maddash-webui/etc/config.json.rpmsave %{config_base}/config.json
     fi
-    
+
     #update apache config
     sed -i "s:/opt/maddash:/usr/lib/maddash:g" /etc/httpd/conf.d/apache-maddash.conf
     grep -q "FollowSymLinks" /etc/httpd/conf.d/apache-maddash.conf || sed -i "s:+ExecCGI:FollowSymLinks +ExecCGI:g" /etc/httpd/conf.d/apache-maddash.conf
-    
+
     #run upgrade scripts
     for script in %{upgrade_base}/*; do
         $script ${PREV_VERSION}
@@ -115,4 +115,3 @@ service httpd restart
 %{upgrade_base}/*
 
 %preun
-

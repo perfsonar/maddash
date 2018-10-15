@@ -4,15 +4,15 @@
   <parent>
     <artifactId>maddash</artifactId>
     <groupId>net.es.maddash</groupId>
-    <version>2.0.4</version>
+    <version>2.0.5</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.es.maddash</groupId>
   <artifactId>maddash-server</artifactId>
-  <version>2.0.3</version>
+  <version>2.0.5</version>
   <name>maddash-server</name>
   <url>http://maven.apache.org</url>
-  
+
   <repositories>
       <repository>
           <id>maddash-repo</id>
@@ -37,21 +37,21 @@
         <groupId>gov.lbl</groupId>
         <version>4.1.3</version>
     </dependency>
-    
+
     <!-- command-line parsing -->
     <dependency>
         <groupId>net.sf.jopt-simple</groupId>
         <artifactId>jopt-simple</artifactId>
         <version>5.0.1</version>
     </dependency>
-    
+
     <!-- configuration -->
     <dependency>
         <groupId>org.jyaml</groupId>
         <artifactId>jyaml</artifactId>
         <version>1.3</version>
     </dependency>
-    
+
     <!-- c3p0 -->
     <dependency>
         <groupId>com.mchange</groupId>
@@ -65,7 +65,7 @@
         <artifactId>derby</artifactId>
         <version>10.12.1.1</version>
     </dependency>
-    
+
     <!-- Jersey -->
     <dependency>
         <groupId>org.glassfish.jersey.core</groupId>
@@ -87,7 +87,7 @@
         <artifactId>jersey-container-servlet</artifactId>
         <version>2.23</version>
     </dependency>
-    
+
     <!-- JSON -->
     <dependency>
         <groupId>net.sf.json-lib</groupId>
@@ -95,35 +95,35 @@
         <version>2.4</version>
         <classifier>jdk15</classifier>
     </dependency>
-      
+
     <!-- quartz -->
     <dependency>
         <groupId>org.quartz-scheduler</groupId>
         <artifactId>quartz</artifactId>
         <version>2.2.3</version>
     </dependency>
-                
+
     <!-- logging -->
     <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>1.2.9</version>
     </dependency>
-    
+
     <!-- command execution -->
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-exec</artifactId>
         <version>1.3</version>
     </dependency>
-    
+
     <!-- email -->
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-email</artifactId>
         <version>1.4</version>
     </dependency>
-    
+
     <!-- madalert dependencies -->
     <dependency>
         <groupId>junit</groupId>
@@ -155,10 +155,10 @@
         <version>7.0</version>
         <scope>provided</scope>
     </dependency>
-    
+
   </dependencies>
 
-  <build>  
+  <build>
         <plugins>
             <!-- puts all code & libraries in one jar -->
             <plugin>
@@ -177,7 +177,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -212,7 +212,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-            
+
 
         </plugins>
     </build>
