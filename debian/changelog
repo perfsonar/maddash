@@ -1,3 +1,9 @@
+maddash (2.0.5-1) perfsonar-release; urgency=medium
+
+  * New upstream version.
+
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Tue, 16 Oct 2018 10:42:12 -0400
+
 maddash (2.0.4-1) perfsonar-release; urgency=medium
 
   * New upstream version.
