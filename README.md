@@ -16,37 +16,37 @@ There are multiple ways one may want to contribute including:
 
 The subsection are for developers wishing to get involved in one or more of the ways above. 
 
-###Development System Requirements
+### Development System Requirements
 
  * Unix-like OS (e.g. Mac OS X, Linux)
  * Java 1.6 or higher
  * Maven 3.0.3 or higher 
  * Apache 2.2 or higher
 
-###Building
+### Building
 
 ```
 mvn clean install
 ```
 
-###Configuring your development environment
+### Configuring your development environment
 
 The collector configuration file can be found in *maddash-server/etc/maddash-server.yaml*. See the [Install Guide](http://software.es.net/maddash) for a full list of options. 
 
 The web interface has a sample Apache configuration under *maddash-webui/etc/apache-maddash.conf*. You will need to modify this with file paths appropriate for your system and install it under your Apache configuration directory (e.g. */etc/httpd/conf.d*). There are also some UI customizations that can be done by editing *maddash-webui/web/etc/config.json*. See [Install Guide](http://software.es.net/maddash) for a full list of options.
 
-###Running a development data collector
+### Running a development data collector
 
 ```
 cd maddash-server
 ./bin/run.sh
 ```
 
-###Running a development web interface
+### Running a development web interface
 
 The web interface runs under apache. You will need to modify *maddash-webui/etc/apache-maddash.conf* and install it under apache for the server to run. 
 
-###Using the REST API
+### Using the REST API
 
 See our [REST API Guide](http://software.es.net/maddash/#api)
 
