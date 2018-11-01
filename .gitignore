@@ -30,3 +30,7 @@ maddash-server/run
 maddash-server/data
 maddash-server/maddash-server.log
 maddash-server/maddash-server.netlogger.log
+
+#Vagrant
+.vagrant
+vagrant-data
