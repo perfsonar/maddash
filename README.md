@@ -26,9 +26,9 @@ This repository allows you to use [Vagrant](https://www.vagrantup.com) to create
     vagrant plugin install vagrant-vbguest
     vagrant plugin install vagrant-reload
     ```
-1. Clone the MaDDash github repo:
+1. Clone the MaDDash github repo (including git submodules with `--recursive`):
     ```
-    git clone https://github.com/perfsonar/maddash
+    git clone --recursive https://github.com/perfsonar/maddash
     ```
 1. Start the VM with ``vagrant up``. The first time you do this it will take awhile to create the initial VM.
 
