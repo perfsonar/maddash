@@ -87,6 +87,9 @@ public class NagiosCheck implements Check{
     }
 
     private String formatOutputLine(String outputLine) {
+        if(outputLine == null){
+            return "";
+        }
         outputLine = outputLine.replaceAll("^\\w+? \\w+? \\-", "");
         outputLine = outputLine.replaceAll("\\|.+", "");
         outputLine.trim();
@@ -96,6 +99,9 @@ public class NagiosCheck implements Check{
 
     private Map parseReturnParams(String outputLine) {
         HashMap<String, String> params = new HashMap<String, String>();
+        if(outputLine == null){
+            return params;
+        }
         String[] lineParts = outputLine.split("\\|");
         if(lineParts.length == 1){
             return null;

@@ -16,11 +16,11 @@ Group:          Development/Libraries
 URL:            http://code.google.com/p/esnet-perfsonar
 Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  java-1.7.0-openjdk
-BuildRequires:  java-1.7.0-openjdk-devel
+BuildRequires:  java-1.8.0-openjdk
+BuildRequires:  java-1.8.0-openjdk-devel
 BuildRequires:  sed
 BuildArch:      noarch
-Requires:       java-1.7.0-openjdk
+Requires:       java-1.8.0-openjdk
 %if 0%{?el7}
 BuildRequires: systemd
 BuildRequires:  maven

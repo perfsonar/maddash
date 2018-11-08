@@ -34,3 +34,7 @@ maddash-server/maddash-server.netlogger.log
 #Vagrant
 .vagrant
 vagrant-data
+
+#jsnow
+jsnow/target
+jsnow/jsnow.iml

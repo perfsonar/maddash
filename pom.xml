@@ -8,6 +8,7 @@
 
     <modules>
         <module>common-libs</module>
+        <module>jsnow</module>
         <module>maddash-server</module>
     </modules>
     <build>
