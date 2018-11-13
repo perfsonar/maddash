@@ -10,7 +10,7 @@ Release:        %{relnum}%{?dist}
 Summary:        MaDDash Web Interface
 License:        distributable, see LICENSE
 Group:          Development/Libraries
-URL:            http://code.google.com/p/esnet-perfsonar
+URL:            http://www.perfsonar.net
 Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
