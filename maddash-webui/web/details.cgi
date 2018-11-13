@@ -102,7 +102,7 @@ print <<EOF;
         <div class="maddashFooterMoreInfo">
             <br>
             <hr width="90%">
-            More information on MaDDash available <a target="newwindow" href="https://code.google.com/p/perfsonar-ps/wiki/MaDDashInstall">here</a>
+            More information on MaDDash available <a target="newwindow" href="https://docs.perfsonar.net">here</a>
         </div>
     </body>
 </html>
