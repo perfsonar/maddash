@@ -6,15 +6,19 @@ import net.es.jsnow.parameters.TableQueryParams;
 import net.es.maddash.NetLogger;
 import net.es.maddash.checks.TemplateVariableMap;
 import org.apache.log4j.Logger;
+import org.ho.yaml.Yaml;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.StringReader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  Creates records in ServiceNow (https://www.service-now.com) based on configuration provided
@@ -34,6 +38,7 @@ public class ServiceNowNotification implements Notification{
     private JsonObject duplicateRules;
 
     final public static String PROP_SNOW_INSTANCE_NAME = "instance";
+    final public static String PROP_OAUTH_FILE = "oauthFile";
     final public static String PROP_CLIENT_ID = "clientID";
     final public static String PROP_CLIENT_SECRET = "clientSecret";
     final public static String PROP_USERNAME = "username";
@@ -61,16 +66,6 @@ public class ServiceNowNotification implements Notification{
         }else{
             throw new RuntimeException("The property " + PROP_SNOW_INSTANCE_NAME + " must be specified");
         }
-        if(params.containsKey(PROP_USERNAME) && !params.isNull(PROP_USERNAME) ){
-            this.username = params.getString(PROP_USERNAME);
-        }else{
-            throw new RuntimeException("The property " + PROP_USERNAME + " must be specified");
-        }
-        if(params.containsKey(PROP_PASSWORD) && !params.isNull(PROP_PASSWORD) ){
-            this.password = params.getString(PROP_PASSWORD);
-        }else{
-            throw new RuntimeException("The property " + PROP_PASSWORD + " must be specified");
-        }
         if(params.containsKey(PROP_RECORD_TABLE) && !params.isNull(PROP_RECORD_TABLE) ){
             this.recordTable = params.getString(PROP_RECORD_TABLE);
         }else{
@@ -82,16 +77,31 @@ public class ServiceNowNotification implements Notification{
             throw new RuntimeException("The property " + PROP_RECORD_FIELDS + " must be specified");
         }
 
-        //get optional OAuth properties
+        //get oauth props from file
+        this.clientId = null;
+        this.clientSecret = null;
+        if(params.containsKey(PROP_OAUTH_FILE) && !params.isNull(PROP_OAUTH_FILE) ){
+            this.loadOAuthFile(params.getString(PROP_OAUTH_FILE));
+        }
+
+        //get OAuth properties - overrides file props
+        if(params.containsKey(PROP_USERNAME) && !params.isNull(PROP_USERNAME) ){
+            this.username = params.getString(PROP_USERNAME);
+        }else if(this.username == null){
+            //if not set by property or OAuth file, then error
+            throw new RuntimeException("The property " + PROP_USERNAME + " must be specified");
+        }
+        if(params.containsKey(PROP_PASSWORD) && !params.isNull(PROP_PASSWORD) ){
+            this.password = params.getString(PROP_PASSWORD);
+        }else if(this.password == null){
+            //if not set by property or OAuth file, then error
+            throw new RuntimeException("The property " + PROP_PASSWORD + " must be specified");
+        }
         if(params.containsKey(PROP_CLIENT_ID) && !params.isNull(PROP_CLIENT_ID) ){
             this.clientId = params.getString(PROP_CLIENT_ID);
-        }else{
-            this.clientId = null;
         }
         if(params.containsKey(PROP_CLIENT_SECRET) && !params.isNull(PROP_CLIENT_SECRET) ){
             this.clientSecret= params.getString(PROP_CLIENT_SECRET);
-        }else{
-            this.clientSecret = null;
         }
         if(params.containsKey(PROP_DASHBOARDURL) && !params.isNull(PROP_DASHBOARDURL) ){
             this.dashboardUrl= params.getString(PROP_DASHBOARDURL);
@@ -104,6 +114,40 @@ public class ServiceNowNotification implements Notification{
             this.duplicateRules = null;
         }
         netlogger.info(netLog.end("maddash.ServiceNowNotification.init"));
+    }
+
+    private void loadOAuthFile(String file){
+        NetLogger netLog = NetLogger.getTlogger();
+        netlogger.info(netLog.start("maddash.ServiceNowNotification.loadOAuthFile"));
+
+        //read file
+        Map oauthConfig = null;
+        try {
+            oauthConfig = (Map) Yaml.load(new File(file));
+        } catch (FileNotFoundException e) {
+            netlogger.error(netLog.error("maddash.ServiceNowNotification.loadOAuthFile", "Unable to find file " + file + ": " + e.getMessage()));
+            return;
+        }
+        if(oauthConfig == null){
+            //should not happen, but just to be safe
+            return;
+        }
+
+        //get parameters
+        if(oauthConfig.containsKey(PROP_CLIENT_ID) && oauthConfig.get(PROP_CLIENT_ID) != null){
+            this.clientId = oauthConfig.get(PROP_CLIENT_ID) + "";
+        }
+        if(oauthConfig.containsKey(PROP_CLIENT_SECRET) && oauthConfig.get(PROP_CLIENT_SECRET) != null){
+            this.clientSecret = oauthConfig.get(PROP_CLIENT_SECRET) + "";
+        }
+        if(oauthConfig.containsKey(PROP_USERNAME) && oauthConfig.get(PROP_USERNAME) != null){
+            this.username = oauthConfig.get(PROP_USERNAME) + "";
+        }
+        if(oauthConfig.containsKey(PROP_PASSWORD) && oauthConfig.get(PROP_PASSWORD) != null){
+            this.password = oauthConfig.get(PROP_PASSWORD) + "";
+        }
+
+        netlogger.info(netLog.end("maddash.ServiceNowNotification.loadOAuthFile"));
     }
 
     /**
@@ -246,8 +290,8 @@ public class ServiceNowNotification implements Notification{
 
         //perform query
         JsonObject duplicateResults = snowclient.queryTable(this.recordTable, queryParams);
-        netLogParams.put("dupCount", duplicateResults.size()+"");
         if(duplicateResults.containsKey("result") && !duplicateResults.isNull("result")){
+            netLogParams.put("dupCount", duplicateResults.size()+"");
             if(!duplicateResults.getJsonArray("result").isEmpty()){
                 //only grab the first result
                 JsonObject record = duplicateResults.getJsonArray("result").getJsonObject(0);
