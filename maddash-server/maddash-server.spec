@@ -1,5 +1,5 @@
 %define package_name maddash-server
-%define mvn_project_list common-libs,%{package_name}
+%define mvn_project_list common-libs,jsnow,%{package_name}
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define log_dir /var/log/maddash
