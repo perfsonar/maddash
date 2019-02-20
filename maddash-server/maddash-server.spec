@@ -8,12 +8,12 @@
 %define relnum 1
 
 Name:           %{package_name}
-Version:        2.0.5
+Version:        2.0.6
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
 Group:          Development/Libraries
-URL:            http://code.google.com/p/esnet-perfsonar
+URL:            http://www.perfsonar.net
 Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  java-1.7.0-openjdk
