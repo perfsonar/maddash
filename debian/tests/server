@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+cnt=0
+while ! ss -tnl | grep -q :8881; do
+    sleep 1
+    cnt=$((cnt+1))
+    if [ $cnt -gt 10 ]; then
+        echo "Port 8881 not open"
+        exit 1
+    fi
+done
+
+curl -s http://localhost:8881/maddash/dashboards | grep -C 20 '^{"dashboards":\[.*\]}'
+
+curl -s http://localhost:8881/maddash/grids | grep -C 20 '^{"grids":\[.*\]}'

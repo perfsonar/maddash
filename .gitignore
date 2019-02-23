@@ -31,6 +31,9 @@ maddash-server/data
 maddash-server/maddash-server.log
 maddash-server/maddash-server.netlogger.log
 
+#Quilt cache directory
+.pc
+
 #Vagrant
 .vagrant
 vagrant-data
