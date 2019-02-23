@@ -2,12 +2,12 @@
 %define relnum 1
 
 Name:           maddash
-Version:        2.0.5
+Version:        2.0.6
 Release:        %{relnum}%{?dist}
 Summary:        MaDDash
 License:        distributable, see LICENSE
 Group:          Development/Libraries
-URL:            http://code.google.com/p/esnet-perfsonar
+URL:            http://www.perfsonar.net
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 Requires:       maddash-server
