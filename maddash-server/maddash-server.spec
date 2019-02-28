@@ -1,5 +1,5 @@
 %define package_name maddash-server
-%define mvn_project_list common-libs,%{package_name}
+%define mvn_project_list common-libs,jsnow,%{package_name}
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define log_dir /var/log/maddash
@@ -16,11 +16,11 @@ Group:          Development/Libraries
 URL:            http://www.perfsonar.net
 Source0:        maddash-%{version}-%{relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  java-1.7.0-openjdk
-BuildRequires:  java-1.7.0-openjdk-devel
+BuildRequires:  java-1.8.0-openjdk
+BuildRequires:  java-1.8.0-openjdk-devel
 BuildRequires:  sed
 BuildArch:      noarch
-Requires:       java-1.7.0-openjdk
+Requires:       java-1.8.0-openjdk
 %if 0%{?el7}
 BuildRequires: systemd
 BuildRequires:  maven
