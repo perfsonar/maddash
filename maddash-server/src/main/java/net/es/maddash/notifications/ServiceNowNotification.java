@@ -329,7 +329,9 @@ public class ServiceNowNotification implements Notification{
             try {
                 gridUrl += "index.cgi?grid=" + URLEncoder.encode(p.getGridName(), "UTF-8");
             }catch(Exception e){}
-            templateVars.put("%gridLink", gridUrl);
+            templateVars.put("%gridUrl", gridUrl);
+            String gridLink = "[code]<a href=\\\\\"" + gridUrl + "\\\\\" target=\\\\\"_blank\\\\\">View Grid</a>[/code]";
+            templateVars.put("%gridLink", gridLink);
         }
         templateVars.put("%siteName", p.getSiteName() + "");
         templateVars.put("%gridName", p.getGridName()+ "");
