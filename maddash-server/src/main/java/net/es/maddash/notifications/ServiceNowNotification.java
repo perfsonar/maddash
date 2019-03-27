@@ -215,8 +215,8 @@ public class ServiceNowNotification implements Notification{
             //update happened in handleDuplicateRecord
         } else {
             netLogParams.put("action", "create");
-            //JsonObject response = snowclient.createRecord(this.recordTable, expandedRecordField);
-            //netLogParams.put("snowResponse", response+"");
+            JsonObject response = snowclient.createRecord(this.recordTable, expandedRecordField);
+            netLogParams.put("snowResponse", response+"");
             netLogMsg = "Created record from problem";
         }
 
