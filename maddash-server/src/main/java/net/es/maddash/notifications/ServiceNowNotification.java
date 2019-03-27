@@ -47,10 +47,12 @@ public class ServiceNowNotification implements Notification{
     final public static String PROP_RECORD_FIELDS = "recordFields";
     final public static String PROP_DASHBOARDURL = "dashboardUrl";
     final public static String PROP_DUPLICATERULES = "duplicateRules";
-    final public static String PROP_DUPLICATERULES_EQUALFIELDS = "equalFields";
-    final public static String PROP_DUPLICATERULES_LTFIELDS = "ltFields";
-    final public static String PROP_DUPLICATERULES_GTFIELDS = "gtFields";
-    final public static String PROP_DUPLICATERULES_UPDATEFIELDS = "updateFields";
+    final public static String PROP_DUPLICATERULES_RULES = "rules";
+    final public static String PROP_RULES_IDENTITYFIELDS = "identityFields";
+    final public static String PROP_RULES_EQUALSFIELDS = "equalsFields";
+    final public static String PROP_RULES_LTFIELDS = "ltFields";
+    final public static String PROP_RULES_GTFIELDS = "gtFields";
+    final public static String PROP_RULES_UPDATEFIELDS = "updateFields";
 
     /**
      * Initializes ServiceNow client based on configuration
@@ -207,101 +209,125 @@ public class ServiceNowNotification implements Notification{
         //expand record template
         JsonObject expandedRecordField = this.expandRecordFields(p, this.recordFields);
         //check for duplicate record
-        String duplicateRecordId = this.hasDuplicateRecord(snowclient, expandedRecordField);
+        String duplicateRecordId = this.handleDuplicateRecord(snowclient, expandedRecordField, p);
         if (duplicateRecordId != null) {
             netLogParams.put("action", "update");
-            //check if we want to update the duplicate or do nothing
-            if (this.duplicateRules.containsKey(PROP_DUPLICATERULES_UPDATEFIELDS) &&
-                    !this.duplicateRules.isNull(PROP_DUPLICATERULES_UPDATEFIELDS)) {
-                JsonObject updateObject = this.expandRecordFields(p,
-                        this.duplicateRules.getJsonObject(PROP_DUPLICATERULES_UPDATEFIELDS));
-                snowclient.updateRecord(this.recordTable, duplicateRecordId, updateObject);
-                netLogParams.put("duplicateRecordId", duplicateRecordId);
-                netLogMsg = "Updated record";
-            } else {
-                netLogMsg = "UpdateFields not configured so not updating duplicate record";
-            }
+            //update happened in handleDuplicateRecord
         } else {
             netLogParams.put("action", "create");
-            JsonObject response = snowclient.createRecord(this.recordTable, expandedRecordField);
-            netLogParams.put("snowResponse", response+"");
+            //JsonObject response = snowclient.createRecord(this.recordTable, expandedRecordField);
+            //netLogParams.put("snowResponse", response+"");
             netLogMsg = "Created record from problem";
         }
 
         netlogger.info(netLog.end("maddash.ServiceNowNotification.handleProblem", netLogMsg, null, netLogParams));
     }
 
-    private String hasDuplicateRecord(ServiceNowClient snowclient, JsonObject expandedRecordField) {
+    private String handleDuplicateRecord(ServiceNowClient snowclient, JsonObject expandedRecordField, NotifyProblem p) {
         //Logger initialization
         NetLogger netLog = NetLogger.getTlogger();
         String netLogMsg = "";
         HashMap<String,String> netLogParams = new HashMap<String,String>();
-        netlogger.debug(netLog.start("maddash.ServiceNowNotification.hasDuplicateRecord"));
-
-        List<String> snowQuery = new ArrayList<String>();
+        netlogger.debug(netLog.start("maddash.ServiceNowNotification.handleDuplicateRecord"));
 
         //no duplicate rules then nothing to check
         if(this.duplicateRules == null){
-            netlogger.debug(netLog.end("maddash.ServiceNowNotification.hasDuplicateRecord", "No duplicate rules so nothing to check"));
+            netlogger.debug(netLog.end("maddash.ServiceNowNotification.handleDuplicateRecord", "No duplicate rules so nothing to check"));
             return null;
         }
 
-        //get equals fields
-        if(this.duplicateRules.containsKey(PROP_DUPLICATERULES_EQUALFIELDS) &&
-                !this.duplicateRules.isNull(PROP_DUPLICATERULES_EQUALFIELDS)){
-            JsonArray eqFields = this.duplicateRules.getJsonArray(PROP_DUPLICATERULES_EQUALFIELDS);
-            for(int i = 0; i < eqFields.size(); i++) {
-                String eqField = eqFields.getString(i);
-                if(expandedRecordField.containsKey(eqField)) {
-                    snowQuery.add(eqField + "=" + expandedRecordField.getString(eqField + ""));
+        //get id fields
+        List<String> idQuery = new ArrayList<String>();
+        if(this.duplicateRules.containsKey(PROP_RULES_IDENTITYFIELDS) &&
+                !this.duplicateRules.isNull(PROP_RULES_IDENTITYFIELDS)){
+            JsonArray idFields = this.duplicateRules.getJsonArray(PROP_RULES_IDENTITYFIELDS);
+            for(int i = 0; i < idFields.size(); i++) {
+                String idField = idFields.getString(i);
+                if(expandedRecordField.containsKey(idField)) {
+                    idQuery.add(idField + "=" + expandedRecordField.getString(idField + ""));
                 }else{
                     String errMsg = "In the " + PROP_DUPLICATERULES +
                             " section of your configuration, an invalid " +
-                            PROP_DUPLICATERULES_EQUALFIELDS + "entry is given";
-                    netlogger.debug(netLog.error("maddash.ServiceNowNotification.hasDuplicateRecord", errMsg));
+                            PROP_RULES_EQUALSFIELDS + "entry is given";
+                    netlogger.debug(netLog.error("maddash.ServiceNowNotification.handleDuplicateRecord", errMsg));
                     throw new RuntimeException(errMsg);
                 }
             }
         }
 
-        //get lt fields
-        if(this.duplicateRules.containsKey(PROP_DUPLICATERULES_LTFIELDS) &&
-            this.duplicateRules.isNull(PROP_DUPLICATERULES_LTFIELDS)){
-            JsonObject ltFields = this.duplicateRules.getJsonObject(PROP_DUPLICATERULES_LTFIELDS);
-            for(String ltField : ltFields.keySet()) {
-                snowQuery.add(ltField + "<" + ltFields.get(ltField));
-            }
+        //if no rules, then nothing to do
+        if(!this.duplicateRules.containsKey(PROP_DUPLICATERULES_RULES) ||
+                this.duplicateRules.isNull(PROP_DUPLICATERULES_RULES)) {
+            netlogger.info(netLog.end("maddash.ServiceNowNotification.handleDuplicateRecord", netLogMsg, null, netLogParams));
+            return null;
         }
 
-        //get gt fields
-        if(this.duplicateRules.containsKey(PROP_DUPLICATERULES_GTFIELDS) &&
-                !this.duplicateRules.isNull(PROP_DUPLICATERULES_GTFIELDS)){
-            JsonObject gtFields = this.duplicateRules.getJsonObject(PROP_DUPLICATERULES_GTFIELDS);
-            for(String gtField : gtFields.keySet()) {
-                snowQuery.add(gtField + ">" + gtFields.get(gtField));
+        //loop through rules until find the first one that matches something
+        JsonArray rules = this.duplicateRules.getJsonArray(PROP_DUPLICATERULES_RULES);
+        for(int i = 0; i < rules.size(); i++) {
+            JsonObject rule = rules.getJsonObject(i);
+            List<String> snowQuery = new ArrayList<String>();
+            snowQuery.addAll(idQuery);
+
+            //get equals fields
+            if (rule.containsKey(PROP_RULES_EQUALSFIELDS) && !rule.isNull(PROP_RULES_EQUALSFIELDS)) {
+                JsonObject eqFields = rule.getJsonObject(PROP_RULES_EQUALSFIELDS);
+                for (String eqField : eqFields.keySet()) {
+                    snowQuery.add(eqField + "=" + eqFields.get(eqField));
+                }
             }
-        }
 
-        //build query string
-        String snowQueryString = String.join("^", snowQuery);
-        TableQueryParams queryParams = new TableQueryParams();
-        queryParams.setQuery(snowQueryString);
-        netLogParams.put("getParams", queryParams.toGetParams());
+            //get lt fields
+            if (rule.containsKey(PROP_RULES_LTFIELDS) && !rule.isNull(PROP_RULES_LTFIELDS)) {
+                JsonObject ltFields = rule.getJsonObject(PROP_RULES_LTFIELDS);
+                for (String ltField : ltFields.keySet()) {
+                    snowQuery.add(ltField + "<" + ltFields.get(ltField));
+                }
+            }
 
-        //perform query
-        JsonObject duplicateResults = snowclient.queryTable(this.recordTable, queryParams);
-        if(duplicateResults.containsKey("result") && !duplicateResults.isNull("result")){
-            netLogParams.put("dupCount", duplicateResults.size()+"");
-            if(!duplicateResults.getJsonArray("result").isEmpty()){
-                //only grab the first result
-                JsonObject record = duplicateResults.getJsonArray("result").getJsonObject(0);
-                if(record.containsKey("sys_id") && !record.isNull("sys_id")) {
-                    return record.getString("sys_id");
+            //get gt fields
+            if (rule.containsKey(PROP_RULES_GTFIELDS) && !rule.isNull(PROP_RULES_GTFIELDS)) {
+                JsonObject gtFields = rule.getJsonObject(PROP_RULES_GTFIELDS);
+                for (String gtField : gtFields.keySet()) {
+                    snowQuery.add(gtField + ">" + gtFields.get(gtField));
+                }
+            }
+
+            //build query string
+            String snowQueryString = String.join("^", snowQuery);
+            TableQueryParams queryParams = new TableQueryParams();
+            queryParams.setQuery(snowQueryString);
+            netLogParams.put("getParams", queryParams.toGetParams());
+
+            //perform query
+            JsonObject duplicateResults = snowclient.queryTable(this.recordTable, queryParams);
+            if (duplicateResults.containsKey("result") && !duplicateResults.isNull("result")) {
+                netLogParams.put("dupCount", duplicateResults.size() + "");
+                if (!duplicateResults.getJsonArray("result").isEmpty()) {
+                    //only grab the first result
+                    JsonObject record = duplicateResults.getJsonArray("result").getJsonObject(0);
+                    if (record.containsKey("sys_id") && !record.isNull("sys_id")) {
+                        String duplicateRecordId = record.getString("sys_id");
+                        netLogParams.put("duplicateRecordId", duplicateRecordId);
+                        //check if we want to update the duplicate or do nothing
+                        if (rule.containsKey(PROP_RULES_UPDATEFIELDS) && !rule.isNull(PROP_RULES_UPDATEFIELDS)) {
+                            netLogParams.put("action", "update");
+                            JsonObject updateObject = this.expandRecordFields(p, rule.getJsonObject(PROP_RULES_UPDATEFIELDS));
+                            snowclient.updateRecord(this.recordTable, duplicateRecordId, updateObject);
+                            netLogParams.put("duplicateRecordId", duplicateRecordId);
+                            netLogMsg = "Updated record";
+                        } else {
+                            netLogParams.put("action", "none");
+                            netLogMsg = "UpdateFields not configured so not updating duplicate record";
+                        }
+                        netlogger.info(netLog.end("maddash.ServiceNowNotification.handleDuplicateRecord", netLogMsg, null, netLogParams));
+                        return duplicateRecordId;
+                    }
                 }
             }
         }
 
-        netlogger.info(netLog.end("maddash.ServiceNowNotification.hasDuplicateRecord", netLogMsg, null, netLogParams));
+        netlogger.info(netLog.end("maddash.ServiceNowNotification.handleDuplicateRecord", netLogMsg, null, netLogParams));
         return null;
     }
 
