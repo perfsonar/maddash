@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  *  Creates records in ServiceNow (https://www.service-now.com) based on configuration provided
  */
-public class ServiceNowNotification implements Notification{
+public class ServiceNowNotification extends BaseNotification{
     private Logger log = Logger.getLogger(ServiceNowNotification.class);
     private Logger netlogger = Logger.getLogger("netlogger");
 
@@ -36,6 +36,7 @@ public class ServiceNowNotification implements Notification{
     private JsonObject recordFields;
     private String dashboardUrl;
     private JsonObject duplicateRules;
+    private JsonObject resolveFields;
 
     final public static String PROP_SNOW_INSTANCE_NAME = "instance";
     final public static String PROP_OAUTH_FILE = "oauthFile";
@@ -53,6 +54,7 @@ public class ServiceNowNotification implements Notification{
     final public static String PROP_RULES_LTFIELDS = "ltFields";
     final public static String PROP_RULES_GTFIELDS = "gtFields";
     final public static String PROP_RULES_UPDATEFIELDS = "updateFields";
+    final public static String PROP_RESOLVEFIELDS = "resolveFields";
 
     /**
      * Initializes ServiceNow client based on configuration
@@ -111,9 +113,14 @@ public class ServiceNowNotification implements Notification{
             this.dashboardUrl = null;
         }
         if(params.containsKey(PROP_DUPLICATERULES) && !params.isNull(PROP_DUPLICATERULES) ){
-            this.duplicateRules= params.getJsonObject(PROP_DUPLICATERULES);
+            this.duplicateRules = params.getJsonObject(PROP_DUPLICATERULES);
         }else{
             this.duplicateRules = null;
+        }
+        if(params.containsKey(PROP_RESOLVEFIELDS) && !params.isNull(PROP_RESOLVEFIELDS) ){
+            this.resolveFields = params.getJsonObject(PROP_RESOLVEFIELDS);
+        }else{
+            this.resolveFields = null;
         }
         netlogger.info(netLog.end("maddash.ServiceNowNotification.init"));
     }
@@ -157,7 +164,7 @@ public class ServiceNowNotification implements Notification{
      *
      * @param problems the problems from which to create notifications
      */
-    public void send(List<NotifyProblem> problems) {
+    public void send(int notificationId, List<NotifyProblem> problems, List<String> resolvedData) {
         NetLogger netLog = NetLogger.getTlogger();
         HashMap<String,String> netLogParams = new HashMap<String,String>();
         netlogger.info(netLog.start("maddash.ServiceNowNotification.send"));
@@ -177,7 +184,11 @@ public class ServiceNowNotification implements Notification{
             ServiceNowClient snowclient = new ServiceNowClient(this.snowInstanceName, oauth2Details);
             //iterate through problems
             for (NotifyProblem p : problems) {
-                this.handleProblem(snowclient, p);
+                this.handleProblem(notificationId, snowclient, p);
+            }
+            //resolve issues
+            for (String sysId: resolvedData) {
+                this.handleResolve(snowclient, sysId);
             }
             netlogger.info(netLog.end("maddash.ServiceNowNotification.send", "Operation completed", null, netLogParams));
         }catch(Exception e){
@@ -186,7 +197,23 @@ public class ServiceNowNotification implements Notification{
         }
     }
 
-    private void handleProblem(ServiceNowClient snowclient, NotifyProblem p){
+    private void handleResolve(ServiceNowClient snowclient, String sysId){
+        //init logging
+        NetLogger netLog = NetLogger.getTlogger();
+        HashMap<String,String> netLogParams = new HashMap<String,String>();
+        netLogParams.put("sysid", sysId);
+        String netLogMsg = "";
+        netlogger.info(netLog.start("maddash.ServiceNowNotification.handleResolve", null, null, netLogParams));
+        //update record, but ignore errors if fails
+        try {
+            snowclient.updateRecord(this.recordTable, sysId, this.resolveFields);
+        }catch(Exception e){
+            netlogger.info(netLog.end("maddash.ServiceNowNotification.handleResolve", e.getMessage(), null, netLogParams));
+        }
+        netlogger.info(netLog.end("maddash.ServiceNowNotification.handleResolve", null, null, netLogParams));
+    }
+
+    private void handleProblem(int notificationId, ServiceNowClient snowclient, NotifyProblem p){
         //init logging
         NetLogger netLog = NetLogger.getTlogger();
         HashMap<String,String> netLogParams = new HashMap<String,String>();
@@ -213,14 +240,37 @@ public class ServiceNowNotification implements Notification{
         if (duplicateRecordId != null) {
             netLogParams.put("action", "update");
             //update happened in handleDuplicateRecord
+            this.updateAppData(notificationId, p, duplicateRecordId);
         } else {
             netLogParams.put("action", "create");
             JsonObject response = snowclient.createRecord(this.recordTable, expandedRecordField);
             netLogParams.put("snowResponse", response+"");
+            String sys_id = this.parseSysId(response);
+            if(sys_id != null){
+                this.updateAppData(notificationId, p, sys_id);
+            }
             netLogMsg = "Created record from problem";
         }
 
         netlogger.info(netLog.end("maddash.ServiceNowNotification.handleProblem", netLogMsg, null, netLogParams));
+    }
+
+    private String parseSysId(JsonObject response) {
+
+        if (response == null) {
+            return null;
+        }
+
+        JsonObject result = response.getJsonObject("result");
+        if(result == null){
+            return null;
+        }
+
+        if(result.containsKey("sys_id") && !result.isNull("sys_id")){
+            return result.getString("sys_id");
+        }
+
+        return null;
     }
 
     private String handleDuplicateRecord(ServiceNowClient snowclient, JsonObject expandedRecordField, NotifyProblem p) {
