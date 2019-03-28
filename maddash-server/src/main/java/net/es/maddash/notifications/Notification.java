@@ -7,5 +7,5 @@ import java.util.List;
 public interface Notification {
     
     public void init(String name, JsonObject params);
-    public void send(List<NotifyProblem> problems);
+    public void send(int notificationId, List<NotifyProblem> problems, List<String> resolvedData);
 }
