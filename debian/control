@@ -4,7 +4,8 @@ Priority: optional
 Maintainer: perfSONAR developers <debian@perfsonar.net>
 Uploaders: Antoine Delvaux <antoine.delvaux@man.poznan.pl>,
  Valentin Vidic <Valentin.Vidic@CARNet.hr>
-Build-Depends: debhelper (>= 9), openjdk-8-jdk | java8-jdk, maven, wget, dh-systemd
+Build-Depends: debhelper (>= 9), openjdk-8-jdk | java8-jdk, maven, wget, dh-systemd,
+ maven-debian-helper
 Standards-Version: 3.9.6
 Homepage: http://software.es.net/maddash/
 Vcs-Git: git://github.com/esnet/maddash

@@ -3,6 +3,11 @@
 # output every command that modifies files on the build system.
 #DH_VERBOSE = 1
 
+# TODO: We should try to see if we can use maven-debian-helper
+# as a build-depend to maybe make things easier here.
+# (or maybe not, because then we need to stick to Debian Java
+# libraries?)
+
 # Setting a correct JAVA_HOME for the build
 export JAVA_HOME=/usr
 
