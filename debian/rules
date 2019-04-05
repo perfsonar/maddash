@@ -16,13 +16,15 @@ include /usr/share/dpkg/default.mk
 # package maintainers to append LDFLAGS
 #export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
+# TODO: We should try to see if we can use maven-debian-helper
+# as a build-depend to maybe make things easier here.
 
 # main packaging script based on dh7 syntax
 %:
 	dh $@ --with systemd
 
 override_dh_auto_build:
-	mvn -DskipTests --projects common-libs,maddash-server clean package
+	mvn -DskipTests -Dmaven.repo.local=debian/maven-repo-local --projects common-libs,maddash-server clean package
 	( cd maddash-webui; scripts/build_dojo.sh dojo-build )
 
 override_dh_auto_install:
