@@ -22,7 +22,7 @@ include /usr/share/dpkg/default.mk
 	dh $@ --with systemd
 
 override_dh_auto_build:
-	mvn -DskipTests --projects common-libs,maddash-server clean package
+	mvn -DskipTests -Dmaven.repo.local=debian/maven-repo-local --projects common-libs,maddash-server clean package
 	( cd maddash-webui; scripts/build_dojo.sh dojo-build )
 
 override_dh_auto_install:
