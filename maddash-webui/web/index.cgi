@@ -17,6 +17,13 @@ print $cgi->header;
 
 my $dashParam = sanitize_input($cgi->param("dashboard"));
 my $gridParam = sanitize_input($cgi->param("grid"));
+my $refreshParam = sanitize_input($cgi->param("refresh"));
+
+#handle refresh time
+my $refreshTime = "0";
+if($refreshParam && $refreshParam =~ /\d+/){
+    $refreshTime = $refreshParam;
+}
 
 my $type = "null";
 my $name = "null";
@@ -85,9 +92,11 @@ print <<EOF;
 				    ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, userConfig, handleClick));
 				    refreshSource = ds;
 				}
-				mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", config, userConfig, gs, refreshSource));
+				var navMenu = new MadDashNavMenu("maddashMenuBar", "index.cgi", config, userConfig, gs, refreshSource);
+				mnuds.connect(navMenu);
 				refreshSource.connect(new MaDDashRefreshLabel("maddashRefreshStatus"));
-				
+				navMenu.setPageRefresh($refreshTime);
+                
 				mnuds.render();
 				ds.render();
 			}

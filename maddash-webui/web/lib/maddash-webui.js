@@ -312,7 +312,7 @@ var MadDashNavMenu = function(parent, link, config, userConfig, gridSource, refr
             var checkMenuItem = new dijit.CheckedMenuItem({
                 label: timeLabel, 
                 value: refreshTimes[i],
-                checked:false,
+                checked: refreshTimes[i] == this.refreshTime,
                 onChange: function(checked){
                     instance.setPageRefresh(checked ? this.value : 0);
                 }});

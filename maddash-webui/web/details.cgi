@@ -12,6 +12,13 @@ print $cgi->header;
 
 my $uri = $cgi->param("uri");
 
+#handle refresh
+my $refreshParam = $cgi->param("refresh");
+my $refreshTime = "0";
+if($refreshParam && $refreshParam =~ /\d+/){
+    $refreshTime = $refreshParam;
+}
+
 if($uri){
 
 #sanitize uri
@@ -63,7 +70,9 @@ print <<EOF;
                 
                 var mnugs = new MaDDashDataSource("/maddash/grids"); 
                 var mnuds = new MaDDashDataSource("/maddash/dashboards"); 
-                mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", config, {}, mnugs, ds));
+                var navMenu = new MadDashNavMenu("maddashMenuBar", "index.cgi", config, {}, mnugs, ds);
+                navMenu.setPageRefresh($refreshTime);
+                mnuds.connect(navMenu);
 
                 mnuds.render();
                 ds.render();
