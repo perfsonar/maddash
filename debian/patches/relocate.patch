@@ -1,7 +1,5 @@
-Index: maddash/maddash-server/etc/log4j.properties
-===================================================================
---- maddash.orig/maddash-server/etc/log4j.properties	2018-10-14 03:12:04.894770000 -0400
-+++ maddash/maddash-server/etc/log4j.properties	2018-10-16 10:42:12.268710030 -0400
+--- maddash.orig/maddash-server/etc/log4j.properties	2019-05-01 08:51:25.250663000 +0000
++++ maddash/maddash-server/etc/log4j.properties	2019-05-01 08:54:10.021831057 +0000
 @@ -5,7 +5,7 @@
  log4j.appender.MADDASH=org.apache.log4j.RollingFileAppender
  log4j.appender.MADDASH.MaxFileSize=1MB
@@ -19,25 +17,21 @@ Index: maddash/maddash-server/etc/log4j.properties
 +log4j.appender.NETLOGGER.File=/var/log/maddash/maddash-server.netlogger.log
  log4j.appender.NETLOGGER.layout=org.apache.log4j.PatternLayout
  log4j.appender.NETLOGGER.layout.ConversionPattern=level=%p %m%n
-Index: maddash/maddash-webui/etc/apache-maddash.conf
-===================================================================
---- maddash.orig/maddash-webui/etc/apache-maddash.conf	2018-10-14 03:12:04.894770000 -0400
-+++ maddash/maddash-webui/etc/apache-maddash.conf	2018-10-16 10:42:12.273298309 -0400
+--- maddash.orig/maddash-webui/etc/apache-maddash.conf	2019-05-01 08:53:40.579047323 +0000
++++ maddash/maddash-webui/etc/apache-maddash.conf	2019-05-01 08:55:03.026973764 +0000
 @@ -1,8 +1,8 @@
  ##
  #Setup path to web user interface
  #
 -Alias /maddash-webui /usr/lib/maddash/maddash-webui 
 -<Directory "/usr/lib/maddash/maddash-webui/">
-+Alias /maddash-webui /usr/share/maddash/maddash-webui
++Alias /maddash-webui /usr/share/maddash/maddash-webui 
 +<Directory "/usr/share/maddash/maddash-webui/">
-     Options +Indexes +FollowSymLinks +ExecCGI
+     Options +FollowSymLinks +ExecCGI
      DirectoryIndex index.cgi index.html
      AddHandler cgi-script .cgi
-Index: maddash/maddash-server/etc/maddash.yaml
-===================================================================
---- maddash.orig/maddash-server/etc/maddash.yaml	2018-10-14 03:12:04.894770000 -0400
-+++ maddash/maddash-server/etc/maddash.yaml	2018-10-16 10:42:12.277458631 -0400
+--- maddash.orig/maddash-server/etc/maddash.yaml	2019-05-01 08:51:25.250663000 +0000
++++ maddash/maddash-server/etc/maddash.yaml	2019-05-01 08:54:10.024013633 +0000
 @@ -172,7 +172,7 @@
              graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
              #The Nagios command to execute. The -w and -c options define the thresholds. 
