@@ -22,14 +22,20 @@ public class NagiosCheck implements Check{
     private Logger netlogger = Logger.getLogger("netlogger");
     
     final static public String PARAM_COMMAND = "command";
-    
+    final protected String PROP_DEFAULT = "default";
+
     public CheckResult check(String gridName, String rowName, String colName,
             Map params, TemplateVariableMap rowVars, TemplateVariableMap colVars, int timeout) {
         if(!params.containsKey(PARAM_COMMAND) || params.get(PARAM_COMMAND) == null){
             return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
                     "Command not defined. Please check config file", null);
         }
-        String command = (String)params.get(PARAM_COMMAND);
+        String command = this.parseStringorMap(params, PARAM_COMMAND, rowName, colName, PROP_DEFAULT);
+        //if still not set then throw error
+        if(command == null){
+            return new CheckResult(CheckConstants.RESULT_UNKNOWN,
+                    "Default command not defined. Please check config file", null);
+        }
         
         for(String rowVar : rowVars.keySet()){
         	command = command.replaceAll("%row." + rowVar, rowVars.get(rowVar));
@@ -84,6 +90,39 @@ public class NagiosCheck implements Check{
         }
         
         return result;
+    }
+
+    protected String parseStringorMap(Map map, String propName, String rowName, String colName, String defaultPropName){
+        String val = null;
+        //try to get as string for backward compatibility
+        try{
+            val = (String)map.get(propName); //try to get as string for backward compatibility
+        }catch(Exception e){}
+        //try to get as map
+        if(val == null){
+            Map m = (Map)map.get(propName);
+            val= this.parseRowColMapProp(m, rowName, colName, defaultPropName);
+        }
+
+        return val;
+    }
+
+    protected String parseRowColMapProp(Map map, String rowName, String colName, String defaultPropName){
+        String val = null;
+        if(map.containsKey(rowName) && map.get(rowName) != null){
+            Map<String,String> rowMap = (Map<String,String>) map.get(rowName);
+            if(rowMap.containsKey(colName) && rowMap.get(colName) != null){
+                val = (String) rowMap.get(colName);
+            }else if(rowMap.containsKey(defaultPropName) && rowMap.get(defaultPropName) != null){
+                val = (String) rowMap.get(defaultPropName);
+            }
+        }
+        //try to set default
+        if(map == null){
+            val = (String) map.get(defaultPropName);
+        }
+
+        return val;
     }
 
     private String formatOutputLine(String outputLine) {
