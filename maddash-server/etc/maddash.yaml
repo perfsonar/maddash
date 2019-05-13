@@ -146,30 +146,30 @@ checks:
             #The URL of the measurement archive. You can define templates on a per host 
             #basis here. If not defined explicitly the 'default' template will be used.
             maUrl: 
-                default: "http://%row/esmond/perfsonar/archive"
+                default: "https://%row/esmond/perfsonar/archive"
             # The section below sets a different maURL for every column in the row albq-owamp.es.net
             #   albq-owamp.es.net:
-            #       default: "http://%col/esmond/perfsonar/archive"     
+            #       default: "https://%col/esmond/perfsonar/archive"     
             # The section below sets a different maURL for every column in the row 
             # bois-owamp.es.net EXCEPT the column bost-owamp.es.net
             #   bois-owamp.es.net:
-            #       default: "http://%col/esmond/perfsonar/archive"  
-            #       bost-owamp.es.net: "http://%row/esmond/perfsonar/archive"
+            #       default: "https://%col/esmond/perfsonar/archive"  
+            #       bost-owamp.es.net: "https://%row/esmond/perfsonar/archive"
             # The section below sets a different maURL for the check at row bost-owamp.es.net 
             # and column albq-owamp.es.net
             #   bost-owamp.es.net:
-            #       albq-owamp.es.net: "http://perfsonar-archive.es.net/esmond/perfsonar/archive"
+            #       albq-owamp.es.net: "https://perfsonar-archive.es.net/esmond/perfsonar/archive"
             #
             #DEPRECATED: It looks up all the 'keys' the 
             #node associates with a particular source/destination regardless of 
             #whether IP or hostname is used. In general you should just be able to change 
             #the hostname in the URL (example.mydomain.local),  to the name of your toolkit host 
             #and it will work. You can leave the rest of the URL untouched.
-            #metaDataKeyLookup: "http://example.mydomain.local/perfsonar-graphs/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=0&bucket_width=0"
+            #metaDataKeyLookup: "https://example.mydomain.local/perfsonar-graphs/metaKeyReq.cgi?ma_url=%maUrl&eventType=%event.delayBuckets&srcRaw=%row&dstRaw=%col&count=0&bucket_width=0"
             #This is the URL to the graph script. You should be able to change the 
             #hostname(example.mydomain.local) to your toolkit hostname and leave the rest of the 
             #URL untouched. 
-            graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
+            graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
             #The Nagios command to execute. The -w and -c options define the thresholds. 
             #The -r option specifies the time range to query.
             command: "/usr/lib64/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 1800 -l -p -s %row -d %col"
@@ -197,8 +197,8 @@ checks:
         type: "net.es.maddash.checks.PSNagiosCheck"
         params:
             maUrl: 
-                default: "http://%row/esmond/perfsonar/archive"
-            graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
+                default: "https://%row/esmond/perfsonar/archive"
+            graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
             command: "/usr/lib64/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -p -s %col -d %row"
         checkInterval: 1800
         retryInterval: 300
@@ -218,8 +218,8 @@ checks:
         type: "net.es.maddash.checks.PSNagiosCheck"
         params:
             maUrl:
-                default: "http://%row/esmond/perfsonar/archive"
-            graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
+                default: "https://%row/esmond/perfsonar/archive"
+            graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
             #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
             command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %row -d %col"
         checkInterval: 28800
@@ -236,8 +236,8 @@ checks:
         type: "net.es.maddash.checks.PSNagiosCheck"
         params:
             maUrl:
-                default: "http://%row/esmond/perfsonar/archive"
-            graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
+                default: "https://%row/esmond/perfsonar/archive"
+            graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
             #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
             command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %col -d %row"
         checkInterval: 28800
