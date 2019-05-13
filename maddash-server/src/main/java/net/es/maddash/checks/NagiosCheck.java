@@ -118,7 +118,7 @@ public class NagiosCheck implements Check{
             }
         }
         //try to set default
-        if(map == null){
+        if(val == null){
             val = (String) map.get(defaultPropName);
         }
 
