@@ -26,7 +26,7 @@ MaDDash is a framework for scheduling service checks and displaying results in a
 This package provides a web interface to display check results.
 
 %pre
-/usr/sbin/groupadd maddash 2> /dev/null || :
+/usr/sbin/groupadd -r maddash 2> /dev/null || :
 /usr/sbin/useradd -g maddash -r -s /sbin/nologin -c "MaDDash User" -d /tmp maddash 2> /dev/null || :
 
 #track previous version

@@ -39,7 +39,7 @@ This package provides a server that schedules the checks and publishes the resul
 via REST interface.
 
 %pre
-/usr/sbin/groupadd maddash 2> /dev/null || :
+/usr/sbin/groupadd -r maddash 2> /dev/null || :
 /usr/sbin/useradd -g maddash -r -s /sbin/nologin -c "MaDDash User" -d /tmp maddash 2> /dev/null || :
 
 %prep
