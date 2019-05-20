@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
     #Install all requirements and perform initial setup
     maddash.vm.provision "shell", inline: <<-SHELL
         # Create users
-        /usr/sbin/groupadd maddash 2> /dev/null || :
+        /usr/sbin/groupadd -r maddash 2> /dev/null || :
         /usr/sbin/useradd -g maddash -r -s /sbin/nologin -c "MaDDash User" -d /tmp maddash 2> /dev/null || :
         
         # Clean out any misconfigured shared directories
