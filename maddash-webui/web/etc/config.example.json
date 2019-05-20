@@ -20,6 +20,7 @@
             }
         ]
     },
+    "privacyPolicyLink": "https://www.perfsonar.net/about/privacy-policy/",
     "colors": {
         "0": "#009E73", 
         "1": "#F0E442", 

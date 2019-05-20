@@ -54,7 +54,8 @@ print <<EOF;
 			    configDS.render();
 			    var titlePane = new MadDashTitleSpan("maddashTitle", "index.cgi");
 			    titlePane.render(config.data);
-			    
+                var privacyPolicy = new MadDashPrivacyPolicy("maddashPrivacyPolicy");
+			    privacyPolicy.render(config.data);
 			    
                 
                 var ds = new MaDDashDataSource("$encoded_uri");
@@ -112,6 +113,7 @@ print <<EOF;
             <br>
             <hr width="90%">
             More information on MaDDash available <a target="newwindow" href="https://docs.perfsonar.net">here</a>
+            <div id="maddashPrivacyPolicy"></div>
         </div>
     </body>
 </html>
