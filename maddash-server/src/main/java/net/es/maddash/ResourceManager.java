@@ -272,12 +272,12 @@ public class ResourceManager {
                                     .add("uri", "/" + uriInfo.getPath() + "/" +
                                             URIUtil.normalizeURIPart(cols.getString(1))));
             }
+            conn.close();
             //no row found
             if(isEmpty){
                 netlogger.info(netLog.end("maddash.ResourceManager.getRow"));
                 return null;
             }
-            conn.close();
             json.add("cells", jsonColList);
         } catch (Exception e) {
             if(conn != null){
@@ -329,11 +329,11 @@ public class ResourceManager {
                                                 uriInfo.getPath() + "/" +
                                                 URIUtil.normalizeURIPart(checks.getString(1))));
             }
+            conn.close();
             if(isEmpty){
                 netlogger.info(netLog.end("maddash.ResourceManager.getCell"));
                 return null;
             }
-            conn.close();
             json.add("checks", jsonCheckList);
         } catch (Exception e) {
             if(conn != null){
@@ -431,6 +431,7 @@ public class ResourceManager {
             //verify check was found
             if(checkIds.size() == 0){
                 netlogger.info(netLog.end("maddash.ResourceManager.getCheck"));
+                conn.close();
                 return null;
             }
             
@@ -725,6 +726,7 @@ public class ResourceManager {
                 response.add("endTime", eventResults.getLong(4));
                 response.add("changeStatus", eventResults.getBoolean(5));
             }else{
+                conn.close();
                 return null;
             }
             
@@ -774,6 +776,7 @@ public class ResourceManager {
             int rowCount = eventStmt.executeUpdate();
             //build JSON response
             if(rowCount == 0){
+                conn.close();
                 return null;
             }else{
                 response.add("status", 0);

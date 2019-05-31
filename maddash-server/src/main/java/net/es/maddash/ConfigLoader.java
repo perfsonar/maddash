@@ -949,6 +949,9 @@ public class ConfigLoader {
                 delNotifications.setInt(1, notifyNameMap.get(notifyName));
                 delNotifications.executeUpdate();
             }
+            
+            //close db
+            conn.close();
         }catch(SQLException e){
             if(conn != null){
                 try{
