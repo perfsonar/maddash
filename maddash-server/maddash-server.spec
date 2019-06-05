@@ -5,11 +5,12 @@
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
-%define relnum 1
+%define perfsonar_auto_version 4.2.0
+%define perfsonar_auto_relnum 0.0.a1
 
 Name:           %{package_name}
-Version:        2.0.6
-Release:        %{relnum}%{?dist}
+Version:        %{perfsonar_auto_version}
+Release:        %{perfsonar_auto_relnum}%{?dist} 
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
 Group:          Development/Libraries

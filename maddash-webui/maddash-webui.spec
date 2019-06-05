@@ -2,11 +2,12 @@
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define upgrade_base /usr/lib/maddash/upgrades/%{package_name}
-%define relnum 1
+%define perfsonar_auto_version 4.2.0
+%define perfsonar_auto_relnum 0.0.a1
 
 Name:           %{package_name}
-Version:        2.0.6
-Release:        %{relnum}%{?dist}
+Version:        %{perfsonar_auto_version}
+Release:        %{perfsonar_auto_relnum}%{?dist}
 Summary:        MaDDash Web Interface
 License:        distributable, see LICENSE
 Group:          Development/Libraries
