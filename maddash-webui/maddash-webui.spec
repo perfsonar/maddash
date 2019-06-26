@@ -12,7 +12,7 @@ Summary:        MaDDash Web Interface
 License:        distributable, see LICENSE
 Group:          Development/Libraries
 URL:            http://www.perfsonar.net
-Source0:        maddash-%{version}-%{relnum}.tar.gz
+Source0:        maddash-%{version}-%{release}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  wget
@@ -37,7 +37,7 @@ rpm -q --queryformat "%%{RPMTAG_VERSION} %%{RPMTAG_RELEASE} " %{name} > %{_local
 
 
 %prep
-%setup -q -n maddash-%{version}-%{relnum}
+%setup -q -n maddash-%{version}-%{release}
 
 %clean
 rm -rf %{buildroot}
