@@ -10,7 +10,7 @@
 
 Name:           %{package_name}
 Version:        %{perfsonar_auto_version}
-Release:        %{perfsonar_auto_relnum}%{?dist} 
+Release:        %{perfsonar_auto_relnum}%{?dist}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
 Group:          Development/Libraries
