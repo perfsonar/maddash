@@ -15,7 +15,7 @@ Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
 Group:          Development/Libraries
 URL:            http://www.perfsonar.net
-Source0:        maddash-%{version}-%{relnum}.tar.gz
+Source0:        maddash-%{version}-%{perfsonar_auto_relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  java-1.8.0-openjdk
 BuildRequires:  java-1.8.0-openjdk-devel
