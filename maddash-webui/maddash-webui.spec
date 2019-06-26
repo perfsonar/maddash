@@ -37,7 +37,7 @@ rpm -q --queryformat "%%{RPMTAG_VERSION} %%{RPMTAG_RELEASE} " %{name} > %{_local
 
 
 %prep
-%setup -q -n maddash-%{version}-%{relnum}
+%setup -q -n maddash-%{version}-%{perfsonar_auto_relnum}
 
 %clean
 rm -rf %{buildroot}

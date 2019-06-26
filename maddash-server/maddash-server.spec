@@ -44,7 +44,7 @@ via REST interface.
 /usr/sbin/useradd -g maddash -r -s /sbin/nologin -c "MaDDash User" -d /tmp maddash 2> /dev/null || :
 
 %prep
-%setup -q -n maddash-%{version}-%{relnum}
+%setup -q -n maddash-%{version}-%{perfsonar_auto_relnum}
 
 %clean
 rm -rf %{buildroot}
