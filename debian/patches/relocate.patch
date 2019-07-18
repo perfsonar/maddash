@@ -1,5 +1,5 @@
---- a/maddash-server/etc/log4j.properties	2019-07-18 18:14:07.743061000 +0000
-+++ b/maddash-server/etc/log4j.properties	2019-07-18 18:30:23.970433000 +0000
+--- a/maddash-server/etc/log4j.properties	2019-07-18 20:21:51.327836000 +0000
++++ b/maddash-server/etc/log4j.properties	2019-07-18 20:22:19.222410000 +0000
 @@ -5,7 +5,7 @@
  log4j.appender.MADDASH=org.apache.log4j.RollingFileAppender
  log4j.appender.MADDASH.MaxFileSize=1MB
@@ -17,21 +17,21 @@
 +log4j.appender.NETLOGGER.File=/var/log/maddash/maddash-server.netlogger.log
  log4j.appender.NETLOGGER.layout=org.apache.log4j.PatternLayout
  log4j.appender.NETLOGGER.layout.ConversionPattern=level=%p %m%n
---- a/maddash-webui/etc/apache-maddash.conf	2019-07-18 18:14:07.743090000 +0000
-+++ b/maddash-webui/etc/apache-maddash.conf	2019-07-18 18:30:23.970808000 +0000
+--- a/maddash-webui/etc/apache-maddash.conf	2019-07-18 20:21:51.327865000 +0000
++++ b/maddash-webui/etc/apache-maddash.conf	2019-07-18 20:22:19.222787000 +0000
 @@ -1,8 +1,8 @@
  ##
  #Setup path to web user interface
  #
--Alias /maddash-webui /usr/lib/maddash/maddash-webui 
+-Alias /maddash-webui /usr/lib/maddash/maddash-webui
 -<Directory "/usr/lib/maddash/maddash-webui/">
-+Alias /maddash-webui /usr/share/maddash/maddash-webui 
++Alias /maddash-webui /usr/share/maddash/maddash-webui
 +<Directory "/usr/share/maddash/maddash-webui/">
      Options +FollowSymLinks +ExecCGI
      DirectoryIndex index.cgi index.html
      AddHandler cgi-script .cgi
---- a/maddash-server/etc/maddash.yaml	2019-07-18 18:14:07.743078000 +0000
-+++ b/maddash-server/etc/maddash.yaml	2019-07-18 18:30:23.971190000 +0000
+--- a/maddash-server/etc/maddash.yaml	2019-07-18 20:21:51.327853000 +0000
++++ b/maddash-server/etc/maddash.yaml	2019-07-18 20:22:19.223160000 +0000
 @@ -172,7 +172,7 @@
              graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
              #The Nagios command to execute. The -w and -c options define the thresholds. 

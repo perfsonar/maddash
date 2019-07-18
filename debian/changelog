@@ -1,8 +1,8 @@
-maddash (4.2.0~1.b1-1) perfsonar-minor-staging; urgency=low
+maddash (4.2.0~1.b1-2) perfsonar-minor-staging; urgency=low
 
   * New upstream version.
 
- -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Thu, 18 Jul 2019 18:32:33 +0000
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Thu, 18 Jul 2019 20:22:19 +0000
 
 maddash (2.0.6-1) perfsonar-release; urgency=low
 
