@@ -11,8 +11,8 @@ export JAVA_HOME=/usr
 	dh $@ --with systemd
 
 override_dh_auto_build:
-	mvn --batch-mode -DskipTests -Dmaven.repo.local=debian/maven-repo-local --projects common-libs,maddash-server clean package
+	mvn --batch-mode -DskipTests -Dmaven.repo.local=debian/maven-repo-local --projects common-libs,jsnow,maddash-server clean package
 	( cd maddash-webui; scripts/build_dojo.sh dojo-build )
 
 override_dh_auto_install:
-	mvn --batch-mode -DskipTests -Dmaven.repo.local=debian/maven-repo-local --projects common-libs,maddash-server clean package
+	mvn --batch-mode -DskipTests -Dmaven.repo.local=debian/maven-repo-local --projects common-libs,jsnow,maddash-server clean package
