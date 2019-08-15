@@ -1,9 +1,9 @@
-maddash (4.2.0~5.b2-1) perfsonar-minor-staging; urgency=low
+maddash (4.2.0-1) perfsonar-minor-staging; urgency=low
 
   * New upstream version.
   * Adding jsnow to the maven build process.
 
- -- Andy Lake <andy@es.net>  Fri, 09 Aug 2019 13:08:10 +0000
+ -- Andy Lake <andy@es.net>  Thu, 15 Aug 2019 01:11:55 +0000
 
 maddash (2.0.6-1) perfsonar-release; urgency=low
 
