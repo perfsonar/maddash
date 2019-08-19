@@ -1,9 +1,10 @@
 %define install_base /usr/lib/maddash
-%define relnum 1
+%define perfsonar_auto_version 4.2.0
+%define perfsonar_auto_relnum 1
 
 Name:           maddash
-Version:        2.0.6
-Release:        %{relnum}%{?dist}
+Version:        %{perfsonar_auto_version}
+Release:        %{perfsonar_auto_relnum}%{?dist}
 Summary:        MaDDash
 License:        distributable, see LICENSE
 Group:          Development/Libraries

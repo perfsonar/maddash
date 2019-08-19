@@ -584,8 +584,8 @@ public class MaDDashGlobals {
                 this.execSQLCreate("CREATE TABLE notifications (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
                         " name VARCHAR(500) NOT NULL, type VARCHAR(500) NOT NULL, params CLOB NOT NULL)", conn);
                 this.execSQLCreate("CREATE TABLE notificationProblems (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " +
-                        "notificationId INTEGER NOT NULL, checksum VARCHAR(500) NOT NULL, expires BIGINT NOT NULL)", conn);
-                
+                        "notificationId INTEGER NOT NULL, checksum VARCHAR(500) NOT NULL, expires BIGINT NOT NULL, lastSeen BIGINT, appData VARCHAR(2000))", conn);
+
                 //Update for 2.0 - convert dimension value to CLOB
                 //don't need data, but do copy to satisfy not null constraint
                 DatabaseMetaData dbMetadata = conn.getMetaData();
@@ -601,6 +601,13 @@ public class MaDDashGlobals {
                         this.execSQLCreate("ALTER TABLE dimensions DROP COLUMN value", conn);
                         this.execSQLCreate("RENAME COLUMN dimensions.tmpValue to value", conn);
                     }
+                }
+
+                //Update for 4.2 - add lastSeen and appData to notifications table
+                ResultSet notificationProblems = dbMetadata.getColumns(null, null, "NOTIFICATIONPROBLEMS", "LASTSEEN");
+                if(!notificationProblems.next()){
+                    this.execSQLCreate("ALTER TABLE notificationProblems ADD COLUMN lastSeen BIGINT", conn);
+                    this.execSQLCreate("ALTER TABLE notificationProblems ADD COLUMN appData VARCHAR(2000)", conn);
                 }
                 
                 //Create indexes - always rebuilds indexes which can help performance.

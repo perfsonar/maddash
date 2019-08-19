@@ -144,6 +144,7 @@ public class ConfigLoader {
     static final public String PROP_NOTIFICATIONS_TYPE = "type";
     static final public String PROP_NOTIFICATIONS_SCHEDULE = "schedule";
     static final public String PROP_NOTIFICATIONS_PROBFREQ = "problemReportFrequency";
+    static final public String PROP_NOTIFICATIONS_PROBRESOLV = "problemResolveAfter";
     static final public String PROP_NOTIFICATIONS_MINSEV = "minimumSeverity";
     static final public String PROP_NOTIFICATIONS_FILTERS = "filters";
     static final public String PROP_NOTIFICATIONS_FILTERS_TYPE = "type";
@@ -887,6 +888,15 @@ public class ConfigLoader {
                         throw new RuntimeException(PROP_NOTIFICATIONS_PROBFREQ + " must be an integer");
                     }
                 }
+                int resolveAfter = -1;
+                if(notifyConfig.containsKey(PROP_NOTIFICATIONS_PROBRESOLV) &&
+                        notifyConfig.get(PROP_NOTIFICATIONS_PROBRESOLV) != null){
+                    try{
+                        resolveAfter = Integer.parseInt(notifyConfig.get(PROP_NOTIFICATIONS_PROBRESOLV) + "");
+                    }catch(Exception e){
+                        throw new RuntimeException(PROP_NOTIFICATIONS_PROBRESOLV + " must be an integer");
+                    }
+                }
                 HashMap<String,Boolean> dashboardFilters = new HashMap<String,Boolean>();
                 HashMap<String,Boolean> gridFilters = new HashMap<String,Boolean>(); 
                 HashMap<String,Boolean> siteFilters = new HashMap<String,Boolean>(); 
@@ -915,6 +925,7 @@ public class ConfigLoader {
                 dataMap.put("notifier", notifier);
                 dataMap.put("minSeverity", minSeverity);
                 dataMap.put("frequency", frequency);
+                dataMap.put("resolveAfter", resolveAfter);
                 dataMap.put("dashboardFilters", dashboardFilters);
                 dataMap.put("gridFilters", gridFilters);
                 dataMap.put("siteFilters", siteFilters);
@@ -938,6 +949,9 @@ public class ConfigLoader {
                 delNotifications.setInt(1, notifyNameMap.get(notifyName));
                 delNotifications.executeUpdate();
             }
+            
+            //close db
+            conn.close();
         }catch(SQLException e){
             if(conn != null){
                 try{

@@ -2,16 +2,17 @@
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define upgrade_base /usr/lib/maddash/upgrades/%{package_name}
-%define relnum 1
+%define perfsonar_auto_version 4.2.0
+%define perfsonar_auto_relnum 1
 
 Name:           %{package_name}
-Version:        2.0.6
-Release:        %{relnum}%{?dist}
+Version:        %{perfsonar_auto_version}
+Release:        %{perfsonar_auto_relnum}%{?dist}
 Summary:        MaDDash Web Interface
 License:        distributable, see LICENSE
 Group:          Development/Libraries
 URL:            http://www.perfsonar.net
-Source0:        maddash-%{version}-%{relnum}.tar.gz
+Source0:        maddash-%{version}-%{perfsonar_auto_relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  wget
@@ -26,7 +27,7 @@ MaDDash is a framework for scheduling service checks and displaying results in a
 This package provides a web interface to display check results.
 
 %pre
-/usr/sbin/groupadd maddash 2> /dev/null || :
+/usr/sbin/groupadd -r maddash 2> /dev/null || :
 /usr/sbin/useradd -g maddash -r -s /sbin/nologin -c "MaDDash User" -d /tmp maddash 2> /dev/null || :
 
 #track previous version
@@ -36,7 +37,7 @@ rpm -q --queryformat "%%{RPMTAG_VERSION} %%{RPMTAG_RELEASE} " %{name} > %{_local
 
 
 %prep
-%setup -q -n maddash-%{version}-%{relnum}
+%setup -q -n maddash-%{version}-%{perfsonar_auto_relnum}
 
 %clean
 rm -rf %{buildroot}

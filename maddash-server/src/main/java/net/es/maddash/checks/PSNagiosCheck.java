@@ -54,8 +54,6 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
     private final String PARAM_MD_KEY_LOOKUP = "metaDataKeyLookup";
     private final String PARAM_GRAPH_URL = "graphUrl";
     private final String PARAM_MAURL = "maUrl";
-    private final String PROP_MAURL_DEFAULT = "default";
-    private final String PROP_GRAPHURL_DEFAULT = "default";
     
     public CheckResult check(String gridName, String rowName, String colName,
             Map params,  TemplateVariableMap rowVars, TemplateVariableMap colVars, int timeout) {
@@ -74,20 +72,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
                     PARAM_MAURL + " not defined. Please check config file", null);
         }
         Map maUrlMap = (Map)params.get(PARAM_MAURL);
-        String maUrl = null;
-        if(maUrlMap.containsKey(rowName) && maUrlMap.get(rowName) != null){
-            Map<String,String> rowMaUrlMap = (Map<String,String>) maUrlMap.get(rowName);
-            if(rowMaUrlMap.containsKey(colName) && rowMaUrlMap.get(colName) != null){
-                maUrl = (String) rowMaUrlMap.get(colName);
-            }else if(rowMaUrlMap.containsKey(PROP_MAURL_DEFAULT) && rowMaUrlMap.get(PROP_MAURL_DEFAULT) != null){
-                maUrl = (String) rowMaUrlMap.get(PROP_MAURL_DEFAULT);
-            }
-        }
-        
-        //try to set default
-        if(maUrl == null){
-            maUrl = (String) maUrlMap.get(PROP_MAURL_DEFAULT);
-        }
+        String maUrl = this.parseStringorMap(params, PARAM_MAURL, rowName, colName, PROP_DEFAULT);
         //if still not set then throw error
         if(maUrl == null){
             return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
@@ -97,18 +82,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
         vars.put("%maUrl", maUrl);
         
         //get reverse MA URL
-        String maUrlReverse = null;
-        if(maUrlMap.containsKey(colName) && maUrlMap.get(colName) != null){
-            Map<String,String> colMaUrlMap = (Map<String,String>) maUrlMap.get(colName);
-            if(colMaUrlMap.containsKey(rowName) && colMaUrlMap.get(rowName) != null){
-                maUrlReverse = (String) colMaUrlMap.get(rowName);
-            }else if(colMaUrlMap.containsKey(PROP_MAURL_DEFAULT) && colMaUrlMap.get(PROP_MAURL_DEFAULT) != null){
-                maUrlReverse = (String) colMaUrlMap.get(PROP_MAURL_DEFAULT);
-            }
-        }
-        if(maUrlReverse == null){
-            maUrlReverse = (String) maUrlMap.get(PROP_MAURL_DEFAULT);
-        }
+        String maUrlReverse = this.parseStringorMap(params, PARAM_MAURL, colName, rowName, PROP_DEFAULT);
         //if still not set then use maURL
         if(maUrlReverse == null){
             maUrlReverse = maUrl;
@@ -134,27 +108,7 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
             return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
                     PARAM_GRAPH_URL + " not defined. Please check config file", null);
         }
-        String graphUrl = null;
-        //try to get as string for backward compatibility
-        try{
-            graphUrl = (String)params.get(PARAM_GRAPH_URL); //try to get as string for backward compatibility
-        }catch(Exception e){}
-        //try to get as map
-        if(graphUrl == null){
-            Map graphUrlMap = (Map)params.get(PARAM_GRAPH_URL);
-            if(graphUrlMap.containsKey(rowName) && graphUrlMap.get(rowName) != null){
-                Map<String,String> rowGraphUrlMap = (Map<String,String>) graphUrlMap.get(rowName);
-                if(rowGraphUrlMap.containsKey(colName) && rowGraphUrlMap.get(colName) != null){
-                    graphUrl = (String) rowGraphUrlMap.get(colName);
-                }else if(rowGraphUrlMap.containsKey(PROP_GRAPHURL_DEFAULT) && rowGraphUrlMap.get(PROP_GRAPHURL_DEFAULT) != null){
-                    graphUrl = (String) rowGraphUrlMap.get(PROP_GRAPHURL_DEFAULT);
-                }
-            }
-           //try to set default
-            if(graphUrl == null){
-                graphUrl = (String) graphUrlMap.get(PROP_GRAPHURL_DEFAULT);
-            }
-        }
+        String graphUrl = this.parseStringorMap(params, PARAM_GRAPH_URL, rowName, colName, PROP_DEFAULT);
         //if still not set then throw error
         if(graphUrl == null){
             return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
@@ -166,7 +120,12 @@ public class PSNagiosCheck extends NagiosCheck implements Check {
             return new CheckResult(CheckConstants.RESULT_UNKNOWN, 
                     "Command not defined. Please check config file", null);
         }
-        String command = (String)params.get(PARAM_COMMAND);
+        String command = this.parseStringorMap(params, PARAM_COMMAND, rowName, colName, PROP_DEFAULT);
+        //if still not set then throw error
+        if(command == null){
+            return new CheckResult(CheckConstants.RESULT_UNKNOWN,
+                    "Default command not defined. Please check config file", null);
+        }
         command = this.replaceVars(command, vars, rowVars, colVars);
         params.put(PARAM_COMMAND, command);
         

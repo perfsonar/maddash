@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <properties>
-        <perfsonar.auto.version>2.0.6</perfsonar.auto.version>
+        <perfsonar.auto.version>4.2.0</perfsonar.auto.version>
     </properties>
     
     <modelVersion>4.0.0</modelVersion>
@@ -12,6 +12,7 @@
 
     <modules>
         <module>common-libs</module>
+        <module>jsnow</module>
         <module>maddash-server</module>
     </modules>
     <build>

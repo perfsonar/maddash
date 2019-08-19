@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import net.es.maddash.NetLogger;
 
-public class EmailNotification implements Notification{
+public class EmailNotification extends BaseNotification{
     private Logger log = Logger.getLogger(EmailNotification.class);
     private Logger netlogger = Logger.getLogger("netlogger");
     
@@ -157,7 +157,7 @@ public class EmailNotification implements Notification{
     }
 
     @Override
-    public void send(List<NotifyProblem> problems) {
+    public void send(int notificationId, List<NotifyProblem> problems, List<String> resolvedData) {
         NetLogger netLog = NetLogger.getTlogger();
         netlogger.info(netLog.start("maddash.EmailNotification.send"));
         //don't send anything if no problems

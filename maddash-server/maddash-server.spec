@@ -1,26 +1,27 @@
 %define package_name maddash-server
-%define mvn_project_list common-libs,%{package_name}
+%define mvn_project_list common-libs,jsnow,%{package_name}
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
-%define relnum 1
+%define perfsonar_auto_version 4.2.0
+%define perfsonar_auto_relnum 1
 
 Name:           %{package_name}
-Version:        2.0.6
-Release:        %{relnum}%{?dist}
+Version:        %{perfsonar_auto_version}
+Release:        %{perfsonar_auto_relnum}%{?dist}
 Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
 Group:          Development/Libraries
 URL:            http://www.perfsonar.net
-Source0:        maddash-%{version}-%{relnum}.tar.gz
+Source0:        maddash-%{version}-%{perfsonar_auto_relnum}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  java-1.7.0-openjdk
-BuildRequires:  java-1.7.0-openjdk-devel
+BuildRequires:  java-1.8.0-openjdk
+BuildRequires:  java-1.8.0-openjdk-devel
 BuildRequires:  sed
 BuildArch:      noarch
-Requires:       java-1.7.0-openjdk
+Requires:       java-1.8.0-openjdk
 %if 0%{?el7}
 BuildRequires: systemd
 BuildRequires:  maven
@@ -39,11 +40,11 @@ This package provides a server that schedules the checks and publishes the resul
 via REST interface.
 
 %pre
-/usr/sbin/groupadd maddash 2> /dev/null || :
+/usr/sbin/groupadd -r maddash 2> /dev/null || :
 /usr/sbin/useradd -g maddash -r -s /sbin/nologin -c "MaDDash User" -d /tmp maddash 2> /dev/null || :
 
 %prep
-%setup -q -n maddash-%{version}-%{relnum}
+%setup -q -n maddash-%{version}-%{perfsonar_auto_relnum}
 
 %clean
 rm -rf %{buildroot}

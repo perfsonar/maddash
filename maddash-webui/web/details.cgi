@@ -12,6 +12,13 @@ print $cgi->header;
 
 my $uri = $cgi->param("uri");
 
+#handle refresh
+my $refreshParam = $cgi->param("refresh");
+my $refreshTime = "0";
+if($refreshParam && $refreshParam =~ /\d+/){
+    $refreshTime = $refreshParam;
+}
+
 if($uri){
 
 #sanitize uri
@@ -47,7 +54,8 @@ print <<EOF;
 			    configDS.render();
 			    var titlePane = new MadDashTitleSpan("maddashTitle", "index.cgi");
 			    titlePane.render(config.data);
-			    
+                var privacyPolicy = new MadDashPrivacyPolicy("maddashPrivacyPolicy");
+			    privacyPolicy.render(config.data);
 			    
                 
                 var ds = new MaDDashDataSource("$encoded_uri");
@@ -63,7 +71,9 @@ print <<EOF;
                 
                 var mnugs = new MaDDashDataSource("/maddash/grids"); 
                 var mnuds = new MaDDashDataSource("/maddash/dashboards"); 
-                mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", config, {}, mnugs, ds));
+                var navMenu = new MadDashNavMenu("maddashMenuBar", "index.cgi", config, {}, mnugs, ds);
+                navMenu.setPageRefresh($refreshTime);
+                mnuds.connect(navMenu);
 
                 mnuds.render();
                 ds.render();
@@ -103,6 +113,7 @@ print <<EOF;
             <br>
             <hr width="90%">
             More information on MaDDash available <a target="newwindow" href="https://docs.perfsonar.net">here</a>
+            <div id="maddashPrivacyPolicy"></div>
         </div>
     </body>
 </html>

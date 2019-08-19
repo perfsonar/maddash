@@ -47,6 +47,7 @@ public class NotifyJob implements Job{
         Notification notifier = (Notification) dataMap.get("notifier");;
         int minSeverity = dataMap.getInt("minSeverity");
         int frequency = dataMap.getInt("frequency");
+        int resolveAfter = dataMap.getInt("resolveAfter");
         HashMap<String, Boolean> dashboardFilters = (HashMap<String, Boolean>)dataMap.get("dashboardFilters");
         HashMap<String, Boolean> gridFilters = (HashMap<String, Boolean>)dataMap.get("gridFilters");
         HashMap<String, Boolean> siteFilters = (HashMap<String, Boolean>)dataMap.get("siteFilters");
@@ -143,34 +144,96 @@ public class NotifyJob implements Job{
             //update db and determine if needs to be sent
             long now = System.currentTimeMillis()/1000;
             long expires = now + frequency;
+            long resolved = now - resolveAfter;
             PreparedStatement probSel = conn.prepareStatement("SELECT id, expires FROM notificationProblems WHERE notificationId=? AND checksum=?");
-            PreparedStatement probDelete = conn.prepareStatement("DELETE FROM notificationProblems WHERE expires <= ?");
-            PreparedStatement probInsert = conn.prepareStatement("INSERT INTO notificationProblems VALUES(DEFAULT, ?, ?, ?)");
-            
-            //clean out expired problems (regardless of notification)
-            probDelete.setLong(1, now);
-            probDelete.executeUpdate();
+            PreparedStatement probUpdateExpired = conn.prepareStatement("UPDATE notificationProblems SET expires = ?, lastSeen =? WHERE notificationId=? AND checksum=?");
+            PreparedStatement probUpdateLastSeen = conn.prepareStatement("UPDATE notificationProblems SET lastSeen =? WHERE notificationId=? AND checksum=?");
+            PreparedStatement probSelResolved = conn.prepareStatement("SELECT id, appData FROM notificationProblems WHERE notificationId=? AND lastSeen <= ?");
+            PreparedStatement probDelResolved = conn.prepareStatement("DELETE FROM notificationProblems WHERE notificationId=? AND lastSeen <= ?");
+            PreparedStatement probDelete = conn.prepareStatement("DELETE FROM notificationProblems WHERE notificationId=? AND expires <= ?");
+            PreparedStatement probInsert = conn.prepareStatement("INSERT INTO notificationProblems VALUES(DEFAULT, ?, ?, ?, ?, NULL)");
+
+
+            // Uncomment for useful debugging output on database tables
+            /* System.out.println("Notification ID is " + notificationId);
+            System.out.println("-------------------------------------");
+            PreparedStatement probAll = conn.prepareStatement("SELECT id, notificationId, checksum, expires, lastSeen, appData FROM notificationProblems WHERE notificationId=?");
+            probAll.setInt(1,notificationId);
+            ResultSet probAllResult = probAll.executeQuery();
+            while(probAllResult.next()){
+                System.out.print(probAllResult.getInt(1) + " | ");
+                System.out.print(probAllResult.getInt(2) + " | ");
+                System.out.print(probAllResult.getString(3) + " | ");
+                System.out.print(probAllResult.getLong(4) + " | ");
+                System.out.print(probAllResult.getLong(5) + " | ");
+                System.out.print(probAllResult.getString(6) + "\n");
+            } */
+
+
             //now check if a problem has been reported on recently
             for(NotifyProblem p : problems){
                 probSel.setInt(1, notificationId);
                 probSel.setString(2, p.checksum());
                 ResultSet probResult = probSel.executeQuery();
-                //if not in DB, then include, otherwise ignore
+                //Check database to see if problem exists
                 if(!probResult.next()){
+                    //create a new problem
                     if(frequency > 0){
                         probInsert.setInt(1, notificationId);
                         probInsert.setString(2, p.checksum());
                         probInsert.setLong(3, expires);
+                        probInsert.setLong(4, now);
                         probInsert.executeUpdate();
                     }
                     newProblems.add(p);
+                }else if(probResult.getLong(2) <= now){
+                    //need a new notification
+                    probUpdateExpired.setLong(1, expires);
+                    probUpdateExpired.setLong(2, now);
+                    probUpdateExpired.setInt(3, notificationId);
+                    probUpdateExpired.setString(4, p.checksum());
+                    probUpdateExpired.executeUpdate();
+                    newProblems.add(p);
+                }else{
+                    //no notification needed, but update last seen
+                    probUpdateLastSeen.setLong(1, now);
+                    probUpdateLastSeen.setInt(2, notificationId);
+                    probUpdateLastSeen.setString(3, p.checksum());
+                    probUpdateLastSeen.executeUpdate();
+
                 }
             }
+
+            //make sure we propagate changes
+            conn.commit();
+
+            //check if we care about resolved
+            ArrayList<String> resolvedAppData = new ArrayList<String>();
+            if(resolveAfter > 0) {
+                //if we care, grab everything for this notification that looks resolved
+                probSelResolved.setInt(1, notificationId);
+                probSelResolved.setLong(2, resolved);
+                ResultSet probResolvedResult = probSelResolved.executeQuery();
+                while(probResolvedResult.next()){
+                    resolvedAppData.add(probResolvedResult.getString(2));
+                }
+                //now delete these. this means we only have on shot to resolve
+                probDelResolved.setInt(1, notificationId);
+                probDelResolved.setLong(2, resolved);
+                probDelResolved.executeUpdate();
+            }else{
+                //if we don't care about resolved, just clear out everything that is expired
+                probDelete.setInt(1, notificationId);
+                probDelete.setLong(2, now);
+                probDelete.executeUpdate();
+            }
+
+
             conn.close();
             
             //create notifier and send reports
             Collections.sort(newProblems, new NotifyProblemComparator());
-            notifier.send(newProblems);
+            notifier.send(notificationId, newProblems, resolvedAppData);
             netlogger.info(netLog.end("maddash.NotifyJob.execute"));
         }catch(Exception e){
             if(conn != null){

@@ -207,6 +207,39 @@ var MadDashTitleSpan = function(parent, link){
 }
 
 /**
+ * Class: MadDashPrivacyPolicy
+ * Description: Widget that displays MaDDash privacy policy
+ *  Parameters:
+ *      parent: a string or object representing a container element
+ *      link: the url to the homepage of the privacy policy
+ *
+ */
+var MadDashPrivacyPolicy = function(parent){
+	var instance = this;
+	this.parent = _maddashSetParent(parent);
+	
+	this.render = function(data){
+		this.parent.innerHTML = "";
+		if (data == null) {
+			console.log("data is null");
+			return;
+		}
+		var url = data.privacyPolicyLink;
+		if (typeof url === "undefined") {
+			url = "https://www.perfsonar.net/about/privacy-policy/";
+		}
+
+		var anchor = document.createElement("a");
+		anchor.href = url;
+		anchor.appendChild(document.createTextNode("Privacy Policy"));
+		anchor.className = "maddashPrivacyPolicyLink";
+		var span = document.createElement("span");
+		span.appendChild(anchor);
+		this.parent.appendChild(span);
+	}
+}
+
+/**
  * Class: MadDashNavMenu
  * Description: Widget that generates a pull-down menu to naviagte through dashboards and grids
  *  Parameters:
@@ -312,7 +345,7 @@ var MadDashNavMenu = function(parent, link, config, userConfig, gridSource, refr
             var checkMenuItem = new dijit.CheckedMenuItem({
                 label: timeLabel, 
                 value: refreshTimes[i],
-                checked:false,
+                checked: refreshTimes[i] == this.refreshTime,
                 onChange: function(checked){
                     instance.setPageRefresh(checked ? this.value : 0);
                 }});

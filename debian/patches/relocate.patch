@@ -1,7 +1,5 @@
-Index: maddash/maddash-server/etc/log4j.properties
-===================================================================
---- maddash.orig/maddash-server/etc/log4j.properties	2018-10-14 03:12:04.894770000 -0400
-+++ maddash/maddash-server/etc/log4j.properties	2018-10-16 10:42:12.268710030 -0400
+--- a/maddash-server/etc/log4j.properties	2019-08-15 01:11:55.501691436 +0000
++++ b/maddash-server/etc/log4j.properties	2019-08-15 01:11:56.114696703 +0000
 @@ -5,7 +5,7 @@
  log4j.appender.MADDASH=org.apache.log4j.RollingFileAppender
  log4j.appender.MADDASH.MaxFileSize=1MB
@@ -19,27 +17,23 @@ Index: maddash/maddash-server/etc/log4j.properties
 +log4j.appender.NETLOGGER.File=/var/log/maddash/maddash-server.netlogger.log
  log4j.appender.NETLOGGER.layout=org.apache.log4j.PatternLayout
  log4j.appender.NETLOGGER.layout.ConversionPattern=level=%p %m%n
-Index: maddash/maddash-webui/etc/apache-maddash.conf
-===================================================================
---- maddash.orig/maddash-webui/etc/apache-maddash.conf	2018-10-14 03:12:04.894770000 -0400
-+++ maddash/maddash-webui/etc/apache-maddash.conf	2018-10-16 10:42:12.273298309 -0400
+--- a/maddash-webui/etc/apache-maddash.conf	2019-08-15 01:11:55.881694702 +0000
++++ b/maddash-webui/etc/apache-maddash.conf	2019-08-15 01:11:56.115696711 +0000
 @@ -1,8 +1,8 @@
  ##
  #Setup path to web user interface
  #
--Alias /maddash-webui /usr/lib/maddash/maddash-webui 
+-Alias /maddash-webui /usr/lib/maddash/maddash-webui
 -<Directory "/usr/lib/maddash/maddash-webui/">
 +Alias /maddash-webui /usr/share/maddash/maddash-webui
 +<Directory "/usr/share/maddash/maddash-webui/">
-     Options +Indexes +FollowSymLinks +ExecCGI
+     Options +FollowSymLinks +ExecCGI
      DirectoryIndex index.cgi index.html
      AddHandler cgi-script .cgi
-Index: maddash/maddash-server/etc/maddash.yaml
-===================================================================
---- maddash.orig/maddash-server/etc/maddash.yaml	2018-10-14 03:12:04.894770000 -0400
-+++ maddash/maddash-server/etc/maddash.yaml	2018-10-16 10:42:12.277458631 -0400
+--- a/maddash-server/etc/maddash.yaml	2019-08-15 01:11:55.878694676 +0000
++++ b/maddash-server/etc/maddash.yaml	2019-08-15 01:11:56.115696711 +0000
 @@ -172,7 +172,7 @@
-             graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
+             graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
              #The Nagios command to execute. The -w and -c options define the thresholds. 
              #The -r option specifies the time range to query.
 -            command: "/usr/lib64/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 1800 -l -p -s %row -d %col"
@@ -49,16 +43,16 @@ Index: maddash/maddash-server/etc/maddash.yaml
          #How often to run the check if it detects a state different than the previous 
 @@ -199,7 +199,7 @@
              maUrl: 
-                 default: "http://%row/esmond/perfsonar/archive"
-             graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
+                 default: "https://%row/esmond/perfsonar/archive"
+             graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
 -            command: "/usr/lib64/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -p -s %col -d %row"
 +            command: "/usr/lib/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -p -s %col -d %row"
          checkInterval: 1800
          retryInterval: 300
          retryAttempts: 3
 @@ -221,7 +221,7 @@
-                 default: "http://%row/esmond/perfsonar/archive"
-             graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
+                 default: "https://%row/esmond/perfsonar/archive"
+             graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
              #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
 -            command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %row -d %col"
 +            command:  "/usr/lib/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %row -d %col"
@@ -66,8 +60,8 @@ Index: maddash/maddash-server/etc/maddash.yaml
          retryInterval: 600
          retryAttempts: 3
 @@ -239,7 +239,7 @@
-                 default: "http://%row/esmond/perfsonar/archive"
-             graphUrl: "http://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
+                 default: "https://%row/esmond/perfsonar/archive"
+             graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
              #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
 -            command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %col -d %row"
 +            command:  "/usr/lib/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %col -d %row"

@@ -17,6 +17,13 @@ print $cgi->header;
 
 my $dashParam = sanitize_input($cgi->param("dashboard"));
 my $gridParam = sanitize_input($cgi->param("grid"));
+my $refreshParam = sanitize_input($cgi->param("refresh"));
+
+#handle refresh time
+my $refreshTime = "0";
+if($refreshParam && $refreshParam =~ /\d+/){
+    $refreshTime = $refreshParam;
+}
 
 my $type = "null";
 my $name = "null";
@@ -67,7 +74,9 @@ print <<EOF;
 			    configDS.render();
 			    var titlePane = new MadDashTitleSpan("maddashTitle", "index.cgi");
 			    titlePane.render(config.data);
-			    
+			    var privacyPolicy = new MadDashPrivacyPolicy("maddashPrivacyPolicy");
+			    privacyPolicy.render(config.data);
+                
 			    //set custom click handler
 			    var handleClick = function(d){
 			        var href = "details.cgi?uri=" + d.uri;
@@ -85,9 +94,11 @@ print <<EOF;
 				    ds.connect(new MaDDashDashboardPane("maddashDashboardPane", $type, $name, config.data, userConfig, handleClick));
 				    refreshSource = ds;
 				}
-				mnuds.connect(new MadDashNavMenu("maddashMenuBar", "index.cgi", config, userConfig, gs, refreshSource));
+				var navMenu = new MadDashNavMenu("maddashMenuBar", "index.cgi", config, userConfig, gs, refreshSource);
+				mnuds.connect(navMenu);
 				refreshSource.connect(new MaDDashRefreshLabel("maddashRefreshStatus"));
-				
+				navMenu.setPageRefresh($refreshTime);
+                
 				mnuds.render();
 				ds.render();
 			}
@@ -107,6 +118,7 @@ print <<EOF;
                   <br>
                   <hr width="90%">
                   More information on MaDDash available <a target="newwindow" href="https://docs.perfsonar.net">here</a>
+                  <div id="maddashPrivacyPolicy"></div>
                 </div>
 	</body>
 </html>

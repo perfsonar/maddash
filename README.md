@@ -48,6 +48,7 @@ A build was done during VM creation and the version running will be based off th
   mvn clean install
   systemctl restart maddash-server
   ```  
+  
 For changes to the web UI simply make you changes to the files under `maddash-webui`.
 
 
