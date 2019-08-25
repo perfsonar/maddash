@@ -1,13 +1,9 @@
-maddash (4.3.0-1) perfsonar-minor-snapshot; urgency=low
+maddash (4.3.0~a1.0-1) perfsonar-4.3-snapshot; urgency=low
 
   * New upstream version.
 
- -- perfSONAR developers <debian@perfsonar.net>  \Thu, \15 \Aug \2019 :22:21 \+0000
-maddash (4.2.1-1) perfsonar-patch-snapshot; urgency=low
+ -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Sun, 25 Aug 2019 19:08:10 +0000
 
-  * New upstream version.
-
- -- perfSONAR developers <debian@perfsonar.net>  \Thu, \15 \Aug \2019 :22:18 \+0000
 maddash (4.2.0-1) perfsonar-minor-staging; urgency=low
 
   * New upstream version.
