@@ -1,7 +1,17 @@
+maddash (4.2.1-1) perfsonar-4.2; urgency=low
+
+  * New upstream version.
+
+ -- perfSONAR developers <debian@perfsonar.net>  Fri, 27 Sep 2019 13:18:10 -0400
+
 maddash (4.2.0-1) perfsonar-minor-staging; urgency=low
 
   * New upstream version.
   * Adding jsnow to the maven build process.
+  * Java 8 is now the minimum requirement.
+  * Removing apache index listing.
+  * Building using Maven batch mode with local repo in debian/maven-repo-local
+  * Building on Stretch.
 
  -- Andy Lake <andy@es.net>  Thu, 15 Aug 2019 01:11:55 +0000
 
