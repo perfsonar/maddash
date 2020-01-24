@@ -104,8 +104,15 @@ if [ ! -e %{install_base}/etc/config.json ]; then
     ln -s %{config_base}/config.json %{install_base}/etc/config.json
 fi
 
+#httpd selinux settings
+setsebool -P httpd_can_network_connect on
+
+#enable httpd on fresh install
+if [ "$1" = "1" ]; then
+    systemctl enable httpd
+fi
 #restart apache so config changes are applied
-service httpd restart
+systemctl restart httpd
 
 %files
 %defattr(-,maddash,maddash,-)
