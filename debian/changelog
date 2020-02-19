@@ -1,8 +1,8 @@
-maddash (4.2.3~a0.0-1) perfsonar-4.2-snapshot; urgency=low
+maddash (4.2.3-1) perfsonar-4.2; urgency=low
 
   * New upstream version.
 
- -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Thu, 17 Oct 2019 15:19:44 +0200
+ -- perfSONAR developers <debian@perfsonar.net>  Wed, 19 Feb 2020 15:39:35 +0000
 
 maddash (4.2.1-1) perfsonar-4.2; urgency=low
 
