@@ -2,7 +2,7 @@
 %define install_base /usr/lib/maddash/%{package_name}
 %define config_base /etc/maddash/%{package_name}
 %define upgrade_base /usr/lib/maddash/upgrades/%{package_name}
-%define perfsonar_auto_version 4.2.1
+%define perfsonar_auto_version 4.2.3
 %define perfsonar_auto_relnum 1
 
 Name:           %{package_name}
@@ -104,8 +104,15 @@ if [ ! -e %{install_base}/etc/config.json ]; then
     ln -s %{config_base}/config.json %{install_base}/etc/config.json
 fi
 
+#httpd selinux settings
+setsebool -P httpd_can_network_connect on
+
+#enable httpd on fresh install
+if [ "$1" = "1" ]; then
+    systemctl enable httpd
+fi
 #restart apache so config changes are applied
-service httpd restart
+systemctl restart httpd
 
 %files
 %defattr(-,maddash,maddash,-)

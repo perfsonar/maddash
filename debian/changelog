@@ -1,3 +1,9 @@
+maddash (4.2.3-1) perfsonar-4.2; urgency=low
+
+  * New upstream version.
+
+ -- perfSONAR developers <debian@perfsonar.net>  Wed, 19 Feb 2020 15:39:35 +0000
+
 maddash (4.2.1-1) perfsonar-4.2; urgency=low
 
   * New upstream version.
