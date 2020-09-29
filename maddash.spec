@@ -1,6 +1,6 @@
 %define install_base /usr/lib/maddash
-%define perfsonar_auto_version 4.2.4
-%define perfsonar_auto_relnum 1
+%define perfsonar_auto_version 4.3.0
+%define perfsonar_auto_relnum 0.b1.1
 
 Name:           maddash
 Version:        %{perfsonar_auto_version}
