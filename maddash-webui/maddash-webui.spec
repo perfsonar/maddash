@@ -3,7 +3,7 @@
 %define config_base /etc/maddash/%{package_name}
 %define upgrade_base /usr/lib/maddash/upgrades/%{package_name}
 %define perfsonar_auto_version 4.3.0
-%define perfsonar_auto_relnum 0.a0.0
+%define perfsonar_auto_relnum 0.b1.1
 
 Name:           %{package_name}
 Version:        %{perfsonar_auto_version}
