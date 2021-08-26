@@ -1,5 +1,5 @@
---- a/maddash-server/etc/log4j.properties	2021-07-07 15:21:22.736201229 +0000
-+++ b/maddash-server/etc/log4j.properties	2021-07-07 15:21:23.881217053 +0000
+--- a/maddash-server/etc/log4j.properties	2019-05-13 23:04:01.098797000 +0100
++++ b/maddash-server/etc/log4j.properties	2021-08-26 02:43:25.494463117 +0100
 @@ -5,7 +5,7 @@
  log4j.appender.MADDASH=org.apache.log4j.RollingFileAppender
  log4j.appender.MADDASH.MaxFileSize=1MB
@@ -17,8 +17,8 @@
 +log4j.appender.NETLOGGER.File=/var/log/maddash/maddash-server.netlogger.log
  log4j.appender.NETLOGGER.layout=org.apache.log4j.PatternLayout
  log4j.appender.NETLOGGER.layout.ConversionPattern=level=%p %m%n
---- a/maddash-webui/etc/apache-maddash.conf	2021-07-07 15:21:22.745201354 +0000
-+++ b/maddash-webui/etc/apache-maddash.conf	2021-07-07 15:21:23.881217053 +0000
+--- a/maddash-webui/etc/apache-maddash.conf	2019-10-17 14:17:41.867338611 +0100
++++ b/maddash-webui/etc/apache-maddash.conf	2021-08-26 02:43:25.495779930 +0100
 @@ -1,8 +1,8 @@
  ##
  #Setup path to web user interface
@@ -30,8 +30,8 @@
      Options +FollowSymLinks +ExecCGI
      DirectoryIndex index.cgi index.html
      AddHandler cgi-script .cgi
---- a/maddash-server/etc/maddash.yaml	2021-07-07 15:21:22.736201229 +0000
-+++ b/maddash-server/etc/maddash.yaml	2021-07-07 15:21:23.881217053 +0000
+--- a/maddash-server/etc/maddash.yaml	2019-10-17 14:17:41.860134269 +0100
++++ b/maddash-server/etc/maddash.yaml	2021-08-26 02:43:25.497227788 +0100
 @@ -172,7 +172,7 @@
              graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
              #The Nagios command to execute. The -w and -c options define the thresholds. 
