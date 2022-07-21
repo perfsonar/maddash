@@ -85,6 +85,17 @@
                 "4": "#eeeeee",
                 "5": "black"
             }
+        },
+        {
+            "name": "Missing Measurements",
+            "colors": {
+                "0": "#ccffcc", 
+                "1": "#ffffcc", 
+                "2": "#ffcccc", 
+                "3": "#0000ff", 
+                "4": "gray",
+                "5": "black"
+            }
         }
      ]
 }
