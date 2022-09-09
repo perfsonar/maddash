@@ -7,29 +7,26 @@
 #Eclipse
 .project
 .settings
-maddash-server/.classpath
-maddash-server/.project
-maddash-server/.settings
 
 #IntelliJ Idea
 .idea
-common-libs/common-libs.iml
-maddash-server/.idea/
-maddash-server/maddash-server.iml
-maddash.iml
+maddash-server/maddash-server/common-libs/common-libs.iml
+maddash-server/maddash-server/.idea/
+maddash-server/maddash-server/maddash-server.iml
+maddash-server/maddash-server/maddash.iml
 
 #Build directories and files
-common-libs/target
-maddash-server/target
-maddash-webui/dojo-build/dojo-release-1.7.2-src
-maddash-webui/web/lib/dojo-release-1.7.2-maddash.tar.gz
-maddash-webui/web/lib/dojo
+maddash-server/maddash-server/common-libs/target
+maddash-server/maddash-server/target
+maddash-webui/maddash-webui/dojo-build/dojo-release-1.7.2-src
+maddash-webui/maddash-webui/web/lib/dojo-release-1.7.2-maddash.tar.gz
+maddash-webui/maddash-webui/web/lib/dojo
 
 #Misc dev environment files
-maddash-server/run
-maddash-server/data
-maddash-server/maddash-server.log
-maddash-server/maddash-server.netlogger.log
+maddash-server/maddash-server/run
+maddash-server/maddash-server/data
+maddash-server/maddash-server/maddash-server.log
+maddash-server/maddash-server/maddash-server.netlogger.log
 
 #Quilt cache directory
 .pc
@@ -39,5 +36,12 @@ maddash-server/maddash-server.netlogger.log
 vagrant-data
 
 #jsnow
-jsnow/target
-jsnow/jsnow.iml
+maddash-server/maddash-server/jsnow/target
+maddash-server/maddash-server/jsnow/jsnow.iml
+
+#Ignore vs_code
+.vscode
+# Ignore unibuild files 
+unibuild-log
+unibuild-work/
+unibuild-repo/
