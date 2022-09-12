@@ -11,4 +11,35 @@ changecom()dnl
 # Build primary packages
 maddash-server
 maddash-webui
+
+# Build graphs (for maddash package)
+submodules/bundles/common
+submodules/minor-packages/perl-CGI-Ajax
+submodules/minor-packages/perl-Data-Validate-Domain
+submodules/minor-packages/perl-Data-Validate-IP
+submodules/minor-packages/perl-Hash-Merge
+submodules/minor-packages/perl-IPC-DirQueue
+submodules/minor-packages/perl-JSON-Validator
+submodules/minor-packages/perl-Net-Traceroute
+submodules/perl-shared/libperfsonar
+submodules/psTracerouteViewer/traceroute-viewer
+submodules/graphs/graphs
+
+
+# Build nagios plugins (for maddash package)
+submodules/minor-packages/python-dateutil
+submodules/pscheduler/jq
+ifelse(FAMILY/DISTRO/MAJOR,RedHat/Oracle/8,Cython)
+submodules/pscheduler/pscheduler-rpm
+submodules/pscheduler/python-pyjq
+submodules/pscheduler/pscheduler-jq-library
+submodules/pscheduler/python-py-radix
+submodules/pscheduler/python-tzlocal
+ifelse(DISTRO/eval(MAJOR > 19),Ubuntu/1,,               # Ubuntu 20 has a newer version of this.
+       DISTRO/eval(MAJOR > 10),Debian/1,,               # As does Debian 11.
+       submodules/pscheduler/python-jsonschema)                         # EL8 has this, but an older version
+submodules/pscheduler/python-pscheduler
+submodules/nagios/nagios-plugins-perfsonar
+
+# Build high-level maddash package 
 maddash

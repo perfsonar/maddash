@@ -15,24 +15,16 @@ Summary:        MaDDash Scheduler and REST Server
 License:        distributable, see LICENSE
 Group:          Development/Libraries
 URL:            http://www.perfsonar.net
-Source0:        maddash-%{version}-%{perfsonar_auto_relnum}.tar.gz
+Source0:        maddash-server-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  java-1.8.0-openjdk
 BuildRequires:  java-1.8.0-openjdk-devel
 BuildRequires:  sed
 BuildArch:      noarch
 Requires:       java-1.8.0-openjdk
-%if 0%{?el7}
 BuildRequires: systemd
 BuildRequires:  maven
 %{?systemd_requires: %systemd_requires}
-%else
-#apache-maven is not in standard centos repos
-#can be acquired from https://repos.fedorapeople.org/repos/dchen/apache-maven/
-#install in mock with mock -r $target --install <RPM_URL>
-BuildRequires:  apache-maven
-Requires:       chkconfig
-%endif
 
 %description
 MaDDash is a framework for scheduling service checks and displaying results in a grid.
@@ -44,7 +36,7 @@ via REST interface.
 /usr/sbin/useradd -g maddash -r -s /sbin/nologin -c "MaDDash User" -d /tmp maddash 2> /dev/null || :
 
 %prep
-%setup -q -n maddash-%{version}-%{perfsonar_auto_relnum}
+%setup -q -n maddash-server-%{version}
 
 %clean
 rm -rf %{buildroot}
@@ -64,21 +56,13 @@ mkdir -p %{buildroot}/%{install_base}/target
 mkdir -p %{buildroot}/%{install_base}/bin
 mkdir -p %{buildroot}/%{install_base}/sql
 mkdir -p %{buildroot}/%{config_base}
-%if 0%{?el7}
 mkdir -p %{buildroot}%{_unitdir}
-%else
-mkdir -p %{buildroot}/etc/init.d
-%endif
 
 #Copy jar files and scripts
 cp %{package_name}/target/*.jar %{buildroot}/%{install_base}/target/
 install -m 755 %{package_name}/bin/* %{buildroot}/%{install_base}/bin/
 install -m 744 %{package_name}/sql/* %{buildroot}/%{install_base}/sql/
-%if 0%{?el7}
 install -m 644 %{package_name}/scripts/%{package_name}.service %{buildroot}%{_unitdir}/%{package_name}.service
-%else
-install -m 755 %{package_name}/scripts/%{package_name} %{buildroot}/etc/init.d/%{package_name}
-%endif
 
 # Copy default config file
 cp %{package_name}/etc/maddash.yaml %{buildroot}/%{config_base}/maddash.yaml
@@ -116,17 +100,12 @@ if [ -d "/usr/lib64" ]; then
 fi
 
 #Configure service to start when machine boots
-%if 0%{?el7}
 %systemd_post %{package_name}.service
 if [ "$1" = "1" ]; then
     #if new install, then enable
     systemctl enable %{package_name}.service
     systemctl start %{package_name}.service
 fi
-%else
-/sbin/chkconfig --add %{package_name}
-/sbin/chkconfig %{package_name} on
-%endif
 
 if [ "$1" = "2" ]; then
     ##Upgrade database
@@ -138,13 +117,6 @@ if [ "$1" = "2" ]; then
     #fix graph URL
     sed -i "s:/serviceTest:/perfsonar-graphs:g" %{config_base}/maddash.yaml
     sed -i "s:graphWidget.cgi::g" %{config_base}/maddash.yaml
-
-    #restart service
-    %if 0%{?el7}
-    %else
-        #restart service on update
-        /sbin/service %{package_name} restart
-    %endif
 fi
 
 
@@ -157,25 +129,14 @@ fi
 %{install_base}/target/*
 %{install_base}/bin/*.sh
 %{install_base}/sql/*
-%if 0%{?el7}
 %{_unitdir}/%{package_name}.service
-%else
-/etc/init.d/%{package_name}
-%endif
 
 %preun
 if [ $1 -eq 0 ]; then
-%if 0%{?el7}
 %systemd_preun %{package_name}.service
-%else
-    /sbin/chkconfig --del %{package_name}
-    /sbin/service %{package_name} stop
-%endif
-    unlink %{install_base}/target/%{package_name}.one-jar.jar
-    unlink %{install_base}/target/%{package_name}.jar
+unlink %{install_base}/target/%{package_name}.one-jar.jar
+unlink %{install_base}/target/%{package_name}.jar
 fi
 
 %postun
-%if 0%{?el7}
 %systemd_postun_with_restart %{package_name}.service
-%endif
