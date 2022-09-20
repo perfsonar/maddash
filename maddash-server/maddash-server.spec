@@ -5,8 +5,8 @@
 %define log_dir /var/log/maddash
 %define run_dir /var/run/maddash
 %define data_dir /var/lib/maddash/
-%define perfsonar_auto_version 4.4.5
-%define perfsonar_auto_relnum 1
+%define perfsonar_auto_version 4.4.6
+%define perfsonar_auto_relnum 0.a1.0
 
 Name:           %{package_name}
 Version:        %{perfsonar_auto_version}
