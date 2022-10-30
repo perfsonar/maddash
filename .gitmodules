@@ -1,31 +1,3 @@
 [submodule "maddash-server/madalert"]
 	path = maddash-server/maddash-server/maddash-server/madalert
 	url = https://github.com/perfsonar/madalert 
-[submodule "submodules/minor-packages"]
-	path = submodules/minor-packages
-	url = https://github.com/perfsonar/minor-packages
-	branch = unibuild
-[submodule "submodules/bundles"]
-	path = submodules/bundles
-	url = https://github.com/perfsonar/bundles
-	branch = unibuild
-[submodule "submodules/perl-shared"]
-	path = submodules/perl-shared
-	url = https://github.com/perfsonar/perl-shared
-	branch = unibuild
-[submodule "submodules/psTracerouteViewer"]
-	path = submodules/psTracerouteViewer
-	url = https://github.com/perfsonar/psTracerouteViewer
-	branch = unibuild
-[submodule "submodules/pscheduler"]
-	path = submodules/pscheduler
-	url = https://github.com/perfsonar/pscheduler
-	branch = 5.0.0
-[submodule "submodules/graphs"]
-	path = submodules/graphs
-	url = https://github.com/perfsonar/graphs
-	branch = 5.0.0-unibuild
-[submodule "submodules/nagios"]
-	path = submodules/nagios
-	url = https://github.com/perfsonar/nagios
-	branch = unibuild
