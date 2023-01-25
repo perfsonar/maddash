@@ -1,0 +1,70 @@
+--- a/maddash-server/etc/log4j.properties	2022-09-20 08:43:16.899402680 -0400
++++ b/maddash-server/etc/log4j.properties	2022-09-20 08:43:18.418182408 -0400
+@@ -5,7 +5,7 @@
+ log4j.appender.MADDASH=org.apache.log4j.RollingFileAppender
+ log4j.appender.MADDASH.MaxFileSize=1MB
+ log4j.appender.MADDASH.MaxBackupIndex=3
+-log4j.appender.MADDASH.File=maddash-server.log
++log4j.appender.MADDASH.File=/var/log/maddash/maddash-server.log
+ log4j.appender.MADDASH.layout=org.apache.log4j.PatternLayout
+ log4j.appender.MADDASH.layout.ConversionPattern=%p %d{ISO8601} %m%n
+ 
+@@ -14,6 +14,6 @@
+ log4j.appender.NETLOGGER=org.apache.log4j.RollingFileAppender
+ log4j.appender.NETLOGGER.MaxFileSize=1MB
+ log4j.appender.NETLOGGER.MaxBackupIndex=3
+-log4j.appender.NETLOGGER.File=maddash-server.netlogger.log
++log4j.appender.NETLOGGER.File=/var/log/maddash/maddash-server.netlogger.log
+ log4j.appender.NETLOGGER.layout=org.apache.log4j.PatternLayout
+ log4j.appender.NETLOGGER.layout.ConversionPattern=level=%p %m%n
+--- a/maddash-webui/etc/apache-maddash.conf	2022-09-20 08:43:16.924621105 -0400
++++ b/maddash-webui/etc/apache-maddash.conf	2022-09-20 08:43:18.419279523 -0400
+@@ -1,8 +1,8 @@
+ ##
+ #Setup path to web user interface
+ #
+-Alias /maddash-webui /usr/lib/maddash/maddash-webui
+-<Directory "/usr/lib/maddash/maddash-webui/">
++Alias /maddash-webui /usr/share/maddash/maddash-webui
++<Directory "/usr/share/maddash/maddash-webui/">
+     Options +FollowSymLinks +ExecCGI
+     DirectoryIndex index.cgi index.html
+     AddHandler cgi-script .cgi
+--- a/maddash-server/etc/maddash.yaml	2022-09-20 08:43:16.899794538 -0400
++++ b/maddash-server/etc/maddash.yaml	2022-09-20 08:43:18.420561305 -0400
+@@ -172,7 +172,7 @@
+             graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
+             #The Nagios command to execute. The -w and -c options define the thresholds. 
+             #The -r option specifies the time range to query.
+-            command: "/usr/lib64/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 1800 -l -p -s %row -d %col"
++            command: "/usr/lib/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 1800 -l -p -s %row -d %col"
+         #How often to run the check (in seconds)
+         checkInterval: 1800
+         #How often to run the check if it detects a state different than the previous 
+@@ -199,7 +199,7 @@
+             maUrl: 
+                 default: "https://%row/esmond/perfsonar/archive"
+             graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
+-            command: "/usr/lib64/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -p -s %col -d %row"
++            command: "/usr/lib/nagios/plugins/check_owdelay.pl -u %maUrl -w 0 -c 0 -r 900 -l -p -s %col -d %row"
+         checkInterval: 1800
+         retryInterval: 300
+         retryAttempts: 3
+@@ -221,7 +221,7 @@
+                 default: "https://%row/esmond/perfsonar/archive"
+             graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
+             #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
+-            command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %row -d %col"
++            command:  "/usr/lib/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %row -d %col"
+         checkInterval: 28800
+         retryInterval: 600
+         retryAttempts: 3
+@@ -239,7 +239,7 @@
+                 default: "https://%row/esmond/perfsonar/archive"
+             graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%row&source=%col"
+             #Adjust the -w and -c values to adjust the thresholds. The thresholds are specified in Gbps.
+-            command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %col -d %row"
++            command:  "/usr/lib/nagios/plugins/check_throughput.pl -u %maUrl -w .1: -c .01: -r 86400 -s %col -d %row"
+         checkInterval: 28800
+         retryInterval: 600
+         retryAttempts: 3
