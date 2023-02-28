@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+#DH_VERBOSE = 1
+
+# Setting a correct JAVA_HOME for the build
+export JAVA_HOME=/usr
+
+# main packaging script based on dh7 syntax
+%:
+	dh $@ --with systemd
+
+override_dh_auto_build:
+	cd maddash-webui; scripts/build_dojo.sh dojo-build
+

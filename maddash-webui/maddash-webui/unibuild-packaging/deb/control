@@ -1,0 +1,20 @@
+Source: maddash-webui
+Section: net
+Priority: optional
+Maintainer: perfSONAR developers <debian@perfsonar.net>
+Uploaders: Antoine Delvaux <antoine.delvaux@man.poznan.pl>
+Build-Depends: debhelper (>= 10), openjdk-11-jdk | java8-jdk, maven, wget
+Standards-Version: 3.9.8
+Homepage: http://software.es.net/maddash/
+Vcs-Git: git://github.com/esnet/maddash
+Vcs-Browser: https://github.com/esnet/maddash
+
+Package: maddash-webui
+Architecture: all
+Depends: apache2, libcgi-pm-perl, liburi-perl, perfsonar-toolkit-graphs,
+ ssl-cert, ${perl:Depends}, ${misc:Depends}
+Description: Web interface for displaying monitoring results
+ MaDDash is a framework for scheduling service checks and displaying results in
+ a grid.
+ .
+ This package provides a web interface to display check results.
