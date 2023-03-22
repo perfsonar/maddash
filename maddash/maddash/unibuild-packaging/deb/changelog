@@ -5,11 +5,30 @@ maddash (5.0.0~b2.2-1) perfsonar-5.0; urgency=low
 
  -- perfSONAR developers <debian@perfsonar.net>  Tue, 21 Mar 2023 15:11:16 -0400
 
-maddash (4.5.0~a1.0-1) perfsonar-4.5-snapshot; urgency=low
+maddash (4.4.6-1) perfsonar-4.4; urgency=low
 
   * New upstream version.
 
- -- perfSONAR developers <debian@perfsonar.net>  Fri, 16 Jul 2021 17:13:38 +0000
+ -- perfSONAR developers <debian@perfsonar.net>  Mon, 07 Nov 2022 11:01:27 -0500
+
+maddash (4.4.5-1) perfsonar-4.4; urgency=low
+
+  * New upstream version.
+
+ -- perfSONAR developers <debian@perfsonar.net>  Tue, 20 Sep 2022 08:43:17 -0400
+
+maddash (4.4.4-1) perfsonar-4.4; urgency=low
+
+  * New upstream version.
+
+ -- perfSONAR developers <debian@perfsonar.net>  Mon, 04 Apr 2022 12:18:21 -0400
+
+maddash (4.4.3-1) perfsonar-4.4; urgency=low
+
+  * New upstream version.
+
+ -- perfSONAR developers <debian@perfsonar.net>  Thu, 03 Feb 2022 15:56:14 -0500
+
 maddash (4.4.2-1) perfsonar-4.4; urgency=low
 
   * New upstream version.
