@@ -1,13 +1,12 @@
 Source: maddash-server
-Section: net
+Section: misc
 Priority: optional
 Maintainer: perfSONAR developers <debian@perfsonar.net>
-Uploaders: Antoine Delvaux <antoine.delvaux@man.poznan.pl>
 Build-Depends: debhelper (>= 10), openjdk-11-jdk | java8-jdk, maven, wget
 Standards-Version: 3.9.8
-Homepage: http://software.es.net/maddash/
-Vcs-Git: git://github.com/esnet/maddash
-Vcs-Browser: https://github.com/esnet/maddash
+Homepage: http://www.perfsonar.net
+Vcs-Git: git://github.com/perfsonar/maddash
+Vcs-Browser: https://github.com/perfsonar/maddash/tree/master
 
 Package: maddash-server
 Architecture: all

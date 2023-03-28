@@ -1,13 +1,12 @@
 Source: maddash
-Section: net
+Section: misc
 Priority: optional
 Maintainer: perfSONAR developers <debian@perfsonar.net>
-Uploaders: Antoine Delvaux <antoine.delvaux@man.poznan.pl>
 Build-Depends: debhelper (>= 10), openjdk-11-jdk | java8-jdk, maven, wget
 Standards-Version: 3.9.8
-Homepage: http://software.es.net/maddash/
-Vcs-Git: git://github.com/esnet/maddash
-Vcs-Browser: https://github.com/esnet/maddash
+Homepage: http://www.perfsonar.net
+Vcs-Git: git://github.com/perfsonar/maddash
+Vcs-Browser: https://github.com/perfsonar/maddash/tree/master
 
 Package: maddash
 Architecture: all
@@ -19,23 +18,3 @@ Description: Network monitoring server metapackage
  This package installs a default set of modules that can be used to
  perform basic maddash functions.
 
-Package: maddash-server
-Architecture: all
-Depends: openjdk-11-jre-headless | java8-runtime-headless, nagios-plugins-perfsonar,
- adduser, ${misc:Depends}
-Description: Scheduler and REST server for network monitoring
- MaDDash is a framework for scheduling service checks and displaying results in
- a grid.
- .
- This package provides a server that schedules the checks and publishes the
- results via REST interface.
-
-Package: maddash-webui
-Architecture: all
-Depends: apache2, libcgi-pm-perl, liburi-perl, perfsonar-toolkit-graphs,
- ssl-cert, ${perl:Depends}, ${misc:Depends}
-Description: Web interface for displaying monitoring results
- MaDDash is a framework for scheduling service checks and displaying results in
- a grid.
- .
- This package provides a web interface to display check results.
