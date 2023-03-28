@@ -1,5 +1,5 @@
---- a/maddash-server/etc/log4j.properties	2023-03-21 15:11:15.903022862 -0400
-+++ b/maddash-server/etc/log4j.properties	2023-03-21 15:11:16.408024855 -0400
+--- a/maddash-server/etc/log4j.properties	2023-02-28 13:22:40.741440000 +0000
++++ b/maddash-server/etc/log4j.properties	2023-03-28 15:46:29.164484158 +0000
 @@ -5,7 +5,7 @@
  log4j.appender.MADDASH=org.apache.log4j.RollingFileAppender
  log4j.appender.MADDASH.MaxFileSize=1MB
@@ -17,8 +17,8 @@
 +log4j.appender.NETLOGGER.File=/var/log/maddash/maddash-server.netlogger.log
  log4j.appender.NETLOGGER.layout=org.apache.log4j.PatternLayout
  log4j.appender.NETLOGGER.layout.ConversionPattern=level=%p %m%n
---- a/maddash-server/etc/maddash.yaml	2023-03-21 15:11:15.903213404 -0400
-+++ b/maddash-server/etc/maddash.yaml	2023-03-21 15:11:16.408472022 -0400
+--- a/maddash-server/etc/maddash.yaml	2023-02-28 13:22:40.741440000 +0000
++++ b/maddash-server/etc/maddash.yaml	2023-03-28 15:46:29.166162954 +0000
 @@ -172,7 +172,7 @@
              graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
              #The Nagios command to execute. The -w and -c options define the thresholds. 
