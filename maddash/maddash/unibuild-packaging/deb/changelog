@@ -1,9 +1,9 @@
-maddash (5.0.0~b2.2-3) perfsonar-5.0; urgency=low
+maddash (5.0.0~b2.8-1) perfsonar-5.0; urgency=low
 
   * New upstream version.
   * Building on buster.
 
- -- Antoine Delvaux <antoine.delvaux@man.poznan.pl>  Wed, 05 Apr 2023 19:02:33 +0200
+ -- perfSONAR developers <debian@perfsonar.net>  Mon, 10 Apr 2023 09:23:15 -0400
 
 maddash (4.4.6-1) perfsonar-4.4; urgency=low
 
