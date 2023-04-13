@@ -5,6 +5,12 @@ maddash (5.0.0~b2.8-2) perfsonar-5.0; urgency=low
 
  -- Lætitia Delvaux <adelvaux@man.poznan.pl>  Wed, 12 Apr 2023 15:38:51 +0200
 
+maddash (4.4.6-2) perfsonar-4.4; urgency=low
+  
+  * Restoring debian/patch related to installation paths.
+
+ -- perfSONAR developers <debian@perfsonar.net>  Wed, 25 Jan 2023 19:33:04 +0000
+
 maddash (4.4.6-1) perfsonar-4.4; urgency=low
 
   * New upstream version.
