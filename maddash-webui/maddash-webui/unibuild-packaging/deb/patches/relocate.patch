@@ -1,7 +1,7 @@
 Index: b/etc/apache-maddash.conf
 ===================================================================
---- a/etc/apache-maddash.conf	2023-04-13 19:04:50.711811174 -0400
-+++ b/etc/apache-maddash.conf	2023-04-13 19:04:51.423692058 -0400
+--- a/etc/apache-maddash.conf	2023-04-19 15:51:42.030129235 -0400
++++ b/etc/apache-maddash.conf	2023-04-19 15:51:43.191594338 -0400
 @@ -1,8 +1,8 @@
  ##
  #Setup path to web user interface
