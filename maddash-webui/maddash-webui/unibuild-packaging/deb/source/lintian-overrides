@@ -3,7 +3,3 @@
 # and https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=808756
 maddash-webui source: source-is-missing web/lib/jquery.min.js
 maddash-webui source: source-is-missing web/lib/jquery-ui.min.js
-# We do not use that, coming from Dojo, so override
-maddash-webui: privacy-breach-google-adsense usr/share/maddash/maddash-webui/lib/dojo/dojox/analytics/Urchin.js
-maddash-webui: privacy-breach-logo usr/share/maddash/maddash-webui/lib/dojo/dojox/rpc/demos/demo_GoogleAjax.html
-maddash-webui: privacy-breach-logo usr/share/maddash/maddash-webui/lib/dojo/dojox/rpc/demos/demo_GoogleAjaxTranslate.html
