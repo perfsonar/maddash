@@ -10,7 +10,8 @@ Vcs-Browser: https://github.com/perfsonar/maddash/tree/master
 
 Package: maddash
 Architecture: all
-Depends: maddash-server, maddash-webui, ${misc:Depends}
+Depends: maddash-server, maddash-webui,
+ perfsonar-psconfig-maddash, ${misc:Depends}
 Description: Network monitoring server metapackage
  MaDDash is a framework for scheduling service checks and displaying results in
  a grid.

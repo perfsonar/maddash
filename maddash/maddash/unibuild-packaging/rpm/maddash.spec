@@ -13,6 +13,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 Requires:       maddash-server
 Requires:       maddash-webui
+Requires:       perfsonar-psconfig-maddash
 Requires:       nagios-plugins-perfsonar
 Requires:       perfsonar-graphs >= 4.0
 
