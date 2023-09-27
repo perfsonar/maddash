@@ -1,5 +1,4 @@
 #!/bin/bash
-
 APP_NAME="maddash";
 DOJO_VERSION="1.7.2";
 BUILD_PROFILE="../../../maddash.profile.js";
@@ -32,6 +31,11 @@ if [ -f dojo-release-$DOJO_VERSION-src.tar ] && [ ! -d dojo-release-$DOJO_VERSIO
         exit 1 ;
     fi
     `rm dojo-release-$DOJO_VERSION-src.tar`;
+    # Removing files we do not use and that contain potential privacy breach
+    # See https://lintian.debian.org/tags/privacy-breach-google-adsense
+    rm "dojo-release-$DOJO_VERSION-src/dojox/analytics/Urchin.js"
+    rm "dojo-release-$DOJO_VERSION-src/dojox/rpc/demos/demo_GoogleAjax.html"
+    rm "dojo-release-$DOJO_VERSION-src/dojox/rpc/demos/demo_GoogleAjaxTranslate.html"
 fi
 
 echo "-- Building custom dojo package...";
