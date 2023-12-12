@@ -71,10 +71,6 @@ cp %{package_name}/etc/maddash.yaml %{buildroot}/%{config_base}/maddash.yaml
 sed -e s,%{package_name}.log,%{log_dir}/%{package_name}.log, -e s,%{package_name}.netlogger.log,%{log_dir}/%{package_name}.netlogger.log, < %{package_name}/etc/log4j.properties > %{buildroot}/%{config_base}/log4j.properties
 
 %post
-#Create directory for PID files
-mkdir -p %{run_dir}
-chown maddash:maddash %{run_dir}
-
 #Create directory for logs
 mkdir -p %{log_dir}
 chown maddash:maddash %{log_dir}
@@ -105,6 +101,8 @@ if [ "$1" = "1" ]; then
     #if new install, then enable
     systemctl enable %{package_name}.service
     systemctl start %{package_name}.service
+else
+    systemctl daemon-reload
 fi
 
 if [ "$1" = "2" ]; then
