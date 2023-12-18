@@ -1,7 +1,7 @@
 Index: b/maddash-server/etc/log4j.properties
 ===================================================================
---- a/maddash-server/etc/log4j.properties	2023-12-08 15:50:09.690710477 -0500
-+++ b/maddash-server/etc/log4j.properties	2023-12-08 15:50:10.510685034 -0500
+--- a/maddash-server/etc/log4j.properties	2023-12-18 16:48:32.423975000 +0100
++++ b/maddash-server/etc/log4j.properties	2023-12-18 17:12:06.687131219 +0100
 @@ -5,7 +5,7 @@
  log4j.appender.MADDASH=org.apache.log4j.RollingFileAppender
  log4j.appender.MADDASH.MaxFileSize=1MB
@@ -21,8 +21,17 @@ Index: b/maddash-server/etc/log4j.properties
  log4j.appender.NETLOGGER.layout.ConversionPattern=level=%p %m%n
 Index: b/maddash-server/etc/maddash.yaml
 ===================================================================
---- a/maddash-server/etc/maddash.yaml	2023-12-08 15:50:09.690857477 -0500
-+++ b/maddash-server/etc/maddash.yaml	2023-12-08 15:50:10.511159825 -0500
+--- a/maddash-server/etc/maddash.yaml	2023-12-18 16:48:32.423745000 +0100
++++ b/maddash-server/etc/maddash.yaml	2023-12-18 17:12:06.688756023 +0100
+@@ -71,7 +71,7 @@
+ # Activate https and set port and keystores
+ #https:
+ #    port: 8882
+-#    keystore: "/usr/lib/maddash/maddash-webui/etc/maddash.jks"
++#    keystore: "/usr/share/maddash/maddash-webui/etc/maddash.jks"
+ #    keystorePassword: "changeit"
+ # want, require or off
+ #    clientAuth: "want" 
 @@ -172,7 +172,7 @@
              graphUrl: "https://example.mydomain.local/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
              #The Nagios command to execute. The -w and -c options define the thresholds. 
@@ -59,3 +68,12 @@ Index: b/maddash-server/etc/maddash.yaml
          checkInterval: 28800
          retryInterval: 600
          retryAttempts: 3
+Index: b/maddash-server/bin/update_db.sh
+===================================================================
+--- a/maddash-server/bin/update_db.sh	2023-12-18 16:48:32.423300000 +0100
++++ b/maddash-server/bin/update_db.sh	2023-12-18 17:12:06.689285262 +0100
+@@ -1,3 +1,3 @@
+ #!/bin/bash
+ 
+-java -Done-jar.main.class=net.es.maddash.utils.DBClientUtil -Djava.net.preferIPv4Stack=true -jar /usr/lib/maddash/maddash-server/target/maddash-server.one-jar.jar $*
++java -Done-jar.main.class=net.es.maddash.utils.DBClientUtil -Djava.net.preferIPv4Stack=true -jar /usr/share/maddash/maddash-server/target/maddash-server.one-jar.jar $*
