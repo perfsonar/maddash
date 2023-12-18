@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/sh -c '/usr/lib/maddash/maddash-server/bin/startServer.sh /var/run/maddash/maddash-server.pid /usr/lib/maddash/maddash-server/target/maddash-server.one-jar.jar -c /etc/maddash/maddash-server/maddash.yaml -l /etc/maddash/maddash-server/log4j.properties >/var/log/maddash/maddash-server.out 2>&1'
+ExecStart=/bin/sh -c '/usr/share/maddash/maddash-server/bin/startServer.sh /var/run/maddash/maddash-server.pid /usr/share/maddash/maddash-server/target/maddash-server.one-jar.jar -c /etc/maddash/maddash-server/maddash.yaml -l /etc/maddash/maddash-server/log4j.properties >/var/log/maddash/maddash-server.out 2>&1'
 Restart=always
 RestartSec=30s
 
