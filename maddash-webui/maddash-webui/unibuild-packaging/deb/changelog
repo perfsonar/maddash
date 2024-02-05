@@ -4,11 +4,11 @@ maddash-webui (5.1.0~a1.0-1) perfsonar-5.1-snapshot; urgency=low
 
  -- perfSONAR developers <debian@perfsonar.net>  Wed, 19 Apr 2023 03:37:44 -0400
 
-maddash-webui (5.0.7-2) perfsonar-5.0; urgency=low
+maddash-webui (5.0.8-1) perfsonar-5.0; urgency=low
 
   * New upstream version.
 
- -- Lætitia Delvaux <adelvaux@man.poznan.pl>  Mon, 18 Dec 2023 17:12:07 +0100
+ -- perfSONAR developers <debian@perfsonar.net>  Mon, 05 Feb 2024 12:39:40 -0500
 
 maddash-webui (5.0.6-1) perfsonar-5.0; urgency=low
 
