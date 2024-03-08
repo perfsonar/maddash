@@ -53,10 +53,10 @@ http:
 #        # The main address of your dashboard used to create links in email.
 #        dashboardUrl: "http://dashboard.domain.example"
 #        ##
-#        # information about the mail server. If not set will use 127.0.0.1 port 25 with 
+#        # information about the mail server. If not set will use localhost port 25 with 
 #        # no auth or SSL
 #        mailServer:
-#            address: "127.0.0.1"
+#            address: "localhost"
 #            port: 25
 #        ##
 #        # Set from address in mailed reports

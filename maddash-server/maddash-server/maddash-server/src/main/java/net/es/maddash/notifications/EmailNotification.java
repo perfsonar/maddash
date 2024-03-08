@@ -53,7 +53,7 @@ public class EmailNotification extends BaseNotification{
     final public static String PROP_FORMAT_TEXT = "text";
     final public static String PROP_DASHBOARDURL = "dashboardUrl";
     
-    final public static String DEFAULT_MAILSERVER_ADDR = "127.0.0.1";
+    final public static String DEFAULT_MAILSERVER_ADDR = "localhost";
     final public static int DEFAULT_MAILSERVER_PORT = 25;
     final public static String DEFAULT_MAILSERVER_USER = null;
     final public static String DEFAULT_MAILSERVER_PASS = null;
