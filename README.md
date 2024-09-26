@@ -1,3 +1,5 @@
+# MaDDash has been retired and is no longer maintained.
+
 # MaDDash
 
 The Monitoring and Debugging Dashboard (MaDDash) is a tool for collecting large amounts of inherently two-dimensional data and presenting it in visually useful ways. The project consists of the server side that schedules jobs to collect data and a web front-end to display that data. A summary of the collected data is also made available as a JSON REST API. This initial use case was collecting point-to-point network measurements published by perfSONAR and displaying them as an organized collection grids on the web front-end. These were presented with one endpoint as the row and the second endpoint as the column. In principle though, MaDDash can be extended to support any two-dimensional data. 
